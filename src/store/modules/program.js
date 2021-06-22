@@ -39,10 +39,7 @@ export const actions = {
       });
   },
   fetchProgram({ commit, getters }, code) {
-    console.log("here");
-
     var program = getters.getProgramByCode(code);
-
     if (program) {
       commit("SET_PROGRAM", program);
     } else {
@@ -64,5 +61,40 @@ export const actions = {
 export const getters = {
   getProgramByCode: (state) => (code) => {
     return state.programs.find((program) => program.code === code);
+  },
+  courses: (state) => {
+    const temp = state.program.courses;
+    if (!temp) return;
+    return temp.sort(function (a, b) {
+      //sort in ascending order
+      var lowerCaseA = a.code.match(/\d+/)[0];
+      var lowerCaseB = b.code.match(/\d+/)[0];
+      console.log(lowerCaseA + " " + lowerCaseB);
+      return lowerCaseA - lowerCaseB;
+    });
+  },
+  semester: (state, getters) => {
+    const semester = [];
+    for (let i in getters.courses) {
+      let semesterCount = getters.courses[i].semester;
+      if (semester.indexOf(semesterCount) == -1) {
+        semester.push(semesterCount);
+      }
+    }
+    return semester.sort();
+  },
+  coursesInSemester: (state, getters) => {
+    const coursesInSemester = {};
+    let courses = [];
+
+    for (let i in getters.semester) {
+      for (let y in getters.courses) {
+        if (getters.semester[i] == getters.courses[y].semester) {
+          courses.push(getters.courses[y]);
+        }
+      }
+      coursesInSemester[getters.semester[i]] = courses;
+    }
+    return coursesInSemester;
   },
 };

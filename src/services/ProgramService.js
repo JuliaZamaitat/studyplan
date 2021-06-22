@@ -2,9 +2,9 @@ import Api from "@/services/Api";
 
 export default {
   fetchPrograms() {
-    return Api().get("api/programs");
+    return Api().get("programs");
   },
   fetchProgram(code) {
-    return Api().get("api/" + code);
+    return Api().get(code);
   },
 };

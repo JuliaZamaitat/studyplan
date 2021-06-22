@@ -12,6 +12,16 @@ const mongoose = require("mongoose"),
         lowercase: true,
         unique: true,
       },
+      matriculationNumber: {
+        type: String,
+        required: true,
+        lowercase: true,
+        unique: true,
+      },
+      startOfStudy: {
+        type: String,
+      },
+      studyPlan: { type: Schema.Types.ObjectId, ref: "StudyPlan" },
     },
     {
       timestamps: true,

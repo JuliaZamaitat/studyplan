@@ -5,6 +5,7 @@ const users = [
   new User({
     name: "test",
     email: "test@mail.de",
+    matriculationNumber: "123456",
   }),
 ];
 
