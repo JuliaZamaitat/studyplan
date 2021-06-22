@@ -69,7 +69,6 @@ export const getters = {
       //sort in ascending order
       var lowerCaseA = a.code.match(/\d+/)[0];
       var lowerCaseB = b.code.match(/\d+/)[0];
-      console.log(lowerCaseA + " " + lowerCaseB);
       return lowerCaseA - lowerCaseB;
     });
   },
@@ -77,21 +76,19 @@ export const getters = {
     const semester = [];
     for (let i in getters.courses) {
       let semesterCount = getters.courses[i].semester;
-      if (semester.indexOf(semesterCount) == -1) {
-        semester.push(semesterCount);
-      }
+      if (semester.indexOf(semesterCount) == -1) semester.push(semesterCount);
     }
     return semester.sort();
   },
   coursesInSemester: (state, getters) => {
     const coursesInSemester = {};
-    let courses = [];
-
     for (let i in getters.semester) {
+      if (getters.semester[i] == 0) continue; //ohne Wahlpflichtfächer
+      let courses = [];
       for (let y in getters.courses) {
-        if (getters.semester[i] == getters.courses[y].semester) {
+        if (getters.courses[y].code.includes(".")) continue; //ohne B20.1, also required Submodule
+        if (getters.semester[i] == getters.courses[y].semester)
           courses.push(getters.courses[y]);
-        }
       }
       coursesInSemester[getters.semester[i]] = courses;
     }
