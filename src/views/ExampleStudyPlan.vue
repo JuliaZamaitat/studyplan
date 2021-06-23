@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h1>Exemplarischer Studienplan</h1>
+    <h1>Exemplarischer Studienplan*</h1>
+    <div class="line"></div>
+
     <div class="container">
       <div class="shadowBox">
         <div
@@ -67,35 +69,34 @@ h1 {
   font-weight: bold;
 }
 h1 {
-  margin-bottom: 40px;
+  margin-bottom: 20px;
+  color: #76b900;
 }
-
-.secondContainer {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-}
-.shadowBox {
-  box-shadow: 0px 7px 4px rgba(0, 0, 0, 0.23);
-  border-radius: 20px;
+.line {
+  border-top: 3px solid #76b900;
+  margin: 0 auto;
+  padding: 0;
+  width: 30px;
+  height: 39px;
 }
 
 .container {
   display: grid;
   margin: 0 auto;
-  max-width: 90%;
+  max-width: 80%;
   border-radius: 20px;
 
+  .shadowBox {
+    box-shadow: 0px 7px 4px rgba(0, 0, 0, 0.23);
+    border-radius: 20px;
+  }
+
   .semesterRow {
+    max-width: 100%;
     display: grid;
     grid-template-columns: 0.2fr 0.8fr;
-    width: 100%;
     background: white;
-
-    & div:first-child {
-      grid-column: 1 -1;
-      grid-row: 1 / 10;
-    }
+    row-gap: 0px;
 
     &:nth-child(odd) {
       background: rgba(118, 185, 0, 0.1);
@@ -110,7 +111,6 @@ h1 {
     .sidebar {
       min-height: 87px;
       display: flex;
-      flex: 1;
       justify-content: center;
       align-items: center;
       flex-direction: column;
@@ -124,30 +124,35 @@ h1 {
       }
     }
 
-    .course {
+    .secondContainer {
       min-width: 0;
-      margin-right: 25px;
-      min-height: 87px;
-      background: #8acc74;
-      border-radius: 14px;
-      display: inline-block;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
 
-      .text {
-        max-width: 100%;
-        height: 100%;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        // padding: 5px;
-        p {
-          padding: 0px;
-          font-size: 12px;
-          // padding: 3px;
-          margin: 0;
-          max-width: 95%;
-          word-wrap: break-word;
+      .course {
+        margin: 20px 25px 20px 0;
+        min-height: 87px;
+        background: #beebae;
+        border-radius: 14px;
+        display: inline-block;
+
+        .text {
+          max-width: 100%;
+          height: 100%;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          p {
+            padding: 0px;
+            font-size: 12px;
+            padding: 3px;
+            margin: 0;
+            max-width: 95%;
+            word-wrap: break-word;
+          }
         }
       }
     }
