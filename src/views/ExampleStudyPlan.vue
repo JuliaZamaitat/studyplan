@@ -54,8 +54,7 @@ export default {
       return ects;
     },
     courseWidth(course) {
-      console.log(course.ects);
-      const width = course.ects * 25 + (course.ects / 5 - 1);
+      const width = course.ects * 25 + (course.ects / 5 - 1) * 25;
       return `${width}px`;
     },
   },
@@ -89,7 +88,7 @@ h1 {
 
   .semesterRow {
     display: grid;
-    grid-template-columns: 0.2fr 0.7fr;
+    grid-template-columns: 0.2fr 0.8fr;
     width: 100%;
     background: white;
 
@@ -115,14 +114,11 @@ h1 {
       justify-content: center;
       align-items: center;
       flex-direction: column;
-
       margin: 14px;
-
       .semesterCount {
         font-size: 18px;
         padding: 10px;
       }
-
       p {
         margin: 0;
       }
@@ -130,7 +126,7 @@ h1 {
 
     .course {
       min-width: 0;
-      // margin-right: 25px;
+      margin-right: 25px;
       min-height: 87px;
       background: #8acc74;
       border-radius: 14px;
@@ -144,10 +140,11 @@ h1 {
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 5px;
+        // padding: 5px;
         p {
+          padding: 0px;
           font-size: 12px;
-          padding: 3px;
+          // padding: 3px;
           margin: 0;
           max-width: 95%;
           word-wrap: break-word;
