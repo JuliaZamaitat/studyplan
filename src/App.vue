@@ -8,7 +8,8 @@
   </div>
 </template>
 
-<style>
+<style lang="scss">
+$htwGruen: #76b900;
 #app {
   font-family: Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
