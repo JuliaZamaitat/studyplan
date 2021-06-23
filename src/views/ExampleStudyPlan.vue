@@ -2,19 +2,28 @@
   <div>
     <h1>Exemplarischer Studienplan</h1>
     <div class="container">
-      <div
-        class="semesterRow"
-        v-for="semester in coursesInSemester"
-        :key="semester.id"
-      >
-        <div class="sidebar">
-          <p class="semesterCount">{{ semester[0].semester }}. Semester</p>
-          <p>{{ ects(semester) }} ECTS</p>
-        </div>
-        <div class="course" v-for="course in semester" :key="course.id">
-          <div class="text">
-            <p>{{ course.code }}</p>
-            <p>{{ course.name }}</p>
+      <div class="shadowBox">
+        <div
+          class="semesterRow"
+          v-for="semester in coursesInSemester"
+          :key="semester.id"
+        >
+          <div class="sidebar">
+            <p class="semesterCount">{{ semester[0].semester }}. Semester</p>
+            <p>{{ ects(semester) }} ECTS</p>
+          </div>
+          <div class="secondContainer">
+            <div
+              class="course"
+              :style="{ width: courseWidth(course) }"
+              v-for="course in semester"
+              :key="course.id"
+            >
+              <div class="text">
+                <p>{{ course.code }}</p>
+                <p>{{ course.name }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -44,6 +53,11 @@ export default {
       }
       return ects;
     },
+    courseWidth(course) {
+      console.log(course.ects);
+      const width = course.ects * 25 + (course.ects / 5 - 1);
+      return `${width}px`;
+    },
   },
 };
 </script>
@@ -57,20 +71,26 @@ h1 {
   margin-bottom: 40px;
 }
 
+.secondContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.shadowBox {
+  box-shadow: 0px 7px 4px rgba(0, 0, 0, 0.23);
+  border-radius: 20px;
+}
+
 .container {
   display: grid;
-  grid-template-rows: repeat(auto-fill, auto);
-  background: rgba(118, 185, 0, 0.1);
-  border-radius: 20px;
   margin: 0 auto;
   max-width: 90%;
   border-radius: 20px;
-  box-shadow: 0px 7px 4px rgba(0, 0, 0, 0.23);
 
   .semesterRow {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 150px);
-    column-gap: 25px;
+    grid-template-columns: 0.2fr 0.7fr;
+    width: 100%;
     background: white;
 
     & div:first-child {
@@ -91,6 +111,7 @@ h1 {
     .sidebar {
       min-height: 87px;
       display: flex;
+      flex: 1;
       justify-content: center;
       align-items: center;
       flex-direction: column;
@@ -108,8 +129,8 @@ h1 {
     }
 
     .course {
-      margin: 14px;
-      width: 150px;
+      min-width: 0;
+      // margin-right: 25px;
       min-height: 87px;
       background: #8acc74;
       border-radius: 14px;
