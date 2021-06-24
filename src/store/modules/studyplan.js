@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import StudyPlanService from "@/services/StudyPlanService.js";
 
 export const namespaced = true;
@@ -45,13 +46,10 @@ export const actions = {
       await StudyPlanService.fetchStudyPlan(userId)
         .then((response) => {
           commit("SET_STUDYPLAN", response.data);
-          console.log(!response.data.semesterPlans);
-          console.log(JSON.stringify(response.data.semesterPlans));
           if (
             !response.data.semesterPlans ||
             response.data.semesterPlans.length === 0
           ) {
-            console.log("dispatching");
             dispatch("fillEmptyStudyPlanWithOfficalCourses", userId);
           }
         })
@@ -98,6 +96,23 @@ export const actions = {
         console.log(notification);
       });
   },
+  moveCourse({ commit }, { fromCourses, toCourses, courseIndex }) {
+    console.log(fromCourses);
+    const courseToMove = fromCourses.splice(courseIndex, 1)[0];
+    toCourses.push(courseToMove);
+    //add mutation
+    //save to db
+  },
+  createSemester({ state }, { semesterCount }) {
+    console.log(state.stuyPlan);
+    state.studyPlan.semesterPlans.push({
+      currentSemesterCount: semesterCount,
+      semester: "",
+      plannedCourses: [],
+    });
+    //add mutation
+    //save to db
+  },
 };
 
 export const getters = {
@@ -110,7 +125,6 @@ export const getters = {
     if (!semesterPlans) return;
   },
   myCoursesInSemester: () => {
-    //TODO
     const studyPlan = state.studyPlan;
     if (!studyPlan) return;
     console.log(studyPlan.semesterPlans);

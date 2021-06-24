@@ -4,8 +4,11 @@
       <div class="shadowBox">
         <div
           class="semesterRow"
-          v-for="semester in coursesInSemester"
+          v-for="(semester, $semesterIndex) in coursesInSemester"
           :key="semester.id"
+          @drop="moveCourse($event, semester.plannedCourses)"
+          @dragover.prevent
+          @dragenter.prevent
         >
           <div class="sidebar">
             <p class="semesterCount">
@@ -18,8 +21,10 @@
             <div
               class="course"
               :style="{ width: courseWidth(course) }"
-              v-for="course in semester.plannedCourses"
+              v-for="(course, $courseIndex) in semester.plannedCourses"
               :key="course.id"
+              draggable
+              @dragstart="pickupCourse($event, $courseIndex, $semesterIndex)"
             >
               <div class="text">
                 <p>{{ course.code }}</p>
@@ -30,6 +35,7 @@
         </div>
       </div>
     </div>
+    <button @click="createSemester">Add Semester</button>
   </div>
 </template>
 
@@ -54,13 +60,39 @@ export default {
       const width = course.ects * 25 + (course.ects / 5 - 1) * 25;
       return `${width}px`;
     },
+    pickupCourse(e, courseIndex, fromSemesterIndex) {
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.dropEffect = "move";
+
+      e.dataTransfer.setData("course-index", courseIndex);
+      e.dataTransfer.setData("from-semester-index", fromSemesterIndex);
+    },
+    // eslint-disable-next-line no-unused-vars
+    moveCourse(e, toCourses) {
+      const fromSemesterIndex = e.dataTransfer.getData("from-semester-index");
+      const fromCourses =
+        this.coursesInSemester[fromSemesterIndex].plannedCourses;
+      const courseIndex = e.dataTransfer.getData("course-index");
+      this.$store.dispatch("studyplan/moveCourse", {
+        fromCourses,
+        toCourses,
+        courseIndex,
+      });
+    },
+    createSemester() {
+      this.$store.dispatch("studyplan/createSemester", {
+        semesterCount: this.coursesInSemester.length + 1,
+      });
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
-
+button {
+  margin: 30px;
+}
 .container {
   display: grid;
   margin: 0 auto;
