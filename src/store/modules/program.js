@@ -1,4 +1,4 @@
-import ProgramService from "@/services/ProgramService.js";
+import ProgramService from "@/services/Api/ProgramService.js";
 
 export const namespaced = true;
 
@@ -21,8 +21,8 @@ export const mutations = {
 };
 
 export const actions = {
-  fetchPrograms({ commit }) {
-    ProgramService.fetchPrograms()
+  async fetchPrograms({ commit }) {
+    await ProgramService.fetchPrograms()
       .then((response) => {
         commit(
           "SET_PROGRAMS_TOTAL",
@@ -38,12 +38,12 @@ export const actions = {
         console.log(notification);
       });
   },
-  fetchProgram({ commit, getters }, code) {
+  async fetchProgram({ commit, getters }, code) {
     var program = getters.getProgramByCode(code);
     if (program) {
       commit("SET_PROGRAM", program);
     } else {
-      ProgramService.fetchProgram(code)
+      await ProgramService.fetchProgram(code)
         .then((response) => {
           commit("SET_PROGRAM", response.data);
         })
@@ -63,9 +63,9 @@ export const getters = {
     return state.programs.find((program) => program.code === code);
   },
   courses: (state) => {
-    const temp = state.program.courses;
-    if (!temp) return;
-    return temp.sort(function (a, b) {
+    const courses = state.program.courses;
+    if (!courses) return;
+    return courses.sort(function (a, b) {
       //sort in ascending order
       var lowerCaseA = a.code.match(/\d+/)[0];
       var lowerCaseB = b.code.match(/\d+/)[0];
@@ -73,6 +73,8 @@ export const getters = {
     });
   },
   semester: (state, getters) => {
+    const courses = getters.courses;
+    if (!courses) return;
     const semester = [];
     for (let i in getters.courses) {
       let semesterCount = getters.courses[i].semester;
@@ -80,7 +82,9 @@ export const getters = {
     }
     return semester.sort();
   },
-  coursesInSemester: (state, getters) => {
+  officialCoursesInSemester: (state, getters) => {
+    const semester = getters.semester;
+    if (!semester) return;
     const coursesInSemester = {};
     for (let i in getters.semester) {
       if (getters.semester[i] == 0) continue; //ohne Wahlpflichtfächer

@@ -12,13 +12,11 @@ const mongoose = require("mongoose"),
           semester: {
             //maybe change later two its own schema
             type: String,
-            required: true,
           },
           currentSemesterCount: {
             type: Number,
-            required: true,
           },
-          plannedCourses: [{ code: String, name: String }],
+          plannedCourses: [{ code: String, name: String, ects: Number }],
         },
       ],
       courses: [

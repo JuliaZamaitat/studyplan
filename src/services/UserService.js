@@ -1,7 +1,7 @@
-import Api from "@/services/Api";
+// import Api from "@/services/Api/Api";
 
-export default {
-  fetchUsers() {
-    return Api().get("users");
-  },
-};
+// export default {
+//   fetchUsers() {
+//     return Api().get("users");
+//   },
+// };

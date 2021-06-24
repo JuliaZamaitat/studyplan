@@ -1,8 +1,9 @@
 <template>
   <div>
-    <h1>Exemplarischer Studienplan*</h1>
-    <div class="line"></div>
-    <BaseSemesterAndCoursesTable :coursesInSemester="coursesInSemester" />
+    <BaseHeading><h1>Exemplarischer Studienplan*</h1></BaseHeading>
+    <BaseExampleSemesterAndCoursesTable
+      :coursesInSemester="officialCoursesInSemester"
+    />
   </div>
 </template>
 
@@ -10,15 +11,16 @@
 import { mapState, mapGetters } from "vuex";
 
 export default {
-  data() {
-    return {};
-  },
   created() {
     this.$store.dispatch("program/fetchProgram", "imi-b/1"); //change to dynamic call
   },
   computed: {
     ...mapState("program", ["program"]),
-    ...mapGetters("program", ["semester", "courses", "coursesInSemester"]),
+    ...mapGetters("program", [
+      "semester",
+      "courses",
+      "officialCoursesInSemester",
+    ]),
   },
 };
 </script>
@@ -26,14 +28,10 @@ export default {
 <style lang="scss" scoped>
 $htwGruen: #76b900;
 
-p,
-h1 {
+p {
   font-weight: bold;
 }
-h1 {
-  margin-bottom: 20px;
-  color: $htwGruen;
-}
+
 .line {
   border-top: 3px solid $htwGruen;
   margin: 0 auto;
