@@ -11,8 +11,8 @@ export default {
   fetchStudyPlan(userId) {
     return server.get(`studyplan/${userId}`);
   },
-  updateStudyPlanOfUser(userId, studyPlan) {
+  updateStudyPlan(studyPlan) {
     console.log("StudyPlan", studyPlan);
-    return server.put(`studyplan/${userId}`, studyPlan);
+    return server.put(`studyplan/${studyPlan._id}`, studyPlan);
   },
 };

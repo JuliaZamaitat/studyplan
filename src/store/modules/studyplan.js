@@ -63,7 +63,24 @@ export const actions = {
         });
     }
   },
-  async fillEmptyStudyPlanWithOfficalCourses({ rootGetters, commit }, userId) {
+
+  async updateStudyPlan({ state, commit }) {
+    await StudyPlanService.updateStudyPlan(state.studyPlan)
+      .then((response) => {
+        commit("SET_STUDYPLAN", response.data);
+      })
+      .catch((error) => {
+        const notification = {
+          type: "error",
+          message: "There was a problem updating a studyplan: " + error.message,
+        };
+        console.log(notification);
+      });
+  },
+  async fillEmptyStudyPlanWithOfficalCourses(
+    { rootGetters, dispatch },
+    userId
+  ) {
     const officialCoursesInSemester =
       rootGetters["program/officialCoursesInSemester"];
     for (let semester in officialCoursesInSemester) {
@@ -83,35 +100,20 @@ export const actions = {
 
       state.studyPlan.semesterPlans.push(obj);
     }
-    console.log("before update");
-    await StudyPlanService.updateStudyPlanOfUser(userId, state.studyPlan)
-      .then((response) => {
-        commit("SET_STUDYPLAN", response.data);
-      })
-      .catch((error) => {
-        const notification = {
-          type: "error",
-          message: "There was a problem updating a studyplan: " + error.message,
-        };
-        console.log(notification);
-      });
+    await dispatch("updateStudyPlan", userId);
   },
-  moveCourse({ commit }, { fromCourses, toCourses, courseIndex }) {
-    console.log(fromCourses);
+  async moveCourse({ dispatch }, { fromCourses, toCourses, courseIndex }) {
     const courseToMove = fromCourses.splice(courseIndex, 1)[0];
     toCourses.push(courseToMove);
-    //add mutation
-    //save to db
+    await dispatch("updateStudyPlan");
   },
-  createSemester({ state }, { semesterCount }) {
-    console.log(state.stuyPlan);
+  async createSemester({ state, dispatch }, { semesterCount }) {
     state.studyPlan.semesterPlans.push({
       currentSemesterCount: semesterCount,
       semester: "",
       plannedCourses: [],
     });
-    //add mutation
-    //save to db
+    await dispatch("updateStudyPlan");
   },
 };
 
