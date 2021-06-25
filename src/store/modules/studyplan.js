@@ -102,9 +102,16 @@ export const actions = {
     }
     await dispatch("updateStudyPlan", userId);
   },
-  async moveCourse({ dispatch }, { fromCourses, toCourses, courseIndex }) {
-    const courseToMove = fromCourses.splice(courseIndex, 1)[0];
-    toCourses.push(courseToMove);
+  async moveCourse(
+    { dispatch },
+    { fromCourses, fromCourseIndex, toCourses, toCourseIndex }
+  ) {
+    const courseToMove = fromCourses.splice(fromCourseIndex, 1)[0];
+    if (!toCourseIndex) {
+      toCourses.push(courseToMove);
+    }
+
+    toCourses.splice(toCourseIndex, 0, courseToMove);
     await dispatch("updateStudyPlan");
   },
   async createSemester({ state, dispatch }, { semesterCount }) {
@@ -129,7 +136,6 @@ export const getters = {
   myCoursesInSemester: () => {
     const studyPlan = state.studyPlan;
     if (!studyPlan) return;
-    console.log(studyPlan.semesterPlans);
     return studyPlan.semesterPlans;
   },
 };

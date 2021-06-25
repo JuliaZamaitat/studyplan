@@ -12,7 +12,6 @@ export default {
     return server.get(`studyplan/${userId}`);
   },
   updateStudyPlan(studyPlan) {
-    console.log("StudyPlan", studyPlan);
     return server.put(`studyplan/${studyPlan._id}`, studyPlan);
   },
 };
