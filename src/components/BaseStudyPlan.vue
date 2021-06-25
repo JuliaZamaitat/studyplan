@@ -12,7 +12,12 @@
         />
       </div>
     </div>
-    <button @click="createSemester">Add Semester</button>
+    <div class="addSemester">
+      <button class="addSemester addSemester__button" @click="addSemester">
+        <font-awesome-icon :icon="['fas', 'plus-circle']" size="3x" />
+      </button>
+      <p class="addSemester addSemester__text">Semester hinzufügen</p>
+    </div>
   </div>
 </template>
 
@@ -25,10 +30,8 @@ export default {
     },
   },
   methods: {
-    createSemester() {
-      this.$store.dispatch("studyplan/createSemester", {
-        semesterCount: this.coursesInSemester.length + 1,
-      });
+    addSemester() {
+      this.$store.dispatch("studyplan/addSemester");
     },
   },
 };
@@ -36,6 +39,9 @@ export default {
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
+p {
+  font-weight: 700;
+}
 button {
   margin: 30px;
 }
@@ -60,6 +66,21 @@ button {
     &:last-of-type {
       border-radius: 0 0 20px 20px;
     }
+  }
+}
+.addSemester {
+  &__button {
+    text-decoration: none;
+    background: none;
+    border: none;
+    margin: 40px 0 20px 0;
+    color: $htwGruen;
+    cursor: pointer;
+  }
+
+  &__text {
+    margin: 0;
+    color: $htwGruen;
   }
 }
 </style>

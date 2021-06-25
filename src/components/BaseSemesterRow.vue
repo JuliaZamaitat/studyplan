@@ -8,17 +8,24 @@
     >
       <BaseSemesterRowSidebar :semester="semester" />
 
-      <div class="secondContainer">
+      <div class="semesterRow__courses">
+        <button
+          v-if="semester.plannedCourses.length == 0"
+          @click="deleteSemester(semesterIndex)"
+        >
+          Löschen
+        </button>
         <div
-          class="course"
+          class="semesterRow__courses-course"
+          :style="{ width: courseWidth(course) }"
           v-for="(course, $courseIndex) in semester.plannedCourses"
           :key="$courseIndex"
           draggable
           @dragstart="pickupCourse($event, $courseIndex, semesterIndex)"
           @drop.stop="moveCourse($event, semester.plannedCourses, $courseIndex)"
         >
-          <div class="innerbox" :style="{ width: courseWidth(course) }">
-            <div class="text">
+          <div class="semesterRow__courses-course-content">
+            <div class="semesterRow__courses-course-content-text">
               <p>{{ course.code }}</p>
               <p>{{ course.name }}</p>
             </div>
@@ -63,12 +70,16 @@ export default {
       const fromCourses =
         this.coursesInSemester[fromSemesterIndex].plannedCourses;
       const fromCourseIndex = e.dataTransfer.getData("from-course-index");
-      console.log("toCourseIndex", toCourseIndex);
       this.$store.dispatch("studyplan/moveCourse", {
         fromCourses,
         fromCourseIndex,
         toCourses,
         toCourseIndex,
+      });
+    },
+    deleteSemester(semesterIndex) {
+      this.$store.dispatch("studyplan/deleteSemester", {
+        semesterIndex,
       });
     },
   },
@@ -87,19 +98,19 @@ p {
   grid-template-columns: 0.2fr 0.8fr;
   row-gap: 0px;
 
-  .secondContainer {
+  &__courses {
     min-width: 0;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
 
-    .course {
+    &-course {
       padding: 20px 25px 20px 0;
       display: flex;
       align-items: center;
 
-      .innerbox {
+      &-content {
         background: rgba(193, 193, 193, 0.55);
         min-height: 87px;
         border-radius: 14px;
@@ -107,19 +118,20 @@ p {
         justify-content: center;
         align-items: center;
         margin: 0 auto;
-      }
+        width: 100%;
+        &-text {
+          max-width: 100%;
+          height: 100%;
+          overflow: hidden;
 
-      .text {
-        max-width: 100%;
-        height: 100%;
-        overflow: hidden;
-        p {
-          padding: 0px;
-          font-size: 12px;
-          padding: 3px;
-          margin: 0;
-          max-width: 95%;
-          word-wrap: break-word;
+          p {
+            padding: 0px;
+            font-size: 12px;
+            padding: 3px;
+            margin: 0;
+            max-width: 95%;
+            word-wrap: break-word;
+          }
         }
       }
     }

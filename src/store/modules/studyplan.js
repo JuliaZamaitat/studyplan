@@ -107,7 +107,7 @@ export const actions = {
     { fromCourses, fromCourseIndex, toCourses, toCourseIndex }
   ) {
     const courseToMove = fromCourses.splice(fromCourseIndex, 1)[0];
-    if (!toCourseIndex) {
+    if (toCourseIndex == undefined) {
       toCourses.push(courseToMove);
       return;
     }
@@ -115,12 +115,22 @@ export const actions = {
     toCourses.splice(toCourseIndex, 0, courseToMove);
     await dispatch("updateStudyPlan");
   },
-  async createSemester({ state, dispatch }, { semesterCount }) {
-    state.studyPlan.semesterPlans.push({
-      currentSemesterCount: semesterCount,
+  async addSemester({ state, dispatch }) {
+    let semesterPlans = state.studyPlan.semesterPlans;
+    semesterPlans.push({
+      currentSemesterCount:
+        semesterPlans[semesterPlans.length - 1].currentSemesterCount + 1,
       semester: "",
       plannedCourses: [],
     });
+    await dispatch("updateStudyPlan");
+  },
+  async deleteSemester({ state, dispatch }, { semesterIndex }) {
+    let semesterPlans = state.studyPlan.semesterPlans;
+    semesterPlans.splice(semesterIndex, 1);
+    for (let i = semesterIndex; i < semesterPlans.length; i++) {
+      semesterPlans[i].currentSemesterCount -= 1;
+    }
     await dispatch("updateStudyPlan");
   },
 };

@@ -8,6 +8,13 @@ Vue.config.productionTip = false;
 import upperFirst from "lodash/upperFirst";
 import camelCase from "lodash/camelCase";
 
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
+library.add(faPlusCircle);
+Vue.component("font-awesome-icon", FontAwesomeIcon);
+
 //registering BaseComponents globall
 const requireComponent = require.context(
   // The relative path of the components folder
