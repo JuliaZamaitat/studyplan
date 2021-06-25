@@ -6,15 +6,12 @@
       @dragover.prevent
       @dragenter.prevent
     >
-      <BaseSemesterRowSidebar :semester="semester" />
+      <BaseSemesterRowSidebar
+        :semester="semester"
+        :semesterIndex="semesterIndex"
+      />
 
       <div class="semesterRow__courses">
-        <button
-          v-if="semester.plannedCourses.length == 0"
-          @click="deleteSemester(semesterIndex)"
-        >
-          Löschen
-        </button>
         <div
           class="semesterRow__courses-course"
           :style="{ width: courseWidth(course) }"
@@ -75,11 +72,6 @@ export default {
         fromCourseIndex,
         toCourses,
         toCourseIndex,
-      });
-    },
-    deleteSemester(semesterIndex) {
-      this.$store.dispatch("studyplan/deleteSemester", {
-        semesterIndex,
       });
     },
   },

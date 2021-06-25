@@ -2,6 +2,13 @@
   <div class="sidebar">
     <p class="semesterCount">{{ semester.currentSemesterCount }}. Semester</p>
     <p>{{ ects(semester) }} ECTS</p>
+    <button
+      class="deleteSemester"
+      v-if="semester.plannedCourses.length == 0"
+      @click="deleteSemester(semesterIndex)"
+    >
+      Entfernen
+    </button>
   </div>
 </template>
 
@@ -10,6 +17,10 @@ export default {
   props: {
     semester: {
       type: Object,
+      required: true,
+    },
+    semesterIndex: {
+      type: Number,
       required: true,
     },
   },
@@ -21,6 +32,11 @@ export default {
           ects += semester.plannedCourses[i].ects;
       }
       return ects;
+    },
+    deleteSemester(semesterIndex) {
+      this.$store.dispatch("studyplan/deleteSemester", {
+        semesterIndex,
+      });
     },
   },
 };
@@ -47,5 +63,14 @@ p {
   align-items: center;
   flex-direction: column;
   margin: 14px;
+}
+
+.deleteSemester {
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  text-decoration: underline;
 }
 </style>

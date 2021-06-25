@@ -14,7 +14,7 @@ export default {
     //change to dynamic call
     await this.$store.dispatch(
       "studyplan/fetchStudyPlan",
-      "60d5f62b852562bfb0e3908f"
+      "60d601e6e93ff1c1f48c02ea"
     );
     //change to dynamic user id
   },
