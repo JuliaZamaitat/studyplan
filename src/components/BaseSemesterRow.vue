@@ -11,24 +11,39 @@
         :semesterIndex="semesterIndex"
       />
 
-      <div class="semesterRow__courses">
+      <div class="courses">
         <div
-          class="semesterRow__courses-course"
-          :style="{ width: courseWidth(course) }"
+          class="course"
           v-for="(course, $courseIndex) in semester.plannedCourses"
           :key="$courseIndex"
-          draggable
-          @dragstart="pickupCourse($event, $courseIndex, semesterIndex)"
+          @click="showDetails(course)"
           @drop.stop="moveCourse($event, semester.plannedCourses, $courseIndex)"
+          :style="{ width: courseWidth(course) }"
         >
-          <div class="semesterRow__courses-course-content">
-            <div class="semesterRow__courses-course-content-text">
+          <div
+            class="course-content"
+            draggable
+            @dragstart="pickupCourse($event, $courseIndex, semesterIndex)"
+          >
+            <div class="course-content-text">
               <p>{{ course.code }}</p>
               <p>{{ course.name }}</p>
             </div>
           </div>
         </div>
       </div>
+      <BaseModal
+        v-show="isModalVisible"
+        :course="selectedCourse"
+        @close="closeDetails"
+      >
+        <template v-slot:header>
+          <h1>{{ selectedCourse.code }}</h1>
+          <h2>{{ selectedCourse.name }}</h2>
+        </template>
+        <template v-slot:body> This is a new modal body. </template>
+        <template v-slot:footer> This is a new modal footer. </template>
+      </BaseModal>
     </div>
   </div>
 </template>
@@ -49,7 +64,23 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      isModalVisible: false,
+      selectedCourse: {},
+    };
+  },
+
   methods: {
+    showDetails(course) {
+      this.isModalVisible = true;
+      this.selectedCourse = course;
+      document.documentElement.style.overflow = "hidden";
+    },
+    closeDetails() {
+      this.isModalVisible = false;
+      document.documentElement.style.overflow = "auto";
+    },
     courseWidth(course) {
       const width = course.ects * 25 + (course.ects / 5 - 1) * 25;
       return `${width}px`;
@@ -63,10 +94,10 @@ export default {
     },
     moveCourse(e, toCourses, toCourseIndex) {
       const fromSemesterIndex = e.dataTransfer.getData("from-semester-index");
-
       const fromCourses =
         this.coursesInSemester[fromSemesterIndex].plannedCourses;
       const fromCourseIndex = e.dataTransfer.getData("from-course-index");
+
       this.$store.dispatch("studyplan/moveCourse", {
         fromCourses,
         fromCourseIndex,
@@ -90,18 +121,17 @@ p {
   grid-template-columns: 0.2fr 0.8fr;
   row-gap: 0px;
 
-  &__courses {
+  .courses {
     min-width: 0;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
 
-    &-course {
+    .course {
       padding: 20px 25px 20px 0;
       display: flex;
       align-items: center;
-
       &-content {
         background: rgba(193, 193, 193, 0.55);
         min-height: 87px;
@@ -115,6 +145,7 @@ p {
           max-width: 100%;
           height: 100%;
           overflow: hidden;
+          border-radius: 14px;
 
           p {
             padding: 0px;
@@ -123,6 +154,7 @@ p {
             margin: 0;
             max-width: 95%;
             word-wrap: break-word;
+            border-radius: 14px;
           }
         }
       }
