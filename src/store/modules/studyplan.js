@@ -109,6 +109,7 @@ export const actions = {
     const courseToMove = fromCourses.splice(fromCourseIndex, 1)[0];
     if (!toCourseIndex) {
       toCourses.push(courseToMove);
+      return;
     }
 
     toCourses.splice(toCourseIndex, 0, courseToMove);
