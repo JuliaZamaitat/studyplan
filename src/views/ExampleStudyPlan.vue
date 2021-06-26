@@ -11,8 +11,8 @@
 import { mapState, mapGetters } from "vuex";
 
 export default {
-  created() {
-    this.$store.dispatch("program/fetchProgram", "imi-b/1"); //change to dynamic call
+  async created() {
+    await this.$store.dispatch("program/fetchProgram", "imi-b/1"); //change to dynamic call
   },
   computed: {
     ...mapState("program", ["program"]),

@@ -2,33 +2,21 @@
 
 <template>
   <div class="overlay" @click.self="close">
-    <div class="modal-backdrop">
-      <div class="modal">
-        <header class="modal-header">
-          <slot name="header"> This is the default title! </slot>
-          <button type="button" class="btn-close" @click="close">x</button>
-        </header>
+    <div class="modal">
+      <header class="modal-header">
+        <slot name="header"> This is the default title! </slot>
+        <button type="button" class="btn-close" @click="close">x</button>
+      </header>
 
-        <section class="modal-body">
-          <slot name="body"> This is the default body! </slot>
-        </section>
-
-        <footer class="modal-footer">
-          <slot name="footer"> This is the default footer! </slot>
-        </footer>
-      </div>
+      <section class="modal-body">
+        <slot name="body"> This is the default body! </slot>
+      </section>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  props: {
-    course: {
-      type: Object,
-      required: true,
-    },
-  },
   methods: {
     close() {
       this.$emit("close");
@@ -39,6 +27,7 @@ export default {
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
+
 .overlay {
   position: fixed;
   top: 0;
@@ -49,16 +38,11 @@ $htwGruen: #76b900;
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
-}
-
-.modal-backdrop {
-  position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  backdrop-filter: blur(3px);
 }
 
 .modal {
+  z-index: 500;
   background: #ffffff;
   width: 40vw;
   height: 80vh;
@@ -94,23 +78,17 @@ $htwGruen: #76b900;
   }
 }
 
-.modal-header,
-.modal-footer {
+.modal-header {
   padding: 15px;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  // justify-content: center;
+  // align-items: center;
   flex-direction: column;
 }
 
 .modal-header {
-  position: relative;
+  // position: relative;
   // justify-content: space-between;
-}
-
-.modal-footer {
-  flex-direction: column;
-  // justify-content: flex-end;
 }
 
 .modal-body {
@@ -122,6 +100,7 @@ $htwGruen: #76b900;
   position: absolute;
   top: 0;
   right: 0;
+  margin-right: 5px;
   border: none;
   font-size: 20px;
   padding: 10px;

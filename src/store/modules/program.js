@@ -42,10 +42,12 @@ export const actions = {
     var program = getters.getProgramByCode(code);
     if (program) {
       commit("SET_PROGRAM", program);
+      console.log("not fetching program");
     } else {
       await ProgramService.fetchProgram(code)
         .then((response) => {
           commit("SET_PROGRAM", response.data);
+          console.log("recieved data", response.data.courses);
         })
         .catch((error) => {
           const notification = {
@@ -60,10 +62,14 @@ export const actions = {
 
 export const getters = {
   getProgramByCode: (state) => (code) => {
-    return state.programs.find((program) => program.code === code);
+    //TODO later save all programs in programs and search this array
+    // return state.programs.find((program) => program.code === code);
+    if (!state.program.code) return;
+    if (state.program.code.toLowerCase() + "/1" === code) return state.program;
   },
   courses: (state) => {
     const courses = state.program.courses;
+    console.log("getter", courses);
     if (!courses) return;
     return courses.sort(function (a, b) {
       //sort in ascending order

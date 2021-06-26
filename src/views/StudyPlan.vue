@@ -16,7 +16,12 @@ export default {
       "studyplan/fetchStudyPlan",
       "60d601e6e93ff1c1f48c02ea"
     );
-    //change to dynamic user id
+    await this.$store.dispatch(
+      "studyplan/fetchStudyPlan",
+      "60d601e6e93ff1c1f48c02ea"
+    );
+
+    this.$store.dispatch("course/getCourses");
   },
   computed: {
     ...mapState("program", ["program"]),

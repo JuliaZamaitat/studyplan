@@ -32,23 +32,24 @@
           </div>
         </div>
       </div>
-      <BaseModal
-        v-show="isModalVisible"
-        :course="selectedCourse"
-        @close="closeDetails"
-      >
+      <BaseModal v-show="isModalVisible" @close="closeDetails">
         <template v-slot:header>
-          <h1>{{ selectedCourse.code }}</h1>
-          <h2>{{ selectedCourse.name }}</h2>
+          <h1 class="course-details-code">{{ course.code }}</h1>
+          <!--coming from vuex -->
+          <h2 class="course-details-name">{{ course.name }}</h2>
+          <p class="course-details-ects">{{ course.ects }} ECTS</p>
         </template>
-        <template v-slot:body> This is a new modal body. </template>
-        <template v-slot:footer> This is a new modal footer. </template>
+        <template v-slot:body>
+          <BaseCourseDetails :course="course" />
+        </template>
       </BaseModal>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   props: {
     semester: {
@@ -67,18 +68,26 @@ export default {
   data() {
     return {
       isModalVisible: false,
-      selectedCourse: {},
     };
+  },
+  computed: {
+    ...mapState("course", ["course"]),
   },
 
   methods: {
-    showDetails(course) {
+    async showDetails(course) {
       this.isModalVisible = true;
-      this.selectedCourse = course;
+
+      await this.$store.dispatch(
+        "course/fetchCourse",
+        { program: "imi-b/1", code: course.code } //change to dynamic version
+      );
       document.documentElement.style.overflow = "hidden";
     },
     closeDetails() {
       this.isModalVisible = false;
+      this.$store.dispatch("course/clearCourse");
+
       document.documentElement.style.overflow = "auto";
     },
     courseWidth(course) {
@@ -160,5 +169,23 @@ p {
       }
     }
   }
+}
+
+.course-details-code {
+  margin-bottom: 15px;
+  font-size: 25px;
+  color: $htwGruen;
+}
+
+.course-details-name {
+  margin: 0;
+
+  font-size: 20px;
+  color: $htwGruen;
+}
+
+.course-details-ects {
+  margin-top: 15px;
+  font-size: 18px;
 }
 </style>
