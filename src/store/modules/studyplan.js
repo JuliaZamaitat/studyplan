@@ -45,11 +45,13 @@ export const actions = {
     } else {
       await StudyPlanService.fetchStudyPlan(userId)
         .then((response) => {
+          console.log("fetching");
           commit("SET_STUDYPLAN", response.data);
           if (
             !response.data.semesterPlans ||
             response.data.semesterPlans.length === 0
           ) {
+            console.log("dispatching");
             dispatch("fillEmptyStudyPlanWithOfficalCourses", userId);
           }
         })
@@ -81,6 +83,7 @@ export const actions = {
     { rootGetters, dispatch },
     userId
   ) {
+    let helperArrayForSemesterPlans = [];
     const officialCoursesInSemester =
       rootGetters["program/officialCoursesInSemester"];
     for (let semester in officialCoursesInSemester) {
@@ -97,11 +100,15 @@ export const actions = {
         semester: "",
         plannedCourses: courseCodes,
       };
-
-      state.studyPlan.semesterPlans.push(obj);
+      helperArrayForSemesterPlans.push(obj);
     }
+    state.studyPlan.semesterPlans = assignSemestersToSemesterPlans(
+      rootGetters["semester/getSemesters"],
+      helperArrayForSemesterPlans
+    );
     await dispatch("updateStudyPlan", userId);
   },
+
   async moveCourse(
     { dispatch },
     { fromCourses, fromCourseIndex, toCourses, toCourseIndex }
@@ -115,21 +122,39 @@ export const actions = {
     toCourses.splice(toCourseIndex, 0, courseToMove);
     await dispatch("updateStudyPlan");
   },
-  async addSemester({ state, dispatch }) {
+  async addSemester({ state, dispatch, rootGetters }) {
     let semesterPlans = state.studyPlan.semesterPlans;
+    const semesters = rootGetters["semester/getSemesters"].slice();
+    let semesterToAdd;
+
+    //adding the semester name to semesterPlan
+    for (let i = 0; i < semesters.length; i++) {
+      if (
+        semesters[i].name ===
+        semesterPlans[semesterPlans.length - 1].semester.name
+      ) {
+        semesterToAdd = semesters.splice(i + 1, 1);
+        break;
+      }
+    }
     semesterPlans.push({
       currentSemesterCount:
         semesterPlans[semesterPlans.length - 1].currentSemesterCount + 1,
-      semester: "",
+      semester: semesterToAdd[0],
       plannedCourses: [],
     });
     await dispatch("updateStudyPlan");
   },
   async deleteSemester({ state, dispatch }, { semesterIndex }) {
     let semesterPlans = state.studyPlan.semesterPlans;
-    semesterPlans.splice(semesterIndex, 1);
+    const removed = semesterPlans.splice(semesterIndex, 1);
+    //change semester names
+    var newSemesterName = removed[0].semester.name;
     for (let i = semesterIndex; i < semesterPlans.length; i++) {
       semesterPlans[i].currentSemesterCount -= 1;
+      let oldSemesterName = semesterPlans[i].semester.name;
+      semesterPlans[i].semester.name = newSemesterName;
+      newSemesterName = oldSemesterName;
     }
     await dispatch("updateStudyPlan");
   },
@@ -139,14 +164,23 @@ export const getters = {
   getStudyPlanByUserId: (state) => (userId) => {
     return state.studyPlans.find((studyPlan) => studyPlan.userId === userId);
   },
-  myCourses: (state) => {
-    //TODO
-    const semesterPlans = state.studyPlan.semesterPlans;
-    if (!semesterPlans) return;
-  },
   myCoursesInSemester: () => {
     const studyPlan = state.studyPlan;
     if (!studyPlan) return;
     return studyPlan.semesterPlans;
   },
 };
+
+function assignSemestersToSemesterPlans(semesters, semesterPlans) {
+  const startOfStudy = "SoSe15"; //TODO change to query from user
+  for (let i in semesters) {
+    if (semesters[i].name === startOfStudy) {
+      semesters = semesters.splice(i);
+      break;
+    }
+  }
+  for (let i = 0; i < semesterPlans.length; i++) {
+    semesterPlans[i].semester = semesters[i];
+  }
+  return semesterPlans;
+}

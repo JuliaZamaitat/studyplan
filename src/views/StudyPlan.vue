@@ -12,13 +12,11 @@ export default {
   async created() {
     await this.$store.dispatch("program/fetchProgram", "imi-b/1");
     //change to dynamic call
+    await this.$store.dispatch("semester/fetchSemesters");
+
     await this.$store.dispatch(
       "studyplan/fetchStudyPlan",
-      "60d601e6e93ff1c1f48c02ea"
-    );
-    await this.$store.dispatch(
-      "studyplan/fetchStudyPlan",
-      "60d601e6e93ff1c1f48c02ea"
+      "60d88f4ad9657106208a33e3"
     );
 
     this.$store.dispatch("course/getCourses");

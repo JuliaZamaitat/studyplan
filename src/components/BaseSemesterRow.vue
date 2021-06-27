@@ -9,6 +9,7 @@
       <BaseSemesterRowSidebar
         :semester="semester"
         :semesterIndex="semesterIndex"
+        :semesterName="semester.semester.name"
       />
 
       <div class="courses">

@@ -1,7 +1,9 @@
 <template>
   <div class="sidebar">
+    <p class="semesterName">{{ semesterName }}</p>
     <p class="semesterCount">{{ semester.currentSemesterCount }}. Semester</p>
-    <p>{{ ects(semester) }} ECTS</p>
+    <p class="semesterECTS">{{ ects(semester) }} ECTS</p>
+
     <button
       class="deleteSemester"
       v-if="semester.plannedCourses.length == 0"
@@ -21,6 +23,10 @@ export default {
     },
     semesterIndex: {
       type: Number,
+      required: true,
+    },
+    semesterName: {
+      type: String,
       required: true,
     },
   },
@@ -50,6 +56,15 @@ $htwGruen: #76b900;
   padding: 10px;
   font-weight: bold;
   color: $htwGruen;
+}
+
+.semesterName {
+  font-size: 15px;
+  color: $htwGruen;
+}
+
+.semesterECTS {
+  font-size: 12px;
 }
 p {
   margin: 0;

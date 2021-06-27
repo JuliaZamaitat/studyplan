@@ -98,8 +98,8 @@
     </div>
 
     <div v-if="course.updated_at">
-      <h3>Zulettzt gepudated</h3>
-      <p>{{ course.updated_at }}</p>
+      <h4>Zulettzt geupdated</h4>
+      <p>{{ new Date(course.updated_at).toLocaleDateString("de-DE") }}</p>
     </div>
   </div>
 </template>
@@ -116,7 +116,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+$htwGruen: #76b900;
 h3 {
   font-size: 18px;
+}
+
+h4 {
+  color: $htwGruen;
 }
 </style>

@@ -10,11 +10,13 @@ const mongoose = require("mongoose"),
       semesterPlans: [
         {
           semester: {
-            //maybe change later two its own schema
-            type: String,
+            type: Schema.Types.ObjectId,
+            ref: "Semester",
+            required: true,
           },
           currentSemesterCount: {
             type: Number,
+            required: true,
           },
           plannedCourses: [{ code: String, name: String, ects: Number }],
         },

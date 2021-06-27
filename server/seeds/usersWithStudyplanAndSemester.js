@@ -1,6 +1,7 @@
-const User = require("../model/user");
-const StudyPlan = require("../model/studyPlan");
-const mongoose = require("mongoose");
+const User = require("../model/user"),
+  StudyPlan = require("../model/studyPlan"),
+  Semester = require("../model/semester"),
+  mongoose = require("mongoose");
 
 //connect mongoose
 const mongo = process.env.MONGODB_URI || "mongodb://localhost:27017/studyplan";
@@ -14,24 +15,30 @@ mongoose
     console.log("connected to db in development environment");
   });
 
-//save your data. this is an async operation
-//after you make sure you seeded all the products, disconnect automatically
-// users.map(async (p, index) => {
-//   // eslint-disable-next-line no-unused-vars
-//   await p.save((err, result) => {
-//     if (index === users.length - 1) {
-//       console.log("DONE!");
-//       mongoose.disconnect();
-//     }
-//   });
-// });
+async function loadUsersAndStudyPlansWithSemester() {
+  await Semester.deleteMany({});
+  await StudyPlan.deleteMany({});
+  await User.deleteMany({});
 
-async function loadUsersAndStudyPlans() {
+  let semesterData = [];
+  let i = 10;
+  for (i; i < 70; i++) {
+    semesterData.push({ name: `SoSe${i}` });
+    semesterData.push({ name: `WiSe${i}/${i + 1}` });
+  }
+  for (let semester in semesterData) {
+    await Semester.create(semesterData[semester]);
+  }
+
+  const sose18 = await Semester.findOne({ name: "SoSe18" });
+  console.log(sose18);
+
   const userData = [
     new User({
       name: "test",
       email: "test@mail.de",
       matriculationNumber: "123456",
+      startOfStudy: sose18._id,
     }),
   ];
 
@@ -52,11 +59,9 @@ async function loadUsersAndStudyPlans() {
       ],
     }),
   ];
-  await StudyPlan.deleteMany({});
-  await User.deleteMany({});
+
   const studyPlans = await StudyPlan.create(studyPlanData);
   const users = await User.create(userData);
-
   for (let user in users) {
     users[user].studyPlan = studyPlans[0];
     await users[user].save();
@@ -72,7 +77,7 @@ async function loadUsersAndStudyPlans() {
   return ".";
 }
 
-loadUsersAndStudyPlans().then(() => {
+loadUsersAndStudyPlansWithSemester().then(() => {
   mongoose.disconnect();
   console.log("database connection closed after seeding.");
 });

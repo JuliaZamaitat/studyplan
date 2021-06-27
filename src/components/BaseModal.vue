@@ -81,18 +81,12 @@ $htwGruen: #76b900;
 .modal-header {
   padding: 15px;
   display: flex;
-  // justify-content: center;
-  // align-items: center;
+  position: relative;
+
   flex-direction: column;
 }
 
-.modal-header {
-  // position: relative;
-  // justify-content: space-between;
-}
-
 .modal-body {
-  // position: relative;
   padding: 20px 10px;
 }
 

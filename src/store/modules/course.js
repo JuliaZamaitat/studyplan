@@ -23,7 +23,6 @@ export const mutations = {
 export const actions = {
   getCourses({ commit, rootGetters }) {
     const courses = rootGetters["program/courses"];
-    console.log("getCourses", courses);
     if (!courses) return;
     commit("SET_COURSES_TOTAL", courses.length);
     commit("SET_COURSES", courses);
@@ -31,7 +30,6 @@ export const actions = {
   async fetchCourse({ commit, getters }, { program, code }) {
     var course = getters.getCourseByCode(code);
     if (course) {
-      console.log("not fetching course");
       commit("SET_COURSE", course);
     } else {
       await CourseService.fetchCourse(program, code)
@@ -59,8 +57,6 @@ export const actions = {
 
 export const getters = {
   getCourseByCode: (state) => (code) => {
-    const x = state.courses.find((course) => course.code === code);
-    console.log("gefunden?", x);
-    return x;
+    return state.courses.find((course) => course.code === code);
   },
 };

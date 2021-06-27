@@ -47,7 +47,6 @@ export const actions = {
       await ProgramService.fetchProgram(code)
         .then((response) => {
           commit("SET_PROGRAM", response.data);
-          console.log("recieved data", response.data.courses);
         })
         .catch((error) => {
           const notification = {
@@ -69,7 +68,6 @@ export const getters = {
   },
   courses: (state) => {
     const courses = state.program.courses;
-    console.log("getter", courses);
     if (!courses) return;
     return courses.sort(function (a, b) {
       //sort in ascending order
