@@ -1,22 +1,56 @@
 <!--source https://www.digitalocean.com/community/tutorials/vuejs-vue-modal-component -->
 
 <template>
-  <div class="overlay" @click.self="close">
+  <div class="overlay" @click.self="$router.push('/my-studyplan')">
     <div class="modal">
       <header class="modal-header">
-        <slot name="header"> This is the default title! </slot>
-        <button type="button" class="btn-close" @click="close">x</button>
+        <button
+          type="button"
+          class="btn-close"
+          @click="$router.push('/my-studyplan')"
+        >
+          x
+        </button>
       </header>
 
       <section class="modal-body">
-        <slot name="body"> This is the default body! </slot>
+        <BaseCourseDetails :course="course" :semester="semester" />
       </section>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState, mapGetters } from "vuex";
+
 export default {
+  data() {
+    return {
+      semester: {
+        type: Object,
+      },
+    };
+  },
+  async created() {
+    document.documentElement.style.overflow = "hidden";
+    this.semester = this.getSemesterByName(this.$route.params.semester);
+    await this.$store.dispatch(
+      "course/fetchCourse",
+      {
+        program: "imi-b/1",
+        code: this.$route.params.code,
+        semester: this.semester.name,
+      } //change to dynamic version
+    );
+  },
+  destroyed() {
+    this.$store.dispatch("course/clearCourse");
+    document.documentElement.style.overflow = "auto";
+  },
+  computed: {
+    ...mapState("course", ["course"]),
+    ...mapGetters("semester", ["getSemesterByName"]),
+  },
   methods: {
     close() {
       this.$emit("close");
@@ -37,8 +71,8 @@ $htwGruen: #76b900;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(3px);
+  background-color: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(2px);
 }
 
 .modal {
@@ -46,7 +80,7 @@ $htwGruen: #76b900;
   background: #ffffff;
   width: 40vw;
   height: 80vh;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  // box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border: 4px solid #76b900;
   border-radius: 12px;
   overflow-x: auto;

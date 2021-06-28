@@ -15,10 +15,6 @@ function getParams(params) {
 }
 
 module.exports = {
-  // login: (req, res) =>
-  // {
-
-  // }
   programs: (req, res) => {
     return axios
       .get(url + "/programs.json")
@@ -67,7 +63,10 @@ module.exports = {
       .then((course) => {
         res.json(course.data);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        res.sendStatus(e.response.status);
+        console.log(e);
+      });
   },
   courseProgramWithCourseAndSemester: (req, res) => {
     const data = getParams(req.params);

@@ -42,7 +42,9 @@ export const actions = {
 
 export const getters = {
   getSemesterByName: (state) => (name) => {
-    return state.semesters.find((semester) => semester.name === name);
+    return state.semesters.find(
+      (semester) => semester.name.toLowerCase() === name.toLowerCase()
+    );
   },
   getSemesters: (state) => {
     return state.semesters;

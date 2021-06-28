@@ -27,17 +27,21 @@ export const actions = {
     commit("SET_COURSES_TOTAL", courses.length);
     commit("SET_COURSES", courses);
   },
-  async fetchCourse({ commit, getters }, { program, code }) {
-    var course = getters.getCourseByCode(code);
-    if (course) {
-      commit("SET_COURSE", course);
-    } else {
-      await CourseService.fetchCourse(program, code)
-        .then((response) => {
-          commit("SET_COURSE", response.data);
-          console.log(state.course);
-        })
-        .catch((error) => {
+  async fetchCourse({ commit, getters }, { program, code, semester }) {
+    //ask for the semester route -> if there is a 404, so no semester info is there yet,
+    // check the basic vuex course state
+    await CourseService.fetchCourse(program, code, semester)
+      .then((response) => {
+        commit("SET_COURSE", response.data);
+      })
+      .catch((error) => {
+        if (error.response.status == 404) {
+          //there is no semester information yet
+          var course = getters.getCourseByCode(code); //take the basic stored course
+          if (course) {
+            commit("SET_COURSE", course);
+          }
+        } else {
           const notification = {
             type: "error",
             message:
@@ -46,9 +50,10 @@ export const actions = {
               ": " +
               error.message,
           };
+
           console.log(notification);
-        });
-    }
+        }
+      });
   },
   clearCourse({ commit }) {
     commit("SET_COURSE", {});

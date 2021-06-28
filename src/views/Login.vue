@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import AuthService from "@/services/AuthService.js";
 export default {
   data() {
     return {
@@ -34,20 +33,20 @@ export default {
     };
   },
   methods: {
-    async login() {
-      try {
-        let credentials = {
-          email: this.email,
-          password: this.password,
-        };
-        const response = await AuthService.login(credentials);
-        const token = response.data.token;
-        this.$store.dispatch("login", { token });
-        this.$router.push("/");
-      } catch (error) {
-        console.log(error);
-      }
-    },
+    //   async login() {
+    //     try {
+    //       let credentials = {
+    //         email: this.email,
+    //         password: this.password,
+    //       };
+    //       const response = await AuthService.login(credentials);
+    //       const token = response.data.token;
+    //       this.$store.dispatch("login", { token });
+    //       this.$router.push("/");
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    //   },
   },
 };
 </script>

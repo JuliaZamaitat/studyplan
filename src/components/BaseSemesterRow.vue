@@ -9,7 +9,7 @@
       <BaseSemesterRowSidebar
         :semester="semester"
         :semesterIndex="semesterIndex"
-        :semesterName="semester.semester.name"
+        :semesterName="semesterName"
       />
 
       <div class="courses">
@@ -17,33 +17,32 @@
           class="course"
           v-for="(course, $courseIndex) in semester.plannedCourses"
           :key="$courseIndex"
-          @click="showDetails(course)"
           @drop.stop="moveCourse($event, semester.plannedCourses, $courseIndex)"
           :style="{ width: courseWidth(course) }"
         >
-          <div
-            class="course-content"
-            draggable
-            @dragstart="pickupCourse($event, $courseIndex, semesterIndex)"
+          <router-link
+            class="course-content-container"
+            :to="{
+              name: 'baseModal',
+              params: { code: course.code, semester: semesterName.name },
+            }"
           >
-            <div class="course-content-text">
-              <p>{{ course.code }}</p>
-              <p>{{ course.name }}</p>
+            <div
+              class="course-content-container-content"
+              draggable
+              @dragstart="pickupCourse($event, $courseIndex, semesterIndex)"
+            >
+              <div class="course-content-container-content-text">
+                <p class="course-content-container-content-text--code">
+                  {{ course.code }}
+                </p>
+                <p>{{ course.name }}</p>
+              </div>
             </div>
-          </div>
+          </router-link>
         </div>
       </div>
-      <BaseModal v-show="isModalVisible" @close="closeDetails">
-        <template v-slot:header>
-          <h1 class="course-details-code">{{ course.code }}</h1>
-          <!--coming from vuex -->
-          <h2 class="course-details-name">{{ course.name }}</h2>
-          <p class="course-details-ects">{{ course.ects }} ECTS</p>
-        </template>
-        <template v-slot:body>
-          <BaseCourseDetails :course="course" />
-        </template>
-      </BaseModal>
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -61,36 +60,20 @@ export default {
       type: Number,
       required: true,
     },
+    semesterName: {
+      type: Object,
+      required: true,
+    },
     coursesInSemester: {
       type: Array,
       required: true,
     },
-  },
-  data() {
-    return {
-      isModalVisible: false,
-    };
   },
   computed: {
     ...mapState("course", ["course"]),
   },
 
   methods: {
-    async showDetails(course) {
-      this.isModalVisible = true;
-
-      await this.$store.dispatch(
-        "course/fetchCourse",
-        { program: "imi-b/1", code: course.code } //change to dynamic version
-      );
-      document.documentElement.style.overflow = "hidden";
-    },
-    closeDetails() {
-      this.isModalVisible = false;
-      this.$store.dispatch("course/clearCourse");
-
-      document.documentElement.style.overflow = "auto";
-    },
     courseWidth(course) {
       const width = course.ects * 25 + (course.ects / 5 - 1) * 25;
       return `${width}px`;
@@ -121,6 +104,10 @@ export default {
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
+a {
+  text-decoration: none;
+  color: inherit;
+}
 
 p {
   font-weight: 700;
@@ -142,51 +129,44 @@ p {
       padding: 20px 25px 20px 0;
       display: flex;
       align-items: center;
-      &-content {
+
+      &-content-container {
+        position: relative;
         background: rgba(193, 193, 193, 0.55);
         min-height: 87px;
         border-radius: 14px;
+        width: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
-        margin: 0 auto;
-        width: 100%;
-        &-text {
-          max-width: 100%;
-          height: 100%;
-          overflow: hidden;
-          border-radius: 14px;
 
-          p {
-            padding: 0px;
-            font-size: 12px;
-            padding: 3px;
-            margin: 0;
-            max-width: 95%;
-            word-wrap: break-word;
+        &-content {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin: 0 auto;
+          width: 100%;
+          min-height: 87px;
+
+          &-text {
+            max-width: 100%;
+            height: 100%;
+            overflow: hidden;
             border-radius: 14px;
+
+            p {
+              padding: 0px;
+              font-size: 12px;
+              padding: 3px;
+              margin: 0;
+              max-width: 95%;
+              word-wrap: break-word;
+              border-radius: 14px;
+            }
           }
         }
       }
     }
   }
-}
-
-.course-details-code {
-  margin-bottom: 15px;
-  font-size: 25px;
-  color: $htwGruen;
-}
-
-.course-details-name {
-  margin: 0;
-
-  font-size: 20px;
-  color: $htwGruen;
-}
-
-.course-details-ects {
-  margin-top: 15px;
-  font-size: 18px;
 }
 </style>

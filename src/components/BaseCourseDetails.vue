@@ -1,8 +1,41 @@
 <template>
   <div>
+    <h1 class="course-details-code">{{ course.code }}</h1>
+    <h2 class="course-details-name">{{ course.name }}</h2>
+    <h2 class="course-details-semestername">{{ semester.name }}</h2>
+
+    <p class="course-details-ects">{{ course.ects }} ECTS</p>
+
     <div>
       <h3>Empfohlenes Semester</h3>
       <p>{{ course.semester }}</p>
+    </div>
+
+    <div
+      v-if="
+        course.course_connections &&
+        course.course_connections.child_courses.length > 0
+      "
+    >
+      <h3>Muss belegt werden durch einer dieser Kurse</h3>
+      <p class="hint">
+        (Kurse mit -Kurscode-.1, -Kurscode-.2 müssen zusammen belegt werden, um
+        -Kurscode- zu bestehen)
+      </p>
+      <div class="childCourses">
+        <div
+          class="childCourses-course"
+          v-for="childCourse in course.course_connections.child_courses"
+          :key="childCourse.id"
+        >
+          <div class="childCourses-course-content-text">
+            <p class="childCourses-course-content-text--code">
+              {{ childCourse.code }}
+            </p>
+            <p>{{ childCourse.name }}</p>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div>
@@ -111,17 +144,97 @@ export default {
       type: Object,
       required: true,
     },
+    semester: {
+      type: Object,
+      required: true,
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
+
+.course-details-code {
+  margin-bottom: 15px;
+  font-size: 25px;
+  color: $htwGruen;
+}
+
+.course-details-name {
+  margin: 0;
+
+  font-size: 25px;
+  color: $htwGruen;
+}
+
+.course-details-semestername {
+  font-size: 20px;
+  color: $htwGruen;
+}
+
+.course-details-ects {
+  margin-top: 15px;
+  font-size: 16px;
+}
 h3 {
   font-size: 18px;
 }
 
 h4 {
   color: $htwGruen;
+}
+
+.hint {
+  font-size: 12px;
+  font-style: italic;
+}
+
+.childCourses {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+
+  &-course {
+    background: rgba(193, 193, 193, 0.55);
+    border: 1px solid #c1c1c1;
+
+    min-height: 87px;
+    width: 10vw;
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 9px;
+    &-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+      width: 100%;
+      &-text {
+        max-width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 14px;
+
+        &--code {
+          font-weight: 700;
+        }
+
+        p {
+          padding: 0px;
+          font-size: 12px;
+          padding: 3px;
+          margin: 0;
+          max-width: 95%;
+          word-wrap: break-word;
+          border-radius: 14px;
+        }
+      }
+    }
+  }
 }
 </style>

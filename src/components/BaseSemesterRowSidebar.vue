@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar">
-    <p class="semesterName">{{ semesterName }}</p>
+    <p class="semesterName">{{ semesterName.name }}</p>
     <p class="semesterCount">{{ semester.currentSemesterCount }}. Semester</p>
     <p class="semesterECTS">{{ ects(semester) }} ECTS</p>
 
@@ -26,7 +26,7 @@ export default {
       required: true,
     },
     semesterName: {
-      type: String,
+      type: Object,
       required: true,
     },
   },

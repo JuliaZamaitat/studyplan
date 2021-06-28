@@ -9,6 +9,7 @@
           :semester="semester"
           :semesterIndex="$semesterIndex"
           :coursesInSemester="coursesInSemester"
+          :semesterName="semester.semester"
         />
       </div>
     </div>
