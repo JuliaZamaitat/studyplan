@@ -13,10 +13,11 @@ import {
   faPlusCircle,
   faArrowLeft,
   faUser,
+  faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faPlusCircle, faArrowLeft, faUser);
+library.add(faPlusCircle, faArrowLeft, faUser, faBars);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 //registering BaseComponents globall
