@@ -5,11 +5,15 @@
     <div class="modal">
       <header class="modal-header">
         <button
+          v-if="!isChildCourse"
           type="button"
           class="btn-close"
           @click="$router.push('/my-studyplan')"
         >
           x
+        </button>
+        <button v-else type="button" class="btn-back" @click="$router.go(-1)">
+          <font-awesome-icon :icon="['fas', 'arrow-left']" size="1x" />
         </button>
       </header>
 
@@ -24,6 +28,13 @@
 import { mapState, mapGetters } from "vuex";
 
 export default {
+  props: {
+    isChildCourse: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+  },
   data() {
     return {
       semester: {
@@ -43,8 +54,8 @@ export default {
       } //change to dynamic version
     );
   },
-  destroyed() {
-    this.$store.dispatch("course/clearCourse");
+  async destroyed() {
+    await this.$store.dispatch("course/clearCourse");
     document.documentElement.style.overflow = "auto";
   },
   computed: {
@@ -134,6 +145,20 @@ $htwGruen: #76b900;
   padding: 10px;
   cursor: pointer;
   font-weight: bold;
+  color: $htwGruen;
+  background: transparent;
+}
+
+.btn-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-left: 30px;
+  margin-top: 30px;
+  border: none;
+  font-size: 30px;
+  padding: 10px;
+  cursor: pointer;
   color: $htwGruen;
   background: transparent;
 }

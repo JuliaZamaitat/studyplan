@@ -23,7 +23,7 @@
           <router-link
             class="course-content-container"
             :to="{
-              name: 'baseModal',
+              name: 'baseModalParentCourse',
               params: { code: course.code, semester: semesterName.name },
             }"
           >

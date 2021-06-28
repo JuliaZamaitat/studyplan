@@ -3,7 +3,8 @@ import VueRouter from "vue-router";
 import ExampleStudyPlan from "../views/ExampleStudyPlan.vue";
 import Login from "../views/Login.vue";
 import StudyPlan from "../views/StudyPlan.vue";
-import BaseModal from "../components/BaseModal.vue";
+import BaseModalChildCourse from "../components/BaseModalChildCourse.vue";
+import BaseModalParentCourse from "../components/BaseModalParentCourse.vue";
 
 Vue.use(VueRouter);
 
@@ -20,8 +21,13 @@ const routes = [
     children: [
       {
         path: ":code/:semester",
-        component: BaseModal,
-        name: "baseModal",
+        component: BaseModalParentCourse,
+        name: "baseModalParentCourse",
+      },
+      {
+        path: ":parentCode/:code/:semester",
+        component: BaseModalChildCourse,
+        name: "baseModalChildCourse",
       },
     ],
   },

@@ -28,12 +28,24 @@
           v-for="childCourse in course.course_connections.child_courses"
           :key="childCourse.id"
         >
-          <div class="childCourses-course-content-text">
-            <p class="childCourses-course-content-text--code">
-              {{ childCourse.code }}
-            </p>
-            <p>{{ childCourse.name }}</p>
-          </div>
+          <router-link
+            class="course-content-container"
+            :to="{
+              name: 'baseModalChildCourse',
+              params: {
+                parentCode: course.code,
+                code: childCourse.code,
+                semester: semester.name,
+              },
+            }"
+          >
+            <div class="childCourses-course-content-text">
+              <p class="childCourses-course-content-text--code">
+                {{ childCourse.code }}
+              </p>
+              <p>{{ childCourse.name }}</p>
+            </div>
+          </router-link>
         </div>
       </div>
     </div>
@@ -134,6 +146,8 @@
       <h4>Zulettzt geupdated</h4>
       <p>{{ new Date(course.updated_at).toLocaleDateString("de-DE") }}</p>
     </div>
+
+    <router-view></router-view>
   </div>
 </template>
 
@@ -154,6 +168,11 @@ export default {
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
 
 .course-details-code {
   margin-bottom: 15px;

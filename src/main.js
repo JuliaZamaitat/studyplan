@@ -9,10 +9,10 @@ import upperFirst from "lodash/upperFirst";
 import camelCase from "lodash/camelCase";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faPlusCircle, faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faPlusCircle);
+library.add(faPlusCircle, faArrowLeft);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 //registering BaseComponents globall
