@@ -3,6 +3,8 @@ import VueRouter from "vue-router";
 import ExampleStudyPlan from "../views/ExampleStudyPlan.vue";
 import Login from "../views/Login.vue";
 import StudyPlan from "../views/StudyPlan.vue";
+import Help from "../views/Help.vue";
+import Profile from "../views/Profile.vue";
 import BaseModalChildCourse from "../components/BaseModalChildCourse.vue";
 import BaseModalParentCourse from "../components/BaseModalParentCourse.vue";
 
@@ -35,6 +37,16 @@ const routes = [
     path: "/example-studyplan",
     name: "ExampleStudyPlan",
     component: ExampleStudyPlan,
+  },
+  {
+    path: "/hilfe",
+    name: "Help",
+    component: Help,
+  },
+  {
+    path: "/profile",
+    name: "Profile",
+    component: Profile,
   },
 ];
 

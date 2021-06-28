@@ -1,11 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/my-studyplan">Mein StudyPlan</router-link>
-      |
-      <router-link to="/example-studyplan"
-        >Exemplarischer Studienplan</router-link
-      >
+      <BaseNavigation />
     </div>
     <router-view />
   </div>
@@ -24,7 +20,9 @@ body {
 }
 
 #nav {
-  padding: 30px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
 }
 
 #nav a {
