@@ -1,22 +1,17 @@
 <template>
   <div>
-    <h1 class="course-details-code">{{ course.code }}</h1>
-    <h2 class="course-details-name">{{ course.name }}</h2>
+    <h1 class="course-details-code">{{ course.course.code }}</h1>
+    <h2 class="course-details-name">{{ course.course.name }}</h2>
     <h2 class="course-details-semestername">{{ semester.name }}</h2>
 
-    <p class="course-details-ects">{{ course.ects }} ECTS</p>
+    <p class="course-details-ects">{{ course.course.ects }} ECTS</p>
 
     <div>
       <h3>Empfohlenes Semester</h3>
-      <p>{{ course.semester }}</p>
+      <p>{{ course.course_program.semester }}</p>
     </div>
 
-    <div
-      v-if="
-        course.course_connections &&
-        course.course_connections.child_courses.length > 0
-      "
-    >
+    <div v-if="course.child_courses && course.child_courses.length > 0">
       <h3>Muss belegt werden durch einer dieser Kurse</h3>
       <p class="hint">
         (Kurse mit -Kurscode-.1, -Kurscode-.2 müssen zusammen belegt werden, um
@@ -25,7 +20,7 @@
       <div class="childCourses">
         <div
           class="childCourses-course"
-          v-for="childCourse in course.course_connections.child_courses"
+          v-for="childCourse in course.child_courses"
           :key="childCourse.id"
         >
           <router-link
@@ -33,7 +28,7 @@
             :to="{
               name: 'baseModalChildCourse',
               params: {
-                parentCode: course.code,
+                parentCode: course.course.code,
                 code: childCourse.code,
                 semester: semester.name,
               },
@@ -52,99 +47,101 @@
 
     <div>
       <h3>Unterrichtsform</h3>
-      <p>{{ course.methods }}</p>
+      <p>{{ course.course.methods }}</p>
     </div>
 
-    <div v-if="course.responsible_person">
+    <div v-if="course.course.cresponsible_person">
       <h3>Zuständige Person</h3>
-      <p>{{ course.responsible_person }}</p>
+      <p>{{ course.course.responsible_person }}</p>
     </div>
 
     <div>
       <h3>Häufigkeit</h3>
-      <p v-if="course.frequency == 'WiSe'">im Wintersemester</p>
-      <p v-if="course.frequency == 'SoSe'">im Sommersemester</p>
+      <p v-if="course.course.frequency == 'WiSe'">im Wintersemester</p>
+      <p v-if="course.course.frequency == 'SoSe'">im Sommersemester</p>
       <p else>jedes Semester</p>
     </div>
 
-    <div v-if="course.lectureHrs">
+    <div v-if="course.course.lectureHrs">
       <h3>Vorlesungsstunden pro Woche</h3>
-      <p>{{ course.lectureHrs }}</p>
+      <p>{{ course.course.lectureHrs }}</p>
     </div>
 
-    <div v-if="course.labHrs">
+    <div v-if="course.course.labHrs">
       <h3>Übungsstunden pro Woche</h3>
-      <p>{{ course.labHrs }}</p>
+      <p>{{ course.course.labHrs }}</p>
     </div>
 
-    <div v-if="course.tutorialhrs">
+    <div v-if="course.course.tutorialhrs">
       <h3>Tutorienstunden pro Woche</h3>
-      <p>{{ course.tutorialhrs }}</p>
+      <p>{{ course.course.tutorialhrs }}</p>
     </div>
 
-    <div v-if="course.room">
+    <div v-if="course.course.room">
       <h3>Raum</h3>
-      <p>{{ course.room }}</p>
+      <p>{{ course.course.room }}</p>
     </div>
 
-    <div v-if="course.equipment">
+    <div v-if="course.course.equipment">
       <h3>Benötigte Ausstattung</h3>
-      <p>{{ course.equipment }}</p>
+      <p>{{ course.course.equipment }}</p>
     </div>
 
-    <div v-if="course.contents">
+    <div v-if="course.course.contents">
       <h3>Inhalte</h3>
-      <p>{{ course.contents }}</p>
+      <p>{{ course.course.contents }}</p>
     </div>
 
-    <div v-if="course.mission">
+    <div v-if="course.course.mission">
       <h3>Gewünschte Ergebnisse</h3>
-      <p>{{ course.mission }}</p>
+      <p>{{ course.course.mission }}</p>
     </div>
 
-    <div v-if="course.examination">
+    <div v-if="course.course.examination">
       <h3>Prüfungsform</h3>
-      <p>{{ course.examination }}</p>
+      <p>{{ course.course.examination }}</p>
     </div>
 
-    <div v-if="course.objective">
+    <div v-if="course.course.objective">
       <h3>Zielsetzung</h3>
-      <p>{{ course.objective }}</p>
+      <p>{{ course.course.objective }}</p>
     </div>
 
-    <div v-if="course.prerequisites">
+    <div v-if="course.course.prerequisites">
       <h3>Voraussetzungen</h3>
-      <p>{{ course.prerequisites }}</p>
+      <p>{{ course.course.prerequisites }}</p>
     </div>
 
-    <div v-if="course.literature">
+    <div v-if="course.course.literature">
       <h3>Literatur</h3>
-      <p>{{ course.literature }}</p>
+      <p>{{ course.course.literature }}</p>
     </div>
 
-    <div v-if="course.skills_knowledge_understanding">
+    <div v-if="course.course.skills_knowledge_understanding">
       <h3>Fähigkeiten – Wissen</h3>
-      <p>{{ course.skills_knowledge_understanding }}</p>
+      <p>{{ course.course.skills_knowledge_understanding }}</p>
     </div>
 
-    <div v-if="course.skills_intellectual">
+    <div v-if="course.course.skills_intellectual">
       <h3>Fähigkeiten – Intellektuell</h3>
-      <p>{{ course.skills_intellectual }}</p>
+      <p>{{ course.course.skills_intellectual }}</p>
     </div>
 
-    <div v-if="course.skills_practical">
+    <div v-if="course.course.skills_practical">
       <h3>Fähigkeiten – Praktisch</h3>
-      <p>{{ course.skills_practical }}</p>
+      <p>{{ course.course.skills_practical }}</p>
     </div>
 
-    <div v-if="course.skills_general">
+    <div v-if="course.course.skills_general">
       <h3>Fähigkeiten – Allgemein</h3>
-      <p>{{ course.skills_general }}</p>
+      <p>{{ course.course.skills_general }}</p>
     </div>
 
-    <div v-if="course.updated_at">
+    <div v-if="course.course.updated_at">
       <h4>Zulettzt geupdated</h4>
-      <p>{{ new Date(course.updated_at).toLocaleDateString("de-DE") }}</p>
+      <p>
+        {{ new Date(course.course.updated_at).toLocaleDateString("de-DE") }}
+      </p>
     </div>
 
     <router-view></router-view>

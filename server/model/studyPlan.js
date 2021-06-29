@@ -18,15 +18,17 @@ const mongoose = require("mongoose"),
             type: Number,
             required: true,
           },
-          plannedCourses: [{ code: String, name: String, ects: Number }],
-        },
-      ],
-      courses: [
-        {
-          course: [String],
-          booked: Boolean,
-          passed: Boolean,
-          //belongsTo: String   für Kurs-Verknüpfung?
+          plannedCourses: [
+            {
+              code: String,
+              name: String,
+              ects: Number,
+              booked: Boolean,
+              bookedThrough: [String],
+              passed: Boolean,
+              passedThrough: [String],
+            },
+          ],
         },
       ],
     },

@@ -16,7 +16,7 @@ export default {
 
     await this.$store.dispatch(
       "studyplan/fetchStudyPlan",
-      "60d8a901fb37c10ce2057d09"
+      "60db12a572b2f44c8184413d"
     );
 
     this.$store.dispatch("course/getCourses");

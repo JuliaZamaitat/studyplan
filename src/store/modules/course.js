@@ -17,6 +17,7 @@ export const mutations = {
   },
   SET_COURSE(state, course) {
     state.course = course;
+    console.log(state.course);
   },
 };
 

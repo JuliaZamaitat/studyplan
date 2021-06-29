@@ -50,13 +50,6 @@ async function loadUsersAndStudyPlansWithSemester() {
         version: "1",
       },
       semesterPlans: [],
-      courses: [
-        {
-          course: "B1",
-          booked: false,
-          passed: false,
-        },
-      ],
     }),
   ];
 
