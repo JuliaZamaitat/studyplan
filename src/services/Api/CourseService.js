@@ -6,8 +6,7 @@ export default {
     return Api().get(program);
   },
   fetchCourse(program, code, semester) {
-    return Api().get(
-      `${program}/${code.toLowerCase()}/semester/${semester.toLowerCase()}`
-    );
+    code = code.replace(/\./g, "-").toLowerCase();
+    return Api().get(`${program}/${code}/semester/${semester.toLowerCase()}`);
   },
 };

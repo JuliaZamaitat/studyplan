@@ -18,7 +18,13 @@
       </header>
 
       <section class="modal-body">
-        <BaseCourseDetails :course="course" :semester="semester" />
+        <BaseCourseDetails
+          v-if="!fetching"
+          :course="course"
+          :semester="semester"
+          :isChildCourse="isChildCourse"
+          :parentCourseCode="parentCourseCode"
+        />
       </section>
     </div>
   </div>
@@ -40,11 +46,16 @@ export default {
       semester: {
         type: Object,
       },
+      parentCourseCode: null,
+      fetching: true,
     };
   },
   async created() {
     document.documentElement.style.overflow = "hidden";
     this.semester = this.getSemesterByName(this.$route.params.semester);
+    if (this.$route.params.parentCode) {
+      this.parentCourseCode = this.$route.params.parentCode;
+    }
     await this.$store.dispatch(
       "course/fetchCourse",
       {
@@ -53,6 +64,7 @@ export default {
         semester: this.semester.name,
       } //change to dynamic version
     );
+    this.fetching = false; //move to store maybe (state.pending)
   },
   async destroyed() {
     await this.$store.dispatch("course/clearCourse");

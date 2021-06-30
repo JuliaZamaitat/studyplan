@@ -1,7 +1,7 @@
 <template>
   <div>
     <BaseHeading><h1>Mein StudyPlan</h1></BaseHeading>
-    <BaseStudyPlan :coursesInSemester="myCoursesInSemester" />
+    <BaseStudyPlan :coursesInSemester="getSemesterPlans" />
   </div>
 </template>
 
@@ -16,7 +16,7 @@ export default {
 
     await this.$store.dispatch(
       "studyplan/fetchStudyPlan",
-      "60db12a572b2f44c8184413d"
+      "60dcb7e038074a6e43bb4e11"
     );
 
     this.$store.dispatch("course/getCourses");
@@ -25,7 +25,7 @@ export default {
     ...mapState("program", ["program"]),
     ...mapState("studyplan", ["studyPlan"]),
 
-    ...mapGetters("studyplan", ["myCoursesInSemester"]),
+    ...mapGetters("studyplan", ["getSemesterPlans"]),
   },
 };
 </script>

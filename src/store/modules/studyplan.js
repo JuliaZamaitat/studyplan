@@ -79,6 +79,7 @@ export const actions = {
         console.log(notification);
       });
   },
+
   async fillEmptyStudyPlanWithOfficalCourses(
     { rootGetters, dispatch },
     userId
@@ -113,15 +114,17 @@ export const actions = {
     { dispatch },
     { fromCourses, fromCourseIndex, toCourses, toCourseIndex }
   ) {
+    console.log("im dispatch");
     const courseToMove = fromCourses.splice(fromCourseIndex, 1)[0];
     if (toCourseIndex == undefined) {
       toCourses.push(courseToMove);
+      await dispatch("updateStudyPlan");
       return;
     }
-
     toCourses.splice(toCourseIndex, 0, courseToMove);
     await dispatch("updateStudyPlan");
   },
+
   async addSemester({ state, dispatch, rootGetters }) {
     let semesterPlans = state.studyPlan.semesterPlans;
     const semesters = rootGetters["semester/getSemesters"].slice();
@@ -145,6 +148,7 @@ export const actions = {
     });
     await dispatch("updateStudyPlan");
   },
+
   async deleteSemester({ state, dispatch }, { semesterIndex }) {
     let semesterPlans = state.studyPlan.semesterPlans;
     const removed = semesterPlans.splice(semesterIndex, 1);
@@ -158,16 +162,99 @@ export const actions = {
     }
     await dispatch("updateStudyPlan");
   },
+
+  async toggleBookedStateOfCourseInSemester(
+    { state, dispatch, getters },
+    { courseCode, parentCourseCode, semester, requiredCourses }
+  ) {
+    let semesterPlan = getters.getSemesterPlan(semester);
+
+    if (!parentCourseCode) {
+      let course = getters.getCourseInPlannedCoursesOfSemester(
+        courseCode,
+        semesterPlan
+      );
+      course.booked = !course.booked;
+    } else {
+      let course = getters.getCourseInPlannedCoursesOfSemester(
+        parentCourseCode,
+        semesterPlan
+      );
+      const index = course.bookedThrough.indexOf(courseCode);
+      if (index > -1) {
+        course.bookedThrough.splice(index, 1);
+        course.booked = false;
+      } else {
+        course.bookedThrough.push(courseCode);
+        if (
+          requiredCourses.length > 0 &&
+          requiredCourses.length != course.bookedThrough.length
+        ) {
+          course.booked = false;
+        } else {
+          course.booked = true;
+        }
+      }
+    }
+    await dispatch("updateStudyPlan");
+  },
 };
 
 export const getters = {
   getStudyPlanByUserId: (state) => (userId) => {
     return state.studyPlans.find((studyPlan) => studyPlan.userId === userId);
   },
-  myCoursesInSemester: () => {
+  getSemesterPlans: () => {
     const studyPlan = state.studyPlan;
     if (!studyPlan) return;
     return studyPlan.semesterPlans;
+  },
+  getSemesterPlan: (state) => (semester) => {
+    let semesterPlans = state.studyPlan.semesterPlans;
+    if (!semesterPlans) return;
+    for (let i in semesterPlans) {
+      if (semesterPlans[i].semester.name === semester.name) {
+        return semesterPlans[i];
+      }
+    }
+  },
+  getCourseInPlannedCoursesOfSemester: () => (code, semesterPlan) => {
+    for (let course in semesterPlan.plannedCourses) {
+      if (semesterPlan.plannedCourses[course].code === code) {
+        return semesterPlan.plannedCourses[course];
+      }
+    }
+  },
+  getBookedStateOfCourse:
+    (state, getters) => (courseCode, parentCourseCode, semester) => {
+      const semesterPlan = getters.getSemesterPlan(semester);
+      if (!parentCourseCode) {
+        let course = getters.getCourseInPlannedCoursesOfSemester(
+          courseCode,
+          semesterPlan
+        );
+        return course.booked || course.bookedThrough.length > 0;
+      } else {
+        let course = getters.getCourseInPlannedCoursesOfSemester(
+          parentCourseCode,
+          semesterPlan
+        );
+        const index = course.bookedThrough.indexOf(courseCode);
+        if (index > -1) {
+          return true;
+        } else {
+          return false;
+        }
+      }
+    },
+  getBookedThroughCourses: (state, getters) => (parentCourseCode, semester) => {
+    const semesterPlan = getters.getSemesterPlan(semester);
+    let course = getters.getCourseInPlannedCoursesOfSemester(
+      parentCourseCode,
+      semesterPlan
+    );
+    console.log(semesterPlan);
+    return course.bookedThrough;
   },
 };
 

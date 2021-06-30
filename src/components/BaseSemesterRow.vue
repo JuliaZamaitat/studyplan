@@ -22,6 +22,7 @@
         >
           <router-link
             class="course-content-container"
+            :class="{ booked: course.booked }"
             :to="{
               name: 'baseModalParentCourse',
               params: { code: course.code, semester: semesterName.name },
@@ -104,6 +105,8 @@ export default {
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
+$belegtBackground: rgba(253, 177, 62, 0.55);
+
 a {
   text-decoration: none;
   color: inherit;
@@ -111,6 +114,10 @@ a {
 
 p {
   font-weight: 700;
+}
+
+.booked {
+  background-color: $belegtBackground !important;
 }
 .semesterRow {
   max-width: 100%;
