@@ -44,7 +44,7 @@
         <div class="childCourses">
           <div
             class="childCourses-course"
-            v-for="childCourse in course.child_courses"
+            v-for="childCourse in unbookedChildCourses"
             :key="childCourse.id"
           >
             <router-link
@@ -53,7 +53,7 @@
                 name: 'baseModalChildCourse',
                 params: {
                   parentCode: course.course.code,
-                  code: childCourse.course.code,
+                  code: childCourse.code,
                   semester: semester.name,
                   requiredParentCourses: requiredCourses,
                 },
@@ -61,9 +61,9 @@
             >
               <div class="childCourses-course-content-text">
                 <p class="childCourses-course-content-text--code">
-                  {{ childCourse.course.code }}
+                  {{ childCourse.code }}
                 </p>
-                <p>{{ childCourse.course.name }}</p>
+                <p>{{ childCourse.name }}</p>
               </div>
             </router-link>
           </div>
@@ -77,7 +77,7 @@
           <h3 class="bookedThrough">Belegt durch</h3>
           <div class="childCourses">
             <div
-              class="childCourses-course"
+              class="childCourses-course childCourses-course--booked"
               v-for="childCourse in bookedThroughCourses"
               :key="childCourse.id"
             >
@@ -120,6 +120,10 @@
           <div class="childCourses">
             <div
               class="childCourses-course"
+              :class="{
+                'childCourses-course--booked':
+                  bookedThroughCourses.indexOf(childCourse.course.code) != -1,
+              }"
               v-for="childCourse in course.child_courses"
               :key="childCourse.id"
             >
@@ -293,15 +297,34 @@ export default {
     this.getRequiredCourses();
   },
   computed: {
-    ...mapGetters("studyplan", ["getBookedThroughCourses"]),
+    ...mapGetters("studyplan", [
+      "getBookedThroughCourses",
+      "getIsChildCourseBookedYet",
+    ]),
     bookedThroughCourses() {
+      var bookedThroughCourses = [];
       if (this.course.child_courses || this.course.child_courses.length != 0) {
-        return this.getBookedThroughCourses(
+        bookedThroughCourses = this.getBookedThroughCourses(
           this.course.course.code,
           this.semester
         );
       }
-      return [];
+      console.log(bookedThroughCourses);
+      return bookedThroughCourses;
+    },
+    unbookedChildCourses() {
+      const array = [];
+      for (let i in this.course.child_courses) {
+        if (
+          !this.getIsChildCourseBookedYet(
+            this.course.child_courses[i].course.code
+          )
+        ) {
+          array.push(this.course.child_courses[i].course);
+        }
+      }
+
+      return array;
     },
   },
 
@@ -428,6 +451,11 @@ h4 {
     justify-content: center;
     align-items: center;
     margin: 9px;
+
+    &--booked {
+      background: $belegtBackground;
+      border: 1px solid $belegtFont;
+    }
     &-content {
       display: flex;
       justify-content: center;

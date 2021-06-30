@@ -170,13 +170,13 @@ export const actions = {
     let semesterPlan = getters.getSemesterPlan(semester);
 
     if (!parentCourseCode) {
-      let course = getters.getCourseInPlannedCoursesOfSemester(
+      let course = getCourseInPlannedCoursesOfSemester(
         courseCode,
         semesterPlan
       );
       course.booked = !course.booked;
     } else {
-      let course = getters.getCourseInPlannedCoursesOfSemester(
+      let course = getCourseInPlannedCoursesOfSemester(
         parentCourseCode,
         semesterPlan
       );
@@ -204,7 +204,7 @@ export const getters = {
   getStudyPlanByUserId: (state) => (userId) => {
     return state.studyPlans.find((studyPlan) => studyPlan.userId === userId);
   },
-  getSemesterPlans: () => {
+  getSemesterPlans: (state) => {
     const studyPlan = state.studyPlan;
     if (!studyPlan) return;
     return studyPlan.semesterPlans;
@@ -218,24 +218,18 @@ export const getters = {
       }
     }
   },
-  getCourseInPlannedCoursesOfSemester: () => (code, semesterPlan) => {
-    for (let course in semesterPlan.plannedCourses) {
-      if (semesterPlan.plannedCourses[course].code === code) {
-        return semesterPlan.plannedCourses[course];
-      }
-    }
-  },
+
   getBookedStateOfCourse:
     (state, getters) => (courseCode, parentCourseCode, semester) => {
       const semesterPlan = getters.getSemesterPlan(semester);
       if (!parentCourseCode) {
-        let course = getters.getCourseInPlannedCoursesOfSemester(
+        let course = getCourseInPlannedCoursesOfSemester(
           courseCode,
           semesterPlan
         );
         return course.booked || course.bookedThrough.length > 0;
       } else {
-        let course = getters.getCourseInPlannedCoursesOfSemester(
+        let course = getCourseInPlannedCoursesOfSemester(
           parentCourseCode,
           semesterPlan
         );
@@ -247,13 +241,29 @@ export const getters = {
         }
       }
     },
-  getBookedThroughCourses: (state, getters) => (parentCourseCode, semester) => {
-    const semesterPlan = getters.getSemesterPlan(semester);
-    let course = getters.getCourseInPlannedCoursesOfSemester(
+  getBookedThroughCourses: (state, getter) => (parentCourseCode, semester) => {
+    const semesterPlan = getter.getSemesterPlan(semester);
+    let course = getCourseInPlannedCoursesOfSemester(
       parentCourseCode,
       semesterPlan
     );
+    if (!course) return [];
     return course.bookedThrough;
+  },
+  getIsChildCourseBookedYet: (state, getters) => (childCourseCode) => {
+    const semesterPlans = state.studyPlan.semesterPlans;
+    for (let plan in semesterPlans) {
+      for (let course in semesterPlans[plan].plannedCourses) {
+        if (
+          semesterPlans[plan].plannedCourses[course].bookedThrough.indexOf(
+            childCourseCode
+          ) != -1
+        ) {
+          return true;
+        }
+      }
+    }
+    return false;
   },
 };
 
@@ -269,4 +279,16 @@ function assignSemestersToSemesterPlans(semesters, semesterPlans) {
     semesterPlans[i].semester = semesters[i];
   }
   return semesterPlans;
+}
+
+function getCourseInPlannedCoursesOfSemester(code, semesterPlan) {
+  if (!semesterPlan.plannedCourses) return;
+  var b;
+  for (let course in semesterPlan.plannedCourses) {
+    if (semesterPlan.plannedCourses[course].code === code) {
+      b = semesterPlan.plannedCourses[course];
+      break;
+    }
+  }
+  return b;
 }
