@@ -32,8 +32,7 @@
       <p>{{ course.course_program.semester }}</p>
     </div>
 
-    <!-- Child Courses -->
-
+    <!--Belegt/Bestanden mit Child Courses -->
     <div v-if="course.child_courses.length > 0 && !isChildCourse">
       <!-- wenn nicht belegt -->
       <div v-if="!booked">
@@ -70,91 +69,81 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- wenn belegt ohne required Kurse-->
-    <div
-      v-if="
-        course.child_courses.length != 0 &&
-        booked &&
-        !isChildCourse &&
-        (!requiredCourses || requiredCourses.length == 0)
-      "
-    >
-      <h3 class="bookedThrough">Belegt durch</h3>
-      <div class="childCourses">
-        <div
-          class="childCourses-course"
-          v-for="childCourse in bookedThroughCourses"
-          :key="childCourse.id"
-        >
-          <router-link
-            class="course-content-container"
-            :to="{
-              name: 'baseModalChildCourse',
-              params: {
-                parentCode: course.course.code,
-                code: childCourse,
-                semester: semester.name,
-                requiredParentCourses: requiredCourses,
-              },
-            }"
-          >
-            <div class="childCourses-course-content-text">
-              <p class="childCourses-course-content-text--code">
-                {{ childCourse }}
-              </p>
-              <p>{{ getNameOfChildCourse(childCourse) }}</p>
+      <!-- wenn 1 bis n Kurse belegt -->
+      <div v-if="booked">
+        <!-- wenn belegt ohne required Kurse-->
+        <div v-if="!requiredCourses || requiredCourses.length == 0">
+          <h3 class="bookedThrough">Belegt durch</h3>
+          <div class="childCourses">
+            <div
+              class="childCourses-course"
+              v-for="childCourse in bookedThroughCourses"
+              :key="childCourse.id"
+            >
+              <router-link
+                class="course-content-container"
+                :to="{
+                  name: 'baseModalChildCourse',
+                  params: {
+                    parentCode: course.course.code,
+                    code: childCourse,
+                    semester: semester.name,
+                    requiredParentCourses: requiredCourses,
+                  },
+                }"
+              >
+                <div class="childCourses-course-content-text">
+                  <p class="childCourses-course-content-text--code">
+                    {{ childCourse }}
+                  </p>
+                  <p>{{ getNameOfChildCourse(childCourse) }}</p>
+                </div>
+              </router-link>
             </div>
-          </router-link>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <!-- wenn belegt und required Kurse -->
-    <!-- check ob getBoookedThroughCourses alle requiredCourse enthält -->
-    <div
-      v-if="
-        course.child_courses.length != 0 &&
-        booked &&
-        requiredCourses.length != 0 &&
-        !isChildCourse
-      "
-    >
-      <h3
-        v-if="bookedThroughCourses.length == requiredCourses.length"
-        class="bookedThrough"
-      >
-        Belegt durch
-      </h3>
-      <h3 v-if="bookedThroughCourses.length != requiredCourses.length">
-        Noch nicht vollständig belegt, belege noch nicht belegte Kurse
-      </h3>
-      <div class="childCourses">
-        <div
-          class="childCourses-course"
-          v-for="childCourse in course.child_courses"
-          :key="childCourse.id"
-        >
-          <router-link
-            class="course-content-container"
-            :to="{
-              name: 'baseModalChildCourse',
-              params: {
-                parentCode: course.course.code,
-                code: childCourse.course.code,
-                semester: semester.name,
-                requiredParentCourses: requiredCourses,
-              },
-            }"
+        <!-- wenn belegt und required Kurse -->
+        <div v-if="requiredCourses.length != 0">
+          <!-- wenn alle required Kurse belegt wurden -->
+          <h3
+            v-if="bookedThroughCourses.length == requiredCourses.length"
+            class="bookedThrough"
           >
-            <div class="childCourses-course-content-text">
-              <p class="childCourses-course-content-text--code">
-                {{ childCourse.course.code }}
-              </p>
-              <p>{{ childCourse.course.name }}</p>
+            Belegt durch
+          </h3>
+          <!-- wenn noch nicht alle required Kurse belegt wurden -->
+          <h3 v-if="bookedThroughCourses.length != requiredCourses.length">
+            Noch nicht vollständig belegt, belege noch nicht belegte Kurse
+          </h3>
+          <div class="childCourses">
+            <div
+              class="childCourses-course"
+              v-for="childCourse in course.child_courses"
+              :key="childCourse.id"
+            >
+              <router-link
+                class="course-content-container"
+                :to="{
+                  name: 'baseModalChildCourse',
+                  params: {
+                    parentCode: course.course.code,
+                    code: childCourse.course.code,
+                    semester: semester.name,
+                    requiredParentCourses: requiredCourses,
+                  },
+                }"
+              >
+                <div class="childCourses-course-content-text">
+                  <p class="childCourses-course-content-text--code">
+                    {{ childCourse.course.code }}
+                  </p>
+                  <p>{{ childCourse.course.name }}</p>
+                </div>
+              </router-link>
             </div>
-          </router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -302,7 +291,6 @@ export default {
       this.semester
     );
     this.getRequiredCourses();
-    console.log("requiredCourses", this.requiredCourses);
   },
   computed: {
     ...mapGetters("studyplan", ["getBookedThroughCourses"]),
@@ -319,9 +307,6 @@ export default {
 
   methods: {
     toggleBooked(e, courseCode, semester) {
-      console.log("toggle", this.requiredCourses);
-      console.log("toggle2", this.requiredParentCourses);
-
       this.$store.dispatch("studyplan/toggleBookedStateOfCourseInSemester", {
         courseCode: courseCode,
         parentCourseCode: this.parentCourseCode,
@@ -329,13 +314,13 @@ export default {
         requiredCourses: this.requiredParentCourses,
       });
     },
+    //TODO
     togglePassed(e) {
       //emit to studyplan that this course was passed
       //BUT check first if it was a child course, because then you have to save it to the parent course
       console.log(e);
     },
     getRequiredCourses() {
-      //TODO: required kurse vom parent weitergeben an child
       if (this.isChildCourse) {
         this.requiredParentCourses = this.$route.params.requiredParentCourses;
       }

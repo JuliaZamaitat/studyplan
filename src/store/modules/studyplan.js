@@ -253,7 +253,6 @@ export const getters = {
       parentCourseCode,
       semesterPlan
     );
-    console.log(semesterPlan);
     return course.bookedThrough;
   },
 };
