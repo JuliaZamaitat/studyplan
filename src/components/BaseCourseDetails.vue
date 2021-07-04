@@ -7,7 +7,29 @@
 
     <!-- Bestanden/Belegt wenn keine Child Courses -->
     <div v-if="course.child_courses.length == 0" class="checkbox">
-      <input
+      <Checkbox
+        id="mycheck1"
+        :class="{ booked: booked }"
+        v-model="booked"
+        :value="booked"
+        color="rgba(253, 177, 62, 1)"
+        @change="toggleBooked($event, course.course.code, semester)"
+        :disabled="passed"
+        >Belegt
+      </Checkbox>
+
+      <Checkbox
+        id="mycheck2"
+        v-model="passed"
+        :class="{ passed: passed }"
+        :value="passed"
+        color="#76b900"
+        @change="togglePassed($event, course.course.code, semester)"
+        :disabled="!booked"
+        >Bestanden
+      </Checkbox>
+
+      <!-- <input
         type="checkbox"
         class="checkbox-input checkbox-input--booked"
         v-model="booked"
@@ -32,7 +54,7 @@
         class="checkbox-label checkbox-label--passed"
         :class="{ 'checkbox-label--passed--disabled': !booked }"
         >Bestanden</label
-      >
+      > -->
     </div>
 
     <div>
@@ -303,8 +325,10 @@
 
 <script>
 import { mapGetters } from "vuex";
+import Checkbox from "vue-material-checkbox";
 
 export default {
+  components: { Checkbox },
   data() {
     return {
       booked: false,
@@ -429,29 +453,29 @@ a {
   color: inherit;
 }
 
+::v-deep .booked > label:first-of-type {
+  color: rgba(253, 177, 62, 1);
+}
+
+::v-deep .passed > label:first-of-type {
+  color: #76b900;
+}
+
+::v-deep .m-chckbox--group {
+  transition: all 0.1s ease;
+}
+
+::v-deep .m-chckbox--ripple {
+  transform: translate(0) !important;
+}
+
 .checkbox {
-  margin: 20px 0 50px;
-  &-input {
-    margin-right: 10px;
-  }
-
-  &-label {
-    margin-right: 10px;
-
-    &--booked {
-      color: $belegtFont;
-      &--disabled {
-        color: #c1c1c1;
-      }
-    }
-    &--passed {
-      color: $htwGruen;
-
-      &--disabled {
-        color: #c1c1c1;
-      }
-    }
-  }
+  margin: 0 auto;
+  width: 40%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 
 .course-details-code {
