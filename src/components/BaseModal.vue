@@ -51,6 +51,7 @@ export default {
     };
   },
   async created() {
+    console.log("created");
     document.documentElement.style.overflow = "hidden";
     this.semester = this.getSemesterByName(this.$route.params.semester);
     if (this.$route.params.parentCode) {

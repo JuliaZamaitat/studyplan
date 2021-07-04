@@ -20,9 +20,13 @@
         type="checkbox"
         class="checkbox-input checkbox-input--passed"
         v-model="passed"
-        @change="togglePassed($event)"
+        :disabled="!booked"
+        @change="togglePassed($event, course.course.code, semester)"
       />
-      <label for="checkbox" class="checkbox-label checkbox-label--passed"
+      <label
+        for="checkbox"
+        class="checkbox-label checkbox-label--passed"
+        :class="{ 'checkbox-label--passed--disabled': !booked }"
         >Bestanden</label
       >
     </div>
@@ -74,11 +78,16 @@
       <div v-if="booked">
         <!-- wenn belegt ohne required Kurse-->
         <div v-if="!requiredCourses || requiredCourses.length == 0">
-          <h3 class="bookedThrough">Belegt durch</h3>
+          <h3 v-if="!passed" class="bookedThrough">Belegt durch</h3>
+          <h3 v-else class="passedThrough">Bestanden durch</h3>
           <div class="childCourses">
             <div
-              class="childCourses-course childCourses-course--booked"
-              v-for="childCourse in bookedThroughCourses"
+              class="childCourses-course"
+              :class="{
+                'childCourses-course--booked': booked,
+                'childCourses-course--passed': passed,
+              }"
+              v-for="childCourse in bookedOrPassedThroughCourses.bookedThrough"
               :key="childCourse.id"
             >
               <router-link
@@ -106,23 +115,54 @@
 
         <!-- wenn belegt und required Kurse -->
         <div v-if="requiredCourses.length != 0">
-          <!-- wenn alle required Kurse belegt wurden -->
+          <!-- wenn alle required Kurse belegt, aber nicht bestanden wurden -->
           <h3
-            v-if="bookedThroughCourses.length == requiredCourses.length"
+            v-if="
+              bookedOrPassedThroughCourses.bookedThrough.length ==
+                requiredCourses.length &&
+              bookedOrPassedThroughCourses.passedThrough.length !=
+                requiredCourses.length
+            "
             class="bookedThrough"
           >
             Belegt durch
           </h3>
+
           <!-- wenn noch nicht alle required Kurse belegt wurden -->
-          <h3 v-if="bookedThroughCourses.length != requiredCourses.length">
+          <h3
+            v-if="
+              bookedOrPassedThroughCourses.bookedThrough.length !=
+              requiredCourses.length
+            "
+          >
             Noch nicht vollständig belegt, belege noch nicht belegte Kurse
+          </h3>
+          <!-- wenn alle required Kurse bestanden wurden -->
+          <h3
+            v-if="
+              bookedOrPassedThroughCourses.passedThrough.length ==
+              requiredCourses.length
+            "
+            class="passedThrough"
+          >
+            Bestanden durch
           </h3>
           <div class="childCourses">
             <div
               class="childCourses-course"
               :class="{
                 'childCourses-course--booked':
-                  bookedThroughCourses.indexOf(childCourse.course.code) != -1,
+                  bookedOrPassedThroughCourses.bookedThrough
+                    ? bookedOrPassedThroughCourses.bookedThrough.indexOf(
+                        childCourse.course.code
+                      ) != -1
+                    : false,
+                'childCourses-course--passed':
+                  bookedOrPassedThroughCourses.passedThrough
+                    ? bookedOrPassedThroughCourses.passedThrough.indexOf(
+                        childCourse.course.code
+                      ) != -1
+                    : false,
               }"
               v-for="childCourse in course.child_courses"
               :key="childCourse.id"
@@ -289,28 +329,33 @@ export default {
     },
   },
   created() {
-    this.booked = this.$store.getters["studyplan/getBookedStateOfCourse"](
+    let states = this.$store.getters["studyplan/getStateOfCourse"](
       this.course.course.code,
       this.parentCourseCode,
       this.semester
     );
+    this.booked = states.booked;
+    this.passed = states.passed;
     this.getRequiredCourses();
   },
   computed: {
     ...mapGetters("studyplan", [
-      "getBookedThroughCourses",
+      "getBookedAndPassedThroughCourses",
       "getIsChildCourseBookedYet",
     ]),
-    bookedThroughCourses() {
-      var bookedThroughCourses = [];
+    bookedOrPassedThroughCourses() {
       if (this.course.child_courses || this.course.child_courses.length != 0) {
-        bookedThroughCourses = this.getBookedThroughCourses(
-          this.course.course.code,
-          this.semester
-        );
+        let bookedAndPassedThroughCourses =
+          this.getBookedAndPassedThroughCourses(
+            this.course.course.code,
+            this.semester
+          );
+        return {
+          bookedThrough: bookedAndPassedThroughCourses.bookedThrough,
+          passedThrough: bookedAndPassedThroughCourses.passedThrough,
+        };
       }
-      console.log(bookedThroughCourses);
-      return bookedThroughCourses;
+      return {};
     },
     unbookedChildCourses() {
       const array = [];
@@ -337,11 +382,14 @@ export default {
         requiredCourses: this.requiredParentCourses,
       });
     },
-    //TODO
-    togglePassed(e) {
-      //emit to studyplan that this course was passed
-      //BUT check first if it was a child course, because then you have to save it to the parent course
-      console.log(e);
+
+    togglePassed(e, courseCode, semester) {
+      this.$store.dispatch("studyplan/togglePassedStateOfCourseInSemester", {
+        courseCode: courseCode,
+        parentCourseCode: this.parentCourseCode,
+        semester: semester,
+        requiredCourses: this.requiredParentCourses,
+      });
     },
     getRequiredCourses() {
       if (this.isChildCourse) {
@@ -391,6 +439,10 @@ a {
     }
     &--passed {
       color: $htwGruen;
+
+      &--disabled {
+        color: #c1c1c1;
+      }
     }
   }
 }
@@ -424,6 +476,9 @@ h3 {
 .bookedThrough {
   color: $belegtFont;
 }
+.passedThrough {
+  color: $htwGruen;
+}
 h4 {
   color: $htwGruen;
 }
@@ -455,6 +510,11 @@ h4 {
     &--booked {
       background: $belegtBackground;
       border: 1px solid $belegtFont;
+    }
+
+    &--passed {
+      background: rgba(118, 185, 0, 0.45);
+      border: 1px solid $htwGruen;
     }
     &-content {
       display: flex;

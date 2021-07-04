@@ -5,8 +5,12 @@ export default {
     //program = "imi-b/v1"
     return Api().get(program);
   },
-  fetchCourse(program, code, semester) {
+  fetchCourseWithSemester(program, code, semester) {
     code = code.replace(/\./g, "-").toLowerCase();
     return Api().get(`${program}/${code}/semester/${semester.toLowerCase()}`);
+  },
+  fetchCourseWithoutSemester(program, code) {
+    code = code.replace(/\./g, "-").toLowerCase();
+    return Api().get(`${program}/${code}`);
   },
 };

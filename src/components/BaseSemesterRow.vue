@@ -22,7 +22,7 @@
         >
           <router-link
             class="course-content-container"
-            :class="{ booked: course.booked }"
+            :class="{ booked: course.booked, passed: course.passed }"
             :to="{
               name: 'baseModalParentCourse',
               params: { code: course.code, semester: semesterName.name },
@@ -43,8 +43,8 @@
           </router-link>
         </div>
       </div>
-      <router-view></router-view>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -118,6 +118,10 @@ p {
 
 .booked {
   background-color: $belegtBackground !important;
+}
+
+.passed {
+  background-color: rgba(118, 185, 0, 0.45) !important;
 }
 .semesterRow {
   max-width: 100%;

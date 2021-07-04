@@ -19,7 +19,7 @@ export default {
       "60dcd209d707b572e05e2c54"
     );
 
-    this.$store.dispatch("course/getCourses");
+    // this.$store.dispatch("course/getCourses");
   },
   computed: {
     ...mapState("program", ["program"]),

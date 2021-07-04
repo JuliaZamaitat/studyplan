@@ -198,6 +198,41 @@ export const actions = {
     }
     await dispatch("updateStudyPlan");
   },
+  async togglePassedStateOfCourseInSemester(
+    { state, dispatch, getters },
+    { courseCode, parentCourseCode, semester, requiredCourses }
+  ) {
+    let semesterPlan = getters.getSemesterPlan(semester);
+
+    if (!parentCourseCode) {
+      let course = getCourseInPlannedCoursesOfSemester(
+        courseCode,
+        semesterPlan
+      );
+      course.passed = !course.passed;
+    } else {
+      let course = getCourseInPlannedCoursesOfSemester(
+        parentCourseCode,
+        semesterPlan
+      );
+      const index = course.passedThrough.indexOf(courseCode);
+      if (index > -1) {
+        course.passedThrough.splice(index, 1);
+        course.passed = false;
+      } else {
+        course.passedThrough.push(courseCode);
+        if (
+          requiredCourses.length > 0 &&
+          requiredCourses.length != course.passedThrough.length
+        ) {
+          course.passed = false;
+        } else {
+          course.passed = true;
+        }
+      }
+    }
+    await dispatch("updateStudyPlan");
+  },
 };
 
 export const getters = {
@@ -219,7 +254,7 @@ export const getters = {
     }
   },
 
-  getBookedStateOfCourse:
+  getStateOfCourse:
     (state, getters) => (courseCode, parentCourseCode, semester) => {
       const semesterPlan = getters.getSemesterPlan(semester);
       if (!parentCourseCode) {
@@ -227,7 +262,10 @@ export const getters = {
           courseCode,
           semesterPlan
         );
-        return course.booked || course.bookedThrough.length > 0;
+        return {
+          booked: course.booked || course.bookedThrough.length > 0,
+          passed: course.passed || course.passedThrough.length > 0,
+        };
       } else {
         let course = getCourseInPlannedCoursesOfSemester(
           parentCourseCode,
@@ -235,21 +273,34 @@ export const getters = {
         );
         const index = course.bookedThrough.indexOf(courseCode);
         if (index > -1) {
-          return true;
+          var booked = true;
+          return {
+            booked: true,
+            passed:
+              course.passedThrough.indexOf(courseCode) > -1 ? true : false,
+          };
         } else {
-          return false;
+          return {
+            booked: false,
+            passed: false,
+          };
         }
       }
     },
-  getBookedThroughCourses: (state, getter) => (parentCourseCode, semester) => {
-    const semesterPlan = getter.getSemesterPlan(semester);
-    let course = getCourseInPlannedCoursesOfSemester(
-      parentCourseCode,
-      semesterPlan
-    );
-    if (!course) return [];
-    return course.bookedThrough;
-  },
+
+  getBookedAndPassedThroughCourses:
+    (state, getter) => (parentCourseCode, semester) => {
+      const semesterPlan = getter.getSemesterPlan(semester);
+      let course = getCourseInPlannedCoursesOfSemester(
+        parentCourseCode,
+        semesterPlan
+      );
+      if (!course) return [];
+      return {
+        bookedThrough: course.bookedThrough,
+        passedThrough: course.passedThrough,
+      };
+    },
   getIsChildCourseBookedYet: (state, getters) => (childCourseCode) => {
     const semesterPlans = state.studyPlan.semesterPlans;
     for (let plan in semesterPlans) {
@@ -283,12 +334,9 @@ function assignSemestersToSemesterPlans(semesters, semesterPlans) {
 
 function getCourseInPlannedCoursesOfSemester(code, semesterPlan) {
   if (!semesterPlan.plannedCourses) return;
-  var b;
   for (let course in semesterPlan.plannedCourses) {
     if (semesterPlan.plannedCourses[course].code === code) {
-      b = semesterPlan.plannedCourses[course];
-      break;
+      return semesterPlan.plannedCourses[course];
     }
   }
-  return b;
 }
