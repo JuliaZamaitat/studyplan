@@ -11,9 +11,13 @@
         type="checkbox"
         class="checkbox-input checkbox-input--booked"
         v-model="booked"
+        :disabled="passed"
         @change="toggleBooked($event, course.course.code, semester)"
       />
-      <label for="checkbox" class="checkbox-label checkbox-label--booked"
+      <label
+        for="checkbox"
+        class="checkbox-label checkbox-label--booked"
+        :class="{ 'checkbox-label--booked--disabled': passed }"
         >Belegt</label
       >
       <input
@@ -436,6 +440,9 @@ a {
 
     &--booked {
       color: $belegtFont;
+      &--disabled {
+        color: #c1c1c1;
+      }
     }
     &--passed {
       color: $htwGruen;
