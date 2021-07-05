@@ -21,10 +21,6 @@
             size="2x"
         /></a>
       </div>
-      <div v-else class="navigation-container navigation-container--right">
-        <router-link class="link" to="/login">Login</router-link>
-        <router-link class="link" to="/register">Registrieren</router-link>
-      </div>
     </div>
 
     <div v-if="mobileView && currentUser" class="mobile-navigation">
@@ -65,12 +61,6 @@
 
           <a class="link" href @click.prevent="logOut"> Logout</a>
         </div>
-      </div>
-    </div>
-    <div v-if="mobileView && !currentUser">
-      <div class="navigation navigation-container">
-        <router-link class="link" to="/login">Login</router-link>
-        <router-link class="link" to="/register">Registrieren</router-link>
       </div>
     </div>
   </div>

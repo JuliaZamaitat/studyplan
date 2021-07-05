@@ -1,9 +1,13 @@
 <template>
   <div>
+    <h1>Willkommen zu deinem Studyplan!</h1>
+    <h2>Plane dein Studium und behalte den Überblick!</h2>
+    <h3>Registriere dich</h3>
+    <div class="line"></div>
     <form name="form" @submit.prevent="handleRegister">
       <div v-if="!successful">
         <div>
-          <label for="username">Username</label>
+          <label for="username">Benutzername</label>
           <input v-model="username" type="text" name="username" />
         </div>
         <div>
@@ -11,11 +15,12 @@
           <input v-model="email" type="email" name="email" />
         </div>
         <div>
-          <label for="password">Password</label>
+          <label for="password">Passwort</label>
           <input v-model="password" type="password" name="password" />
         </div>
         <div>
-          <button>Sign Up</button>
+          <button>Registrieren</button>
+          <a class="login-link" href="/login">zum Login</a>
         </div>
       </div>
     </form>
@@ -81,4 +86,77 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+$htwGruen: #76b900;
+label {
+  display: block;
+  font-weight: bold;
+}
+
+.line {
+  border-top: 3px solid;
+  margin: 0 auto;
+  padding: 0;
+  width: 30px;
+  height: 39px;
+  margin-bottom: 30px;
+}
+
+h1,
+h2 {
+  color: $htwGruen;
+}
+
+h2 {
+  font-weight: normal;
+  font-size: 20px;
+}
+
+h3 {
+  margin-top: 70px;
+
+  font-size: 23px;
+}
+
+input {
+  font-size: 20px;
+  text-align: center;
+  border: 3px solid $htwGruen;
+  border-radius: 12px;
+  max-width: 350px;
+  width: 80%;
+  height: 60px;
+  margin-top: 10px;
+  margin-bottom: 30px;
+}
+
+input:focus {
+  outline: none;
+}
+
+button,
+input[type="submit"] {
+  background: none;
+  color: $htwGruen;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  text-decoration: underline;
+  font-weight: bold;
+  font-size: 18px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.error-message {
+  color: red;
+}
+
+.login-link {
+  display: block;
+  color: inherit;
+  font-size: 15px;
+}
+</style>
