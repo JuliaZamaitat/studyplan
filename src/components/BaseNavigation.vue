@@ -62,6 +62,8 @@
           >
             Profil
           </router-link>
+
+          <a class="link" href @click.prevent="logOut"> Logout</a>
         </div>
       </div>
     </div>
@@ -155,6 +157,7 @@ $htwGruen: #76b900;
     right: 0;
     bottom: 0;
     background-color: $htwGruen;
+    z-index: 500;
 
     .close-btn {
       font-size: 40px;
