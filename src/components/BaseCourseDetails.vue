@@ -28,33 +28,6 @@
         :disabled="!booked"
         >Bestanden
       </Checkbox>
-
-      <!-- <input
-        type="checkbox"
-        class="checkbox-input checkbox-input--booked"
-        v-model="booked"
-        :disabled="passed"
-        @change="toggleBooked($event, course.course.code, semester)"
-      />
-      <label
-        for="checkbox"
-        class="checkbox-label checkbox-label--booked"
-        :class="{ 'checkbox-label--booked--disabled': passed }"
-        >Belegt</label
-      >
-      <input
-        type="checkbox"
-        class="checkbox-input checkbox-input--passed"
-        v-model="passed"
-        :disabled="!booked"
-        @change="togglePassed($event, course.course.code, semester)"
-      />
-      <label
-        for="checkbox"
-        class="checkbox-label checkbox-label--passed"
-        :class="{ 'checkbox-label--passed--disabled': !booked }"
-        >Bestanden</label
-      > -->
     </div>
 
     <div>

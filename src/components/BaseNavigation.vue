@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="!mobileView" class="navigation">
-      <div class="navigation-container">
+      <div v-if="currentUser" class="navigation-container">
         <router-link class="link" to="/my-studyplan"
           >Mein StudyPlan</router-link
         >
@@ -14,10 +14,20 @@
         <router-link class="link icon" to="/profile">
           <font-awesome-icon :icon="['fas', 'user']" size="1x" />
         </router-link>
+        <a class="link" href @click.prevent="logOut">
+          <font-awesome-icon
+            class="icon"
+            :icon="['fas', 'sign-out-alt']"
+            size="2x"
+        /></a>
+      </div>
+      <div v-else class="navigation-container navigation-container--right">
+        <router-link class="link" to="/login">Login</router-link>
+        <router-link class="link" to="/register">Registrieren</router-link>
       </div>
     </div>
 
-    <div v-if="mobileView" class="mobile-navigation">
+    <div v-if="mobileView && currentUser" class="mobile-navigation">
       <button @click="toggleMobileNavMenu">
         <font-awesome-icon class="icon" :icon="['fas', 'bars']" size="2x" />
       </button>
@@ -55,6 +65,12 @@
         </div>
       </div>
     </div>
+    <div v-if="mobileView && !currentUser">
+      <div class="navigation navigation-container">
+        <router-link class="link" to="/login">Login</router-link>
+        <router-link class="link" to="/register">Registrieren</router-link>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -70,8 +86,16 @@ export default {
     this.mobileView = window.innerWidth <= 600;
     window.addEventListener("resize", this.isMobileView);
   },
-
+  computed: {
+    currentUser() {
+      return this.$store.state.user.user;
+    },
+  },
   methods: {
+    logOut() {
+      this.$store.dispatch("user/logout");
+      this.$router.push("/login");
+    },
     isMobileView() {
       this.mobileView = window.innerWidth <= 600;
     },

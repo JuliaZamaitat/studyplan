@@ -1,25 +1,28 @@
 <template>
   <div>
     <h2>Login</h2>
-    <input
-      class="form-control mt-3 mb-2"
-      type="email"
-      v-model="email"
-      placeholder="Email"
-      required
-    />
-    <input
-      class="form-control"
-      type="password"
-      v-model="password"
-      placeholder="Password"
-      required
-    />
-    <div class="d-flex justify-content-end">
-      <button class="btn btn-primary mt-2" type="submit" @click="login">
-        Login
-      </button>
-    </div>
+    <form name="form" @submit.prevent="handleLogin">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input v-model="username" type="text" name="username" />
+        <!-- <div v-if="errors.has('username')" role="alert">
+          Username is required!
+        </div> -->
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input v-model="password" type="password" name="password" />
+      </div>
+      <div>
+        <button :disabled="loading">
+          <span v-show="loading"></span>
+          <span>Login</span>
+        </button>
+      </div>
+      <div>
+        <div v-if="message" role="alert">{{ message }}</div>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -27,26 +30,54 @@
 export default {
   data() {
     return {
+      username: "",
       email: "",
       password: "",
-      msg: "",
+      message: "",
+      loading: false,
     };
   },
+  computed: {
+    loggedIn() {
+      return this.$store.state.user.status.loggedIn;
+    },
+  },
+  created() {
+    if (this.loggedIn) {
+      this.$router.push("/my-studyplan");
+    }
+  },
   methods: {
-    //   async login() {
-    //     try {
-    //       let credentials = {
-    //         email: this.email,
-    //         password: this.password,
-    //       };
-    //       const response = await AuthService.login(credentials);
-    //       const token = response.data.token;
-    //       this.$store.dispatch("login", { token });
-    //       this.$router.push("/");
-    //     } catch (error) {
-    //       console.log(error);
-    //     }
-    //   },
+    handleLogin() {
+      this.loading = true;
+      // this.$validator.validateAll().then((isValid) => {
+      //   if (!isValid) {
+      //     this.loading = false;
+      //     return;
+      //   }
+      if (this.username && this.password) {
+        this.$store
+          .dispatch("user/login", {
+            username: this.username,
+            password: this.password,
+          })
+          .then(
+            () => {
+              this.$router.push("/my-studyplan");
+            },
+            (error) => {
+              this.loading = false;
+              this.message =
+                (error.response &&
+                  error.response.data &&
+                  error.response.data.message) ||
+                error.message ||
+                error.toString();
+            }
+          );
+      }
+      // });
+    },
   },
 };
 </script>

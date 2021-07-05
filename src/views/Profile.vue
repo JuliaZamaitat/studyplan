@@ -5,7 +5,13 @@
 </template>
 
 <script>
-export default {};
+export default {
+  mounted() {
+    if (!this.$store.state.user.user) {
+      this.$router.push("/login");
+    }
+  },
+};
 </script>
 
 <style lang="scss" scoped></style>

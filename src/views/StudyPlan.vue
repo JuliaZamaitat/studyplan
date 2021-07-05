@@ -21,6 +21,7 @@ export default {
 
     // this.$store.dispatch("course/getCourses");
   },
+
   computed: {
     ...mapState("program", ["program"]),
     ...mapState("studyplan", ["studyPlan"]),

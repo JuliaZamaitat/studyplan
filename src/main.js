@@ -14,10 +14,11 @@ import {
   faArrowLeft,
   faUser,
   faBars,
+  faSignOutAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-library.add(faPlusCircle, faArrowLeft, faUser, faBars);
+library.add(faPlusCircle, faArrowLeft, faUser, faBars, faSignOutAlt);
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 
 //registering BaseComponents globall

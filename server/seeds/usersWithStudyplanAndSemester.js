@@ -35,8 +35,9 @@ async function loadUsersAndStudyPlansWithSemester() {
 
   const userData = [
     new User({
-      name: "test",
+      username: "test",
       email: "test@mail.de",
+      //password
       matriculationNumber: "123456",
       startOfStudy: sose18._id,
     }),

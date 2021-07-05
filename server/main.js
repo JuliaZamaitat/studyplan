@@ -4,6 +4,9 @@ const express = require("express"),
   cors = require("cors"),
   router = require("./routes/index");
 
+app.use(express.json());
+app.use(express.urlencoded());
+
 const mongodbURI =
   process.env.MONGODB_URI || "mongodb://localhost:27017/studyplan";
 
@@ -29,10 +32,7 @@ app.use(cors());
 app.set("port", process.env.PORT || 3000);
 app.set("view engine", "ejs"); //To use EJS
 
-// const userController = require("./controller/userController.js"),
-
 app.use("/", router);
-// router.get("/users", userController.index); //shows you a table of everyone who signed up to be a user ... do we have any?
 
 app.listen(app.get("port"), () => {
   console.log(`Server running at http://localhost:${app.get("port")}`);

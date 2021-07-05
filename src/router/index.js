@@ -5,6 +5,7 @@ import Login from "../views/Login.vue";
 import StudyPlan from "../views/StudyPlan.vue";
 import Help from "../views/Help.vue";
 import Profile from "../views/Profile.vue";
+import Register from "../views/Register.vue";
 import BaseModalChildCourse from "../components/BaseModalChildCourse.vue";
 import BaseModalParentCourse from "../components/BaseModalParentCourse.vue";
 
@@ -15,6 +16,11 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: Register,
   },
   {
     path: "/my-studyplan",
@@ -54,6 +60,20 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const publicPages = ["/login", "/register", "/help"];
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = localStorage.getItem("user");
+
+  // trying to access a restricted page + not logged in
+  // redirect to login page
+  if (authRequired && !loggedIn) {
+    next("/login");
+  } else {
+    next();
+  }
 });
 
 export default router;

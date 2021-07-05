@@ -2,7 +2,7 @@ const mongoose = require("mongoose"),
   { Schema } = mongoose,
   userSchema = new Schema(
     {
-      name: {
+      username: {
         type: String,
         trim: true,
       },
@@ -12,16 +12,18 @@ const mongoose = require("mongoose"),
         lowercase: true,
         unique: true,
       },
-      matriculationNumber: {
+      password: {
         type: String,
         required: true,
+      },
+      matriculationNumber: {
+        type: String,
         lowercase: true,
         unique: true,
       },
       startOfStudy: {
         type: Schema.Types.ObjectId,
         ref: "Semester",
-        required: true,
       },
       studyPlan: { type: Schema.Types.ObjectId, ref: "StudyPlan" },
     },
@@ -29,11 +31,5 @@ const mongoose = require("mongoose"),
       timestamps: true,
     }
   );
-// sodass man mit user.fullName den vollen Namen ausgedruckt bekommt
-/* userSchema.virtual("fullName")
-    //can't use an arrow function for mongoose methods like get()
-    .get(function(){
-        return `${this.name.first} ${this.name.last}`;
-    });*/
 
 module.exports = mongoose.model("User", userSchema);
