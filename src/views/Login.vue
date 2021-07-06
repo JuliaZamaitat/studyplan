@@ -5,22 +5,43 @@
     <h3>Logge dich ein</h3>
     <div class="line"></div>
     <form name="form" @submit.prevent="handleLogin">
-      <div class="form-group">
+      <div>
         <label for="username">Benutzername</label>
-        <input v-model="username" type="text" name="username" />
-        <!-- <div v-if="errors.has('username')" role="alert">
-          Username is required!
-        </div> -->
-      </div>
-      <div class="form-group">
-        <label for="password">Passwort</label>
-        <input v-model="password" type="password" name="password" />
+        <input
+          v-model="username"
+          type="text"
+          name="username"
+          @blur="$v.username.$touch()"
+          :class="{ error: $v.username.$error }"
+        />
+        <div v-if="$v.username.$error">
+          <p v-if="!$v.username.required" class="error-message">
+            Gib deinen Nutzernamen ein
+          </p>
+        </div>
       </div>
       <div>
-        <button>
-          <!-- <span v-show="loading"></span> -->
+        <label for="password">Passwort</label>
+        <input
+          v-model="password"
+          type="password"
+          name="password"
+          :class="{ error: $v.password.$error }"
+          @blur="$v.password.$touch()"
+        />
+        <div v-if="$v.password.$error">
+          <p v-if="!$v.password.required" class="error-message">
+            Gib dein Passwort ein
+          </p>
+        </div>
+      </div>
+      <div>
+        <button :disabled="$v.$invalid" :class="{ disabled: $v.$invalid }">
           <span>Login</span>
         </button>
+        <p v-if="$v.$anyError" class="error-message">
+          Bitte fülle alle Felder aus.
+        </p>
         <a class="register-link" href="/register">zur Registrierung</a>
       </div>
       <div>
@@ -33,16 +54,26 @@
 </template>
 
 <script>
+import { required } from "vuelidate/lib/validators";
+
 export default {
   data() {
     return {
       username: "",
-      email: "",
       password: "",
       message: "",
       // loading: false,
     };
   },
+  validations: {
+    username: {
+      required,
+    },
+    password: {
+      required,
+    },
+  },
+
   computed: {
     loggedIn() {
       return this.$store.state.user.status.loggedIn;
@@ -55,34 +86,30 @@ export default {
   },
   methods: {
     handleLogin() {
-      // this.loading = true;
-      // this.$validator.validateAll().then((isValid) => {
-      //   if (!isValid) {
-      //     this.loading = false;
-      //     return;
-      //   }
-      if (this.username && this.password) {
-        this.$store
-          .dispatch("user/login", {
-            username: this.username,
-            password: this.password,
-          })
-          .then(
-            () => {
-              this.$router.push("/my-studyplan");
-            },
-            (error) => {
-              // this.loading = false;
-              this.message =
-                (error.response &&
-                  error.response.data &&
-                  error.response.data.message) ||
-                error.message ||
-                error.toString();
-            }
-          );
+      this.$v.$touch();
+      if (!this.$v.$invalid) {
+        if (this.username && this.password) {
+          this.$store
+            .dispatch("user/login", {
+              username: this.username,
+              password: this.password,
+            })
+            .then(
+              () => {
+                this.$router.push("/my-studyplan");
+              },
+              (error) => {
+                // this.loading = false;
+                this.message =
+                  (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                  error.message ||
+                  error.toString();
+              }
+            );
+        }
       }
-      // });
     },
   },
 };
@@ -152,8 +179,20 @@ input[type="submit"] {
   margin-bottom: 20px;
 }
 
+.disabled {
+  color: grey;
+  text-decoration: none;
+  cursor: auto;
+}
+
 .error-message {
   color: red;
+  margin-bottom: 30px;
+  margin-top: 0;
+}
+
+.error {
+  border-color: red;
 }
 .register-link {
   display: block;

@@ -8,29 +8,72 @@
       <div v-if="!successful">
         <div>
           <label for="username">Benutzername</label>
-          <input v-model="username" type="text" name="username" />
+          <input
+            v-model="username"
+            type="text"
+            name="username"
+            :class="{ error: $v.username.$error }"
+            @blur="$v.username.$touch()"
+          />
+          <div v-if="$v.username.$error">
+            <p v-if="!$v.username.required" class="error-message">
+              Gib einen Nutzernamen an
+            </p>
+          </div>
         </div>
         <div>
           <label for="email">Email</label>
-          <input v-model="email" type="email" name="email" />
+          <input
+            v-model="email"
+            type="email"
+            name="email"
+            :class="{ error: $v.email.$error }"
+            @blur="$v.email.$touch()"
+          />
+          <div v-if="$v.email.$error">
+            <p v-if="!$v.email.email" class="error-message">
+              Bitte gib eine gülitge Emailadresse an
+            </p>
+            <p v-if="!$v.email.required" class="error-message">
+              Gib eine Emailadresse an
+            </p>
+          </div>
         </div>
         <div>
           <label for="password">Passwort</label>
-          <input v-model="password" type="password" name="password" />
+          <input
+            v-model="password"
+            type="password"
+            name="password"
+            :class="{ error: $v.password.$error }"
+            @blur="$v.password.$touch()"
+          />
+          <div v-if="$v.password.$error">
+            <p v-if="!$v.password.required" class="error-message">
+              Gib ein Passwort an
+            </p>
+          </div>
         </div>
         <div>
-          <button>Registrieren</button>
+          <button :disabled="$v.$invalid" :class="{ disabled: $v.$invalid }">
+            Registrieren
+          </button>
+          <p v-if="$v.$anyError" class="error-message">
+            Bitte fülle alle Felder aus.
+          </p>
           <a class="login-link" href="/login">zum Login</a>
         </div>
       </div>
     </form>
-    <div v-if="message">
+    <div v-if="message" class="error-message">
       {{ message }}
     </div>
   </div>
 </template>
 
 <script>
+import { required, email } from "vuelidate/lib/validators";
+
 export default {
   data() {
     return {
@@ -41,6 +84,18 @@ export default {
       successful: false,
       message: "",
     };
+  },
+  validations: {
+    email: {
+      required,
+      email,
+    },
+    username: {
+      required,
+    },
+    password: {
+      required,
+    },
   },
   computed: {
     loggedIn() {
@@ -54,34 +109,35 @@ export default {
   },
   methods: {
     handleRegister() {
-      this.message = "";
-      this.submitted = true;
-      // this.$validator.validate().then((isValid) => {
-      // if (isValid) {
-      this.$store
-        .dispatch("user/register", {
-          username: this.username,
-          password: this.password,
-          email: this.email,
-        })
-        .then(
-          (data) => {
-            this.message = data.message;
-            this.successful = true;
-          },
-          (error) => {
-            this.message =
-              (error.response &&
-                error.response.data &&
-                error.response.data.message) ||
-              error.message ||
-              error.toString();
-            this.successful = false;
-          }
-        );
+      this.$v.$touch();
+      if (!this.$v.$invalid) {
+        this.message = "";
+        this.submitted = true;
+
+        this.$store
+          .dispatch("user/register", {
+            username: this.username,
+            password: this.password,
+            email: this.email,
+          })
+          .then(
+            (data) => {
+              this.message = data.message;
+              this.successful = true;
+            },
+            (error) => {
+              this.message =
+                (error.response &&
+                  error.response.data &&
+                  error.response.data.message) ||
+                error.message ||
+                error.toString();
+              this.successful = false;
+            }
+          );
+      }
+      // });
     },
-    // });
-    // },
   },
 };
 </script>
@@ -150,8 +206,20 @@ input[type="submit"] {
   margin-bottom: 20px;
 }
 
+.disabled {
+  color: grey;
+  text-decoration: none;
+  cursor: auto;
+}
+
 .error-message {
   color: red;
+  margin-bottom: 30px;
+  margin-top: 0;
+}
+
+.error {
+  border-color: red;
 }
 
 .login-link {
