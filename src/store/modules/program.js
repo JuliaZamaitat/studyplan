@@ -38,15 +38,17 @@ export const actions = {
         console.log(notification);
       });
   },
-  async fetchProgram({ commit, getters }, code) {
-    var program = getters.getProgramByCode(code);
+  async fetchProgram({ commit, getters }, { code, version }) {
+    var program = getters.getProgramByCodeAndVersion(code, version); //and version
     if (program) {
       commit("SET_PROGRAM", program);
       console.log("not fetching program");
     } else {
-      await ProgramService.fetchProgram(code)
+      await ProgramService.fetchProgram(code, version)
         .then((response) => {
-          commit("SET_PROGRAM", response.data);
+          let program = response.data;
+          program.version = version;
+          commit("SET_PROGRAM", program);
         })
         .catch((error) => {
           const notification = {
@@ -60,11 +62,15 @@ export const actions = {
 };
 
 export const getters = {
-  getProgramByCode: (state) => (code) => {
+  getProgramByCodeAndVersion: (state) => (code, version) => {
     //TODO later save all programs in programs and search this array
     // return state.programs.find((program) => program.code === code);
     if (!state.program.code) return;
-    if (state.program.code.toLowerCase() + "/1" === code) return state.program;
+    if (
+      state.program.code.toLowerCase() === code &&
+      state.program.version == version
+    )
+      return state.program;
   },
   courses: (state) => {
     const courses = state.program.courses;

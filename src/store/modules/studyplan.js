@@ -65,6 +65,39 @@ export const actions = {
         });
     }
   },
+  async createStudyPlan(
+    { state, commit, rootState, dispatch },
+    { program, stupo, userId }
+  ) {
+    state.studyPlan = {
+      program: {
+        code: program.code,
+        name: program.name,
+        version: stupo,
+      },
+    };
+    try {
+      let studyplan = await StudyPlanService.createStudyPlan(state.studyPlan);
+      if (studyplan) {
+        commit("SET_STUDYPLAN", studyplan.data);
+        await StudyPlanService.saveToUser(state.studyPlan, userId).then(
+          (response) => {
+            console.log("response", response.data);
+            if (response.data) {
+              rootState.user.user = response.data;
+              dispatch("user/updateUser", {}, { root: true });
+            }
+          }
+        );
+      }
+    } catch (error) {
+      const notification = {
+        type: "error",
+        message: "There was a problem creating a studyplan: " + error.message,
+      };
+      console.log(notification);
+    }
+  },
 
   async updateStudyPlan({ state, commit }) {
     await StudyPlanService.updateStudyPlan(state.studyPlan)
@@ -107,14 +140,13 @@ export const actions = {
       rootGetters["semester/getSemesters"],
       helperArrayForSemesterPlans
     );
-    await dispatch("updateStudyPlan", userId);
+    await dispatch("updateStudyPlan");
   },
 
   async moveCourse(
     { dispatch },
     { fromCourses, fromCourseIndex, toCourses, toCourseIndex }
   ) {
-    console.log("im dispatch");
     const courseToMove = fromCourses.splice(fromCourseIndex, 1)[0];
     if (toCourseIndex == undefined) {
       toCourses.push(courseToMove);

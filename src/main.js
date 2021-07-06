@@ -57,9 +57,16 @@ requireComponent.keys().forEach((fileName) => {
   );
 });
 
+store.subscribe((mutation, state) => {
+  // Store the state object as a JSON string
+  localStorage.setItem("store", JSON.stringify(state));
+});
 new Vue({
   router,
   store,
+  beforeCreate() {
+    this.$store.commit("initialiseStore", { root: true });
+  },
   render: function (h) {
     return h(App);
   },

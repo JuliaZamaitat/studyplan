@@ -17,4 +17,18 @@ export default {
       headers: authHeader(),
     });
   },
+  createStudyPlan(studyPlan) {
+    return server.post(`studyplan/create`, studyPlan, {
+      headers: authHeader(),
+    });
+  },
+  saveToUser(studyPlan, userId) {
+    return server.post(
+      `studyplan/save`,
+      { studyPlan, userId },
+      {
+        headers: authHeader(),
+      }
+    );
+  },
 };

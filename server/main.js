@@ -19,6 +19,8 @@ mongoose.connect(mongodbURI, { useNewUrlParser: true }).then(
   }
 );
 
+mongoose.set("useFindAndModify", false);
+
 app.use(
   express.urlencoded({
     extended: true,

@@ -12,11 +12,9 @@ const mongoose = require("mongoose"),
           semester: {
             type: Schema.Types.ObjectId,
             ref: "Semester",
-            required: true,
           },
           currentSemesterCount: {
             type: Number,
-            required: true,
           },
           plannedCourses: [
             {

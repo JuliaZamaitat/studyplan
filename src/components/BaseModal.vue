@@ -51,20 +51,17 @@ export default {
     };
   },
   async created() {
-    console.log("created");
     document.documentElement.style.overflow = "hidden";
     this.semester = this.getSemesterByName(this.$route.params.semester);
     if (this.$route.params.parentCode) {
       this.parentCourseCode = this.$route.params.parentCode;
     }
-    await this.$store.dispatch(
-      "course/fetchCourse",
-      {
-        program: "imi-b/1",
-        code: this.$route.params.code,
-        semester: this.semester.name,
-      } //change to dynamic version
-    );
+    await this.$store.dispatch("course/fetchCourse", {
+      program: this.$route.params.program.toLowerCase(),
+      version: this.$route.params.version,
+      code: this.$route.params.code,
+      semester: this.semester.name,
+    });
     this.fetching = false; //move to store maybe (state.pending)
   },
   async destroyed() {
@@ -73,6 +70,7 @@ export default {
   },
   computed: {
     ...mapState("course", ["course"]),
+    ...mapState("studyplan", ["studyPlan"]),
     ...mapGetters("semester", ["getSemesterByName"]),
   },
   methods: {

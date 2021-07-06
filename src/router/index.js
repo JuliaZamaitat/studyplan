@@ -6,6 +6,7 @@ import StudyPlan from "../views/StudyPlan.vue";
 import Help from "../views/Help.vue";
 import Profile from "../views/Profile.vue";
 import Register from "../views/Register.vue";
+import ProgramSelection from "../views/ProgramSelection.vue";
 import BaseModalChildCourse from "../components/BaseModalChildCourse.vue";
 import BaseModalParentCourse from "../components/BaseModalParentCourse.vue";
 
@@ -23,17 +24,22 @@ const routes = [
     component: Register,
   },
   {
+    path: "/select-program",
+    name: "ProgramSelection",
+    component: ProgramSelection,
+  },
+  {
     path: "/my-studyplan",
     name: "StudyPlan",
     component: StudyPlan,
     children: [
       {
-        path: ":code/:semester",
+        path: ":program/:version/:code/:semester",
         component: BaseModalParentCourse,
         name: "baseModalParentCourse",
       },
       {
-        path: ":parentCode/:code/:semester",
+        path: ":program/:version/:parentCode/:code/:semester",
         component: BaseModalChildCourse,
         name: "baseModalChildCourse",
       },

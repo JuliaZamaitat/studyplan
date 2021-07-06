@@ -25,7 +25,12 @@
             :class="{ booked: course.booked, passed: course.passed }"
             :to="{
               name: 'baseModalParentCourse',
-              params: { code: course.code, semester: semesterName.name },
+              params: {
+                program: studyPlan.program.code,
+                version: studyPlan.program.version,
+                code: course.code,
+                semester: semesterName.name,
+              },
             }"
           >
             <div
@@ -72,6 +77,7 @@ export default {
   },
   computed: {
     ...mapState("course", ["course"]),
+    ...mapState("studyplan", ["studyPlan"]),
   },
 
   methods: {

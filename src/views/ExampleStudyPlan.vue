@@ -12,15 +12,24 @@ import { mapState, mapGetters } from "vuex";
 
 export default {
   async created() {
-    await this.$store.dispatch("program/fetchProgram", "imi-b/1"); //change to dynamic call
+    await this.$store.dispatch("program/fetchProgram", {
+      code: this.user.studyPlan.program.code.toLowerCase(),
+      version: this.user.studyPlan.program.version,
+    });
   },
   computed: {
     ...mapState("program", ["program"]),
+    ...mapState("user", ["user"]),
     ...mapGetters("program", [
       "semester",
       "courses",
       "officialCoursesInSemester",
     ]),
+  },
+  mounted() {
+    if (!this.$store.state.user.user.startOfStudy) {
+      this.$router.push("/select-program");
+    }
   },
 };
 </script>

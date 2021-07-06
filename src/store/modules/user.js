@@ -30,6 +30,9 @@ export const mutations = {
   SET_REGISTER_FAILURE(state) {
     state.status.loggedIn = false;
   },
+  SET_USER(state, user) {
+    state.user = user;
+  },
 };
 
 export const actions = {
@@ -60,5 +63,34 @@ export const actions = {
         return Promise.reject(error);
       }
     );
+  },
+  async updateUser({ state, commit }) {
+    await UserService.updateUser(state.user)
+      .then((user) => {
+        commit("SET_USER", user);
+      })
+      .catch((error) => {
+        const notification = {
+          type: "error",
+          message: "There was a problem updating a user: " + error.message,
+        };
+        console.log(notification);
+      });
+  },
+  async saveProgramAndStartOfStudy(
+    { state, dispatch, commit },
+    { program, stupo, startOfStudy }
+  ) {
+    await dispatch(
+      "studyplan/createStudyPlan",
+      { program: program, stupo: stupo, userId: state.user.id },
+      { root: true }
+    );
+
+    state.user.startOfStudy = startOfStudy;
+    console.log("state", state.user);
+    await dispatch("updateUser");
+    console.log("finished", state.user);
+    return;
   },
 };

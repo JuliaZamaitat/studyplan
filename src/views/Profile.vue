@@ -7,8 +7,8 @@
 <script>
 export default {
   mounted() {
-    if (!this.$store.state.user.user) {
-      this.$router.push("/login");
+    if (!this.$store.state.user.user.startOfStudy) {
+      this.$router.push("/select-program");
     }
   },
 };

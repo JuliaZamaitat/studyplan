@@ -55,6 +55,7 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
+import { mapState } from "vuex";
 
 export default {
   data() {
@@ -78,8 +79,9 @@ export default {
     loggedIn() {
       return this.$store.state.user.status.loggedIn;
     },
+    ...mapState("studyplan", ["studyPlan"]),
   },
-  created() {
+  async created() {
     if (this.loggedIn) {
       this.$router.push("/my-studyplan");
     }
@@ -95,8 +97,13 @@ export default {
               password: this.password,
             })
             .then(
-              () => {
-                this.$router.push("/my-studyplan");
+              async (user) => {
+                if (!user.startOfStudy || !user.studyPlan) {
+                  this.$router.push("/select-program");
+                } else {
+                  console.log(this.$store.state);
+                  this.$router.push("/my-studyplan");
+                }
               },
               (error) => {
                 // this.loading = false;

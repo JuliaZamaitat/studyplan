@@ -10,22 +10,25 @@ import { mapState, mapGetters } from "vuex";
 
 export default {
   async created() {
-    await this.$store.dispatch("program/fetchProgram", "imi-b/1");
-    //change to dynamic call
+    await this.$store.dispatch("program/fetchProgram", {
+      code: this.user.studyPlan.program.code.toLowerCase(),
+      version: this.user.studyPlan.program.version,
+    });
+
     await this.$store.dispatch("semester/fetchSemesters");
-
-    await this.$store.dispatch(
-      "studyplan/fetchStudyPlan",
-      "60dcd209d707b572e05e2c54"
-    );
-
-    // this.$store.dispatch("course/getCourses");
+    await this.$store.dispatch("studyplan/fetchStudyPlan", `${this.user.id}`);
+  },
+  mounted() {
+    console.log("store", this.user);
+    if (!this.$store.state.user.user.startOfStudy) {
+      this.$router.push("/select-program");
+    }
   },
 
   computed: {
     ...mapState("program", ["program"]),
     ...mapState("studyplan", ["studyPlan"]),
-
+    ...mapState("user", ["user"]),
     ...mapGetters("studyplan", ["getSemesterPlans"]),
   },
 };

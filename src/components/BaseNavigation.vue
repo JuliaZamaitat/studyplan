@@ -1,7 +1,10 @@
 <template>
   <div>
     <div v-if="!mobileView" class="navigation">
-      <div v-if="currentUser" class="navigation-container">
+      <div
+        v-if="currentUser && currentUser.startOfStudy"
+        class="navigation-container"
+      >
         <router-link class="link" to="/my-studyplan"
           >Mein StudyPlan</router-link
         >
@@ -23,7 +26,10 @@
       </div>
     </div>
 
-    <div v-if="mobileView && currentUser" class="mobile-navigation">
+    <div
+      v-if="mobileView && currentUser && currentUser.startOfStudy"
+      class="mobile-navigation"
+    >
       <button @click="toggleMobileNavMenu">
         <font-awesome-icon class="icon" :icon="['fas', 'bars']" size="2x" />
       </button>

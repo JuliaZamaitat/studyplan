@@ -71,36 +71,63 @@ module.exports = {
   login: (req, res) => {
     User.findOne({
       username: req.body.username,
-    }).then((user, err) => {
-      console.log(err);
-      if (err) {
-        res.status(500).send({ message: err.message });
-        return;
-      }
-      if (!user) {
-        return res.status(404).send({ message: "User Not found." });
-      }
-      var passwordIsValid = bcrypt.compareSync(
-        req.body.password,
-        user.password
-      );
+    })
+      .populate("studyPlan")
+      .populate("startOfStudy")
+      .then((user, err) => {
+        console.log(err);
+        if (err) {
+          res.status(500).send({ message: err.message });
+          return;
+        }
+        if (!user) {
+          return res.status(404).send({ message: "User Not found." });
+        }
+        var passwordIsValid = bcrypt.compareSync(
+          req.body.password,
+          user.password
+        );
 
-      if (!passwordIsValid) {
-        return res.status(401).send({
-          accessToken: null,
-          message: "Invalid Password!",
+        if (!passwordIsValid) {
+          return res.status(401).send({
+            accessToken: null,
+            message: "Invalid Password!",
+          });
+        }
+        var token = jwt.sign({ id: user.id }, secret, {
+          expiresIn: 86400, // 24 hours
         });
-      }
-      var token = jwt.sign({ id: user.id }, secret, {
-        expiresIn: 86400, // 24 hours
+        user.accessToken = token;
+        res.status(200).send({
+          id: user._id,
+          username: user.username,
+          email: user.email,
+          startOfStudy: user.startOfStudy,
+          matriculationNumber: user.matriculationNumber,
+          studyPlan: user.studyPlan,
+          accessToken: user.accessToken,
+        });
       });
-      res.status(200).send({
-        id: user._id,
-        username: user.username,
-        email: user.email,
-
-        accessToken: token,
+    // });
+  },
+  update: async (req, res) => {
+    let userParams = {
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password,
+      matriculationNumber: req.body.matriculationNumber,
+      startOfStudy: req.body.startOfStudy,
+      studyPlan: req.body.studyPlan,
+      accessToken: req.body.accessToken,
+    };
+    User.findByIdAndUpdate(req.params.id, { $set: userParams }, { new: true })
+      .populate("studyPlan")
+      .populate("startOfStudy")
+      .then((user, err) => {
+        if (err) console.log(err.message);
+        else {
+          return res.json(user);
+        }
       });
-    });
   },
 };
