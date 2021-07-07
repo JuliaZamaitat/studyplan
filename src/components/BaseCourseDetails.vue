@@ -22,7 +22,6 @@
     </div>
 
     <div v-else>
-      hier
       <div v-if="course.child_courses.length > 0 && !isChildCourse">
         <h3 v-if="requiredCourses.length == 0">
           Muss belegt werden durch einer dieser Kurse
