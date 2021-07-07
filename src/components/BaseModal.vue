@@ -1,7 +1,14 @@
 <!--source https://www.digitalocean.com/community/tutorials/vuejs-vue-modal-component -->
 
 <template>
-  <div class="overlay" @click.self="$router.push('/my-studyplan')">
+  <div
+    class="overlay"
+    @click.self="
+      isExampleStudyPlan
+        ? $router.push('/example-studyplan')
+        : $router.push('/my-studyplan')
+    "
+  >
     <div class="modal">
       <header class="modal-header">
         <button
@@ -26,6 +33,7 @@
           :semester="semester"
           :isChildCourse="isChildCourse"
           :parentCourseCode="parentCourseCode"
+          :isExampleStudyPlan="isExampleStudyPlan"
         />
       </section>
     </div>
@@ -54,20 +62,24 @@ export default {
         default: "false",
       },
       color: "#76b900",
+      isExampleStudyPlan: false,
     };
   },
   async created() {
     this.pending = true;
+    this.isExampleStudyPlan =
+      this.$route.fullPath.includes("example-studyplan");
     document.documentElement.style.overflow = "hidden";
     this.semester = this.getSemesterByName(this.$route.params.semester);
     if (this.$route.params.parentCode) {
       this.parentCourseCode = this.$route.params.parentCode;
     }
+
     await this.$store.dispatch("course/fetchCourse", {
       program: this.$route.params.program.toLowerCase(),
       version: this.$route.params.version,
       code: this.$route.params.code,
-      semester: this.semester.name,
+      semester: this.semester ? this.semester.name : undefined,
     });
     this.pending = false;
   },

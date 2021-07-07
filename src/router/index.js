@@ -49,6 +49,18 @@ const routes = [
     path: "/example-studyplan",
     name: "ExampleStudyPlan",
     component: ExampleStudyPlan,
+    children: [
+      {
+        path: ":program/:version/:code",
+        component: BaseModalParentCourse,
+        name: "exampleStudyplanBaseModalParentCourse",
+      },
+      {
+        path: ":program/:version/:parentCode/:code",
+        component: BaseModalChildCourse,
+        name: "exampleStudyplanBaseModalChildCourse",
+      },
+    ],
   },
   {
     path: "/hilfe",

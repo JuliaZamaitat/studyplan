@@ -11,26 +11,45 @@
             <p class="semesterCount">{{ semester[0].semester }}. Semester</p>
             <p>{{ ects(semester) }} ECTS</p>
           </div>
-          <div class="secondContainer">
+
+          <div class="courses">
             <div
               class="course"
               :style="{ width: courseWidth(course) }"
               v-for="course in semester"
               :key="course.id"
             >
-              <div class="text">
-                <p>{{ course.code }}</p>
-                <p>{{ course.name }}</p>
-              </div>
+              <router-link
+                class="course-content-container"
+                :to="{
+                  name: 'exampleStudyplanBaseModalParentCourse',
+                  params: {
+                    program: studyPlan.program.code,
+                    version: studyPlan.program.version,
+                    code: course.code,
+                  },
+                }"
+              >
+                <div class="course-content-container-content">
+                  <div class="course-content-container-content-text">
+                    <p class="course-content-container-content-text--code">
+                      {{ course.code }}
+                    </p>
+                    <p>{{ course.name }}</p>
+                  </div>
+                </div>
+              </router-link>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   props: {
     coursesInSemester: {
@@ -51,11 +70,19 @@ export default {
       return `${width}px`;
     },
   },
+  computed: {
+    ...mapState("course", ["course"]),
+    ...mapState("studyplan", ["studyPlan"]),
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
+a {
+  text-decoration: none;
+  color: inherit;
+}
 
 .container {
   display: grid;
@@ -107,34 +134,52 @@ $htwGruen: #76b900;
       }
     }
 
-    .secondContainer {
+    .courses {
       min-width: 0;
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
+      align-items: center;
 
       .course {
-        margin: 20px 25px 20px 0;
-        min-height: 87px;
-        background: #beebae;
-        border-radius: 14px;
-        display: inline-block;
+        padding: 20px 25px 20px 0;
+        display: flex;
+        align-items: center;
 
-        .text {
-          max-width: 100%;
-          height: 100%;
-          overflow: hidden;
+        &-content-container {
+          border-radius: 14px;
+
+          position: relative;
+          background: #beebae;
+          min-height: 87px;
+          width: 100%;
           display: flex;
-          flex-direction: column;
           justify-content: center;
           align-items: center;
-          p {
-            padding: 0px;
-            font-size: 12px;
-            padding: 3px;
-            margin: 0;
-            max-width: 95%;
-            word-wrap: break-word;
+
+          &-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            width: 100%;
+            min-height: 87px;
+
+            &-text {
+              max-width: 100%;
+              height: 100%;
+              overflow: hidden;
+
+              p {
+                padding: 0px;
+                font-size: 12px;
+                padding: 3px;
+                margin: 0;
+                max-width: 95%;
+                word-wrap: break-word;
+                border-radius: 14px;
+              }
+            }
           }
         }
       }

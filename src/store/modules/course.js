@@ -37,12 +37,22 @@ export const actions = {
   ) {
     //ask for the semester route -> if there is a 404, so no semester info is there yet,
     // check the basic vuex course state
+    console.log(program, version, code, semester);
     try {
       commit("SET_PENDING", true);
       console.log(state.pending);
       if (!semester) {
         var course = getters.getCourseByCode(code); //take the basic stored course
+        if (!course) {
+          const response = await CourseService.fetchCourse(
+            program,
+            version,
+            code
+          );
+          course = response.data;
+        }
         if (course) {
+          console.log("course", course);
           commit("SET_COURSE", course);
         }
       } else {

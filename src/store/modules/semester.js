@@ -38,6 +38,7 @@ export const actions = {
 
 export const getters = {
   getSemesterByName: (state) => (name) => {
+    if (!name) return;
     return state.semesters.find(
       (semester) => semester.name.toLowerCase() === name.toLowerCase()
     );

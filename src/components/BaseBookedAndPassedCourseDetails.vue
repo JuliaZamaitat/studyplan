@@ -1,0 +1,416 @@
+<template>
+  <div>
+    <!-- Bestanden/Belegt wenn keine Child Courses -->
+    <div v-if="course.child_courses.length == 0" class="checkbox">
+      <Checkbox
+        id="mycheck1"
+        :class="{ booked: booked }"
+        v-model="booked"
+        :value="booked"
+        color="rgba(253, 177, 62, 1)"
+        @change="toggleBooked($event, course.course.code, semester)"
+        :disabled="passed"
+        >Belegt
+      </Checkbox>
+
+      <Checkbox
+        id="mycheck2"
+        v-model="passed"
+        :class="{ passed: passed }"
+        :value="passed"
+        color="#76b900"
+        @change="togglePassed($event, course.course.code, semester)"
+        :disabled="!booked"
+        >Bestanden
+      </Checkbox>
+    </div>
+
+    <!--Belegt/Bestanden mit Child Courses -->
+    <div v-if="course.child_courses.length > 0 && !isChildCourse">
+      <!-- wenn nicht belegt -->
+      <div v-if="!booked">
+        <h3 v-if="requiredCourses.length == 0">
+          Muss belegt werden durch einer dieser Kurse
+        </h3>
+        <h3 v-else>Muss durch folgende Kurse belegt werden</h3>
+
+        <div class="childCourses">
+          <div
+            class="childCourses-course"
+            v-for="childCourse in unbookedChildCourses"
+            :key="childCourse.id"
+          >
+            <router-link
+              class="course-content-container"
+              :to="{
+                name: 'baseModalChildCourse',
+                params: {
+                  parentCode: course.course.code,
+                  code: childCourse.code,
+                  semester: semester.name,
+                  requiredParentCourses: requiredCourses,
+                },
+              }"
+            >
+              <div class="childCourses-course-content-text">
+                <p class="childCourses-course-content-text--code">
+                  {{ childCourse.code }}
+                </p>
+                <p>{{ childCourse.name }}</p>
+              </div>
+            </router-link>
+          </div>
+        </div>
+      </div>
+
+      <!-- wenn 1 bis n Kurse belegt -->
+      <div v-if="booked">
+        <!-- wenn belegt ohne required Kurse-->
+        <div v-if="!requiredCourses || requiredCourses.length == 0">
+          <h3 v-if="!passed" class="bookedThrough">Belegt durch</h3>
+          <h3 v-else class="passedThrough">Bestanden durch</h3>
+          <div class="childCourses">
+            <div
+              class="childCourses-course"
+              :class="{
+                'childCourses-course--booked': booked,
+                'childCourses-course--passed': passed,
+              }"
+              v-for="childCourse in bookedOrPassedThroughCourses.bookedThrough"
+              :key="childCourse.id"
+            >
+              <router-link
+                class="course-content-container"
+                :to="{
+                  name: 'baseModalChildCourse',
+                  params: {
+                    parentCode: course.course.code,
+                    code: childCourse,
+                    semester: semester.name,
+                    requiredParentCourses: requiredCourses,
+                  },
+                }"
+              >
+                <div class="childCourses-course-content-text">
+                  <p class="childCourses-course-content-text--code">
+                    {{ childCourse }}
+                  </p>
+                  <p>{{ getNameOfChildCourse(childCourse) }}</p>
+                </div>
+              </router-link>
+            </div>
+          </div>
+        </div>
+
+        <!-- wenn belegt und required Kurse -->
+        <div v-if="requiredCourses.length != 0">
+          <!-- wenn alle required Kurse belegt, aber nicht bestanden wurden -->
+          <h3
+            v-if="
+              bookedOrPassedThroughCourses.bookedThrough.length ==
+                requiredCourses.length &&
+              bookedOrPassedThroughCourses.passedThrough.length !=
+                requiredCourses.length
+            "
+            class="bookedThrough"
+          >
+            Belegt durch
+          </h3>
+
+          <!-- wenn noch nicht alle required Kurse belegt wurden -->
+          <h3
+            v-if="
+              bookedOrPassedThroughCourses.bookedThrough.length !=
+              requiredCourses.length
+            "
+          >
+            Noch nicht vollständig belegt, belege noch nicht belegte Kurse
+          </h3>
+          <!-- wenn alle required Kurse bestanden wurden -->
+          <h3
+            v-if="
+              bookedOrPassedThroughCourses.passedThrough.length ==
+              requiredCourses.length
+            "
+            class="passedThrough"
+          >
+            Bestanden durch
+          </h3>
+          <div class="childCourses">
+            <div
+              class="childCourses-course"
+              :class="{
+                'childCourses-course--booked':
+                  bookedOrPassedThroughCourses.bookedThrough
+                    ? bookedOrPassedThroughCourses.bookedThrough.indexOf(
+                        childCourse.course.code
+                      ) != -1
+                    : false,
+                'childCourses-course--passed':
+                  bookedOrPassedThroughCourses.passedThrough
+                    ? bookedOrPassedThroughCourses.passedThrough.indexOf(
+                        childCourse.course.code
+                      ) != -1
+                    : false,
+              }"
+              v-for="childCourse in course.child_courses"
+              :key="childCourse.id"
+            >
+              <router-link
+                class="course-content-container"
+                :to="{
+                  name: 'baseModalChildCourse',
+                  params: {
+                    parentCode: course.course.code,
+                    code: childCourse.course.code,
+                    semester: semester.name,
+                    requiredParentCourses: requiredCourses,
+                  },
+                }"
+              >
+                <div class="childCourses-course-content-text">
+                  <p class="childCourses-course-content-text--code">
+                    {{ childCourse.course.code }}
+                  </p>
+                  <p>{{ childCourse.course.name }}</p>
+                </div>
+              </router-link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Allgemeine Informationen -->
+  </div>
+</template>
+
+<script>
+import Checkbox from "vue-material-checkbox";
+import { mapGetters } from "vuex";
+export default {
+  components: { Checkbox },
+  props: {
+    course: {
+      type: Object,
+      required: true,
+    },
+    isChildCourse: {
+      type: Boolean,
+      required: true,
+    },
+    parentCourseCode: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    semester: {
+      type: Object,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      booked: false,
+      passed: false,
+      requiredCourses: [],
+      requiredParentCourses: [],
+    };
+  },
+  created() {
+    let states = this.$store.getters["studyplan/getStateOfCourse"](
+      this.course.course.code,
+      this.parentCourseCode,
+      this.semester
+    );
+    this.booked = states.booked;
+    this.passed = states.passed;
+    this.getRequiredCourses();
+  },
+  computed: {
+    ...mapGetters("studyplan", [
+      "getBookedAndPassedThroughCourses",
+      "getIsChildCourseBookedYet",
+    ]),
+    bookedOrPassedThroughCourses() {
+      if (this.course.child_courses || this.course.child_courses.length != 0) {
+        let bookedAndPassedThroughCourses =
+          this.getBookedAndPassedThroughCourses(
+            this.course.course.code,
+            this.semester
+          );
+        return {
+          bookedThrough: bookedAndPassedThroughCourses.bookedThrough,
+          passedThrough: bookedAndPassedThroughCourses.passedThrough,
+        };
+      }
+      return {};
+    },
+    unbookedChildCourses() {
+      const array = [];
+      for (let i in this.course.child_courses) {
+        if (
+          !this.getIsChildCourseBookedYet(
+            this.course.child_courses[i].course.code
+          )
+        ) {
+          array.push(this.course.child_courses[i].course);
+        }
+      }
+
+      return array;
+    },
+  },
+  methods: {
+    toggleBooked(e, courseCode, semester) {
+      this.$store.dispatch("studyplan/toggleBookedStateOfCourseInSemester", {
+        courseCode: courseCode,
+        parentCourseCode: this.parentCourseCode,
+        semester: semester,
+        requiredCourses: this.requiredParentCourses,
+      });
+    },
+
+    togglePassed(e, courseCode, semester) {
+      this.$store.dispatch("studyplan/togglePassedStateOfCourseInSemester", {
+        courseCode: courseCode,
+        parentCourseCode: this.parentCourseCode,
+        semester: semester,
+        requiredCourses: this.requiredParentCourses,
+      });
+    },
+
+    getNameOfChildCourse(childCourseCode) {
+      for (let i in this.course.child_courses) {
+        if (this.course.child_courses[i].course.code == childCourseCode)
+          return this.course.child_courses[i].course.name;
+      }
+    },
+
+    getRequiredCourses() {
+      if (this.isChildCourse) {
+        this.requiredParentCourses = this.$route.params.requiredParentCourses;
+      }
+      if (!this.course.child_courses || this.course.child_courses.length == 0)
+        return [];
+      for (let i in this.course.child_courses) {
+        if (
+          this.course.child_courses[i].course_connection.required == "required"
+        ) {
+          this.requiredCourses.push(this.course.child_courses[i]);
+        }
+      }
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+$htwGruen: #76b900;
+$belegtFont: rgba(253, 177, 62, 1);
+$belegtBackground: rgba(253, 177, 62, 0.55);
+a {
+  text-decoration: none;
+  color: inherit;
+}
+.checkbox {
+  margin: 0 auto;
+  width: 40%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+::v-deep .booked > label:first-of-type {
+  color: rgba(253, 177, 62, 1);
+}
+
+::v-deep .passed > label:first-of-type {
+  color: #76b900;
+}
+
+::v-deep .m-chckbox--group {
+  transition: all 0.1s ease;
+}
+
+::v-deep .m-chckbox--ripple {
+  transform: translate(0) !important;
+}
+
+h3 {
+  font-size: 18px;
+}
+.bookedThrough {
+  color: $belegtFont;
+}
+.passedThrough {
+  color: $htwGruen;
+}
+h4 {
+  color: $htwGruen;
+}
+
+.hint {
+  font-size: 12px;
+  font-style: italic;
+}
+
+.childCourses {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+
+  &-course {
+    background: rgba(193, 193, 193, 0.55);
+    border: 1px solid #c1c1c1;
+
+    min-height: 87px;
+    width: 10vw;
+    border-radius: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 9px;
+
+    &--booked {
+      background: $belegtBackground;
+      border: 1px solid $belegtFont;
+    }
+
+    &--passed {
+      background: rgba(118, 185, 0, 0.45);
+      border: 1px solid $htwGruen;
+    }
+    &-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto;
+      width: 100%;
+      &-text {
+        max-width: 100%;
+        height: 100%;
+        overflow: hidden;
+        border-radius: 14px;
+
+        &--code {
+          font-weight: 700;
+        }
+
+        p {
+          padding: 0px;
+          font-size: 12px;
+          padding: 3px;
+          margin: 0;
+          max-width: 95%;
+          word-wrap: break-word;
+          border-radius: 14px;
+        }
+      }
+    }
+  }
+}
+</style>

@@ -2,6 +2,14 @@ import Api from "@/services/Api/Api";
 import authHeader from "../AuthHeader";
 
 export default {
+  fetchCourse(program, version, code) {
+    code = code.replace(/\./g, "-").toLowerCase();
+    program = program.replace(/\//g, "");
+    version = version.replace(/\//g, "");
+    return Api().get(`${program}/${version}/${code}`, {
+      headers: authHeader(),
+    });
+  },
   fetchCourseWithSemester(program, version, code, semester) {
     code = code.replace(/\./g, "-").toLowerCase();
     semester = semester.replace(/\//g, "");
