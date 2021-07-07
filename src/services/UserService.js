@@ -4,8 +4,6 @@ const server = axios.create({
   baseURL: `http://localhost:3000`,
 });
 
-import authHeader from "./AuthHeader";
-
 export default {
   login(user) {
     return server
@@ -35,13 +33,6 @@ export default {
     });
   },
   updateUser(user) {
-    return server
-      .put(`users/${user._id}`, user, {
-        headers: authHeader(),
-      })
-      .then((response) => {
-        localStorage.setItem("user", JSON.stringify(response.data));
-        return response.data;
-      });
+    return server.post("users/update", user);
   },
 };

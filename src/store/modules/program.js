@@ -6,57 +6,60 @@ export const state = {
   programs: [],
   program: {},
   programsTotal: 0,
+  pending: false,
 };
 
 export const mutations = {
   SET_PROGRAMS(state, programs) {
     state.programs = programs;
   },
-  SET_PROGRAMS_TOTAL(state, programsTotal) {
-    state.programsTotal = programsTotal;
-  },
   SET_PROGRAM(state, program) {
     state.program = program;
+  },
+  SET_PENDING(state, status) {
+    state.pending = status;
   },
 };
 
 export const actions = {
   async fetchPrograms({ commit }) {
-    await ProgramService.fetchPrograms()
-      .then((response) => {
-        commit(
-          "SET_PROGRAMS_TOTAL",
-          parseInt(response.headers["x-total-count"])
-        );
-        commit("SET_PROGRAMS", response.data);
-      })
-      .catch((error) => {
-        const notification = {
-          type: "error",
-          message: "There was a problem fetching programs: " + error.message,
-        };
-        console.log(notification);
-      });
+    try {
+      commit("SET_PENDING", true);
+      const response = await ProgramService.fetchPrograms();
+      const programs = response.data;
+
+      commit("SET_PROGRAMS", programs);
+    } catch (error) {
+      const notification = {
+        type: "error",
+        message: "There was a problem fetching programs: " + error.message,
+      };
+      console.log(notification);
+    } finally {
+      commit("SET_PENDING", false);
+    }
   },
   async fetchProgram({ commit, getters }, { code, version }) {
-    var program = getters.getProgramByCodeAndVersion(code, version); //and version
-    if (program) {
-      commit("SET_PROGRAM", program);
-      console.log("not fetching program");
-    } else {
-      await ProgramService.fetchProgram(code, version)
-        .then((response) => {
-          let program = response.data;
-          program.version = version;
-          commit("SET_PROGRAM", program);
-        })
-        .catch((error) => {
-          const notification = {
-            type: "error",
-            message: "There was a problem fetching a program: " + error.message,
-          };
-          console.log(notification);
-        });
+    commit("SET_PENDING", true);
+    try {
+      var program = getters.getProgramByCodeAndVersion(code, version);
+      if (program) {
+        commit("SET_PROGRAM", program);
+      } else {
+        const response = await ProgramService.fetchProgram(code, version);
+        let program = response.data;
+        program.version = version;
+
+        commit("SET_PROGRAM", program);
+      }
+    } catch (error) {
+      const notification = {
+        type: "error",
+        message: "There was a problem fetching a program: " + error.message,
+      };
+      console.log(notification);
+    } finally {
+      commit("SET_PENDING", false);
     }
   },
 };

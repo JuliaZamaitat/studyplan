@@ -6,8 +6,8 @@ export const namespaced = true;
 
 const user = JSON.parse(localStorage.getItem("user"));
 const initialState = user
-  ? { status: { loggedIn: true }, user }
-  : { status: { loggedIn: false }, user: null };
+  ? { status: { loggedIn: true }, user, pending: false }
+  : { status: { loggedIn: false }, user: null, pending: false };
 
 export const state = initialState;
 
@@ -33,6 +33,9 @@ export const mutations = {
   SET_USER(state, user) {
     state.user = user;
   },
+  SET_PENDING(state, status) {
+    state.pending = status;
+  },
 };
 
 export const actions = {
@@ -52,7 +55,7 @@ export const actions = {
     UserService.logout();
     commit("SET_LOGOUT");
   },
-  register({ commit }, user) {
+  async register({ commit }, user) {
     return UserService.register(user).then(
       (response) => {
         commit("SET_REGISTER_SUCCESS");
@@ -65,17 +68,19 @@ export const actions = {
     );
   },
   async updateUser({ state, commit }) {
-    await UserService.updateUser(state.user)
-      .then((user) => {
-        commit("SET_USER", user);
-      })
-      .catch((error) => {
-        const notification = {
-          type: "error",
-          message: "There was a problem updating a user: " + error.message,
-        };
-        console.log(notification);
-      });
+    try {
+      commit("SET_PENDING", true);
+      const user = await UserService.updateUser(state.user);
+      commit("SET_USER", user);
+    } catch (error) {
+      const notification = {
+        type: "error",
+        message: "There was a problem updating a user: " + error.message,
+      };
+      console.log(notification);
+    } finally {
+      commit("SET_PENDING", false);
+    }
   },
   async saveProgramAndStartOfStudy(
     { state, dispatch, commit },
@@ -90,7 +95,6 @@ export const actions = {
     state.user.startOfStudy = startOfStudy;
     console.log("state", state.user);
     await dispatch("updateUser");
-    console.log("finished", state.user);
     return;
   },
 };

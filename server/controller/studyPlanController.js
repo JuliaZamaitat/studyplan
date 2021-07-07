@@ -21,6 +21,7 @@ module.exports = {
   },
   show: (req, res) => {
     let userId = req.params.id;
+    console.log("id", req.params);
     User.findById(userId)
       .then((user) => {
         StudyPlan.findById(user.studyPlan)

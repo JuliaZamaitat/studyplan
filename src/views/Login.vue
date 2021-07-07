@@ -97,15 +97,15 @@ export default {
               password: this.password,
             })
             .then(
-              async (user) => {
+              (user) => {
                 if (!user.startOfStudy || !user.studyPlan) {
                   this.$router.push("/select-program");
                 } else {
-                  console.log(this.$store.state);
                   this.$router.push("/my-studyplan");
                 }
               },
               (error) => {
+                console.log("error,", error);
                 // this.loading = false;
                 this.message =
                   (error.response &&

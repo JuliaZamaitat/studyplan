@@ -2,8 +2,8 @@
   <div>
     <h1>Willkommen zu deinem Studyplan!</h1>
     <h2>Plane dein Studium und behalte den Überblick!</h2>
-    <h3>Registriere dich</h3>
-    <div class="line"></div>
+    <h3 v-if="!successful">Registriere dich</h3>
+    <div v-if="!successful" class="line"></div>
     <form name="form" @submit.prevent="handleRegister">
       <div v-if="!successful">
         <div>
@@ -65,8 +65,16 @@
         </div>
       </div>
     </form>
-    <div v-if="message" class="error-message">
+    <div
+      v-if="message"
+      class="message"
+      :class="{
+        'message message--error': !successful,
+        'message message--success': successful,
+      }"
+    >
       {{ message }}
+      <a v-if="successful" class="login-link" href="/login">Zum Login</a>
     </div>
   </div>
 </template>
@@ -110,6 +118,7 @@ export default {
   methods: {
     handleRegister() {
       this.$v.$touch();
+
       if (!this.$v.$invalid) {
         this.message = "";
         this.submitted = true;
@@ -136,7 +145,6 @@ export default {
             }
           );
       }
-      // });
     },
   },
 };
@@ -212,10 +220,21 @@ input[type="submit"] {
   cursor: auto;
 }
 
-.error-message {
-  color: red;
-  margin-bottom: 30px;
-  margin-top: 0;
+.message {
+  &--error {
+    color: red;
+    margin-bottom: 30px;
+    margin-top: 0;
+  }
+  &--success {
+    margin-top: 50px;
+    color: $htwGruen;
+  }
+
+  a {
+    margin-top: 20px;
+    font-weight: bold;
+  }
 }
 
 .error {

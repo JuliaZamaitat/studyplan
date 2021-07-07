@@ -60,7 +60,7 @@ module.exports = {
     // eslint-disable-next-line no-unused-vars
     user.save((err, user) => {
       if (err) {
-        res.status(500).send({ message: err });
+        res.status(500).send({ message: err.message });
         return;
       } else {
         res.send({ message: "User was successfully registered!" });
@@ -77,7 +77,7 @@ module.exports = {
       .then((user, err) => {
         console.log(err);
         if (err) {
-          res.status(500).send({ message: err.message });
+          res.status(500).send({ message: err });
           return;
         }
         if (!user) {
@@ -98,12 +98,13 @@ module.exports = {
           expiresIn: 86400, // 24 hours
         });
         user.accessToken = token;
+        user.save();
+        console.log("user.accessToken", user.accessToken);
         res.status(200).send({
           id: user._id,
           username: user.username,
           email: user.email,
           startOfStudy: user.startOfStudy,
-          matriculationNumber: user.matriculationNumber,
           studyPlan: user.studyPlan,
           accessToken: user.accessToken,
         });
@@ -115,7 +116,6 @@ module.exports = {
       username: req.body.username,
       email: req.body.email,
       password: req.body.password,
-      matriculationNumber: req.body.matriculationNumber,
       startOfStudy: req.body.startOfStudy,
       studyPlan: req.body.studyPlan,
       accessToken: req.body.accessToken,

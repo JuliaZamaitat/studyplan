@@ -20,11 +20,7 @@ export default {
   computed: {
     ...mapState("program", ["program"]),
     ...mapState("user", ["user"]),
-    ...mapGetters("program", [
-      "semester",
-      "courses",
-      "officialCoursesInSemester",
-    ]),
+    ...mapGetters("program", ["officialCoursesInSemester"]),
   },
   mounted() {
     if (!this.$store.state.user.user.startOfStudy) {

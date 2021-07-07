@@ -1,7 +1,8 @@
 const User = require("../model/user"),
   StudyPlan = require("../model/studyPlan"),
   Semester = require("../model/semester"),
-  mongoose = require("mongoose");
+  mongoose = require("mongoose"),
+  bcrypt = require("bcryptjs");
 
 //connect mongoose
 const mongo = process.env.MONGODB_URI || "mongodb://localhost:27017/studyplan";
@@ -36,9 +37,8 @@ async function loadUsersAndStudyPlansWithSemester() {
   const userData = [
     new User({
       username: "test",
+      password: bcrypt.hashSync("test", 8),
       email: "test@mail.de",
-      //password
-      matriculationNumber: "123456",
       startOfStudy: sose18._id,
     }),
   ];

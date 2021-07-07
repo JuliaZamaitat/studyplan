@@ -6,115 +6,118 @@ export const namespaced = true;
 export const state = {
   studyPlans: [],
   studyPlan: {},
-  studyPlansTotal: 0,
+  pending: false,
 };
 export const mutations = {
   SET_STUDYPLANS(state, studyPlans) {
     state.studyPlans = studyPlans;
   },
-  SET_STUDYPLANS_TOTAL(state, studyPlansTotal) {
-    state.studyPlansTotal = studyPlansTotal;
-  },
   SET_STUDYPLAN(state, studyPlan) {
     state.studyPlan = studyPlan;
+  },
+  SET_PENDING(state, status) {
+    state.pending = status;
   },
 };
 
 export const actions = {
   async fetchStudyPlans({ commit }) {
-    await StudyPlanService.fetchStudyPlans()
-      .then((response) => {
-        commit(
-          "SET_STUDYPLANS_TOTAL",
-          parseInt(response.headers["x-total-count"])
-        );
-        commit("SET_STUDYPLANS", response.data);
-      })
-      .catch((error) => {
-        const notification = {
-          type: "error",
-          message: "There was a problem fetching studyplans: " + error.message,
-        };
-        console.log(notification);
-      });
+    try {
+      commit("SET_PENDING", true);
+      const response = await StudyPlanService.fetchStudyPlans();
+      const studyplans = response.data;
+      commit("SET_STUDYPLANS", studyplans);
+    } catch (error) {
+      const notification = {
+        type: "error",
+        message: "There was a problem fetching studyplans: " + error.message,
+      };
+      console.log(notification);
+    } finally {
+      commit("SET_PENDING", false);
+    }
   },
   async fetchStudyPlan({ commit, dispatch, getters }, userId) {
-    var studyPlan = getters.getStudyPlanByUserId(userId);
-    if (studyPlan) {
-      commit("SET_STUDYPLAN", studyPlan);
-    } else {
-      await StudyPlanService.fetchStudyPlan(userId)
-        .then((response) => {
-          console.log("fetching");
-          commit("SET_STUDYPLAN", response.data);
-          if (
-            !response.data.semesterPlans ||
-            response.data.semesterPlans.length === 0
-          ) {
-            console.log("dispatching");
-            dispatch("fillEmptyStudyPlanWithOfficalCourses", userId);
-          }
-        })
-        .catch((error) => {
-          const notification = {
-            type: "error",
-            message:
-              "There was a problem fetching a studyplan: " + error.message,
-          };
-          console.log(notification);
-        });
+    try {
+      commit("SET_PENDING", true);
+      var studyPlan = getters.getStudyPlanByUserId(userId);
+      if (studyPlan) {
+        commit("SET_STUDYPLAN", studyPlan);
+      } else {
+        console.log("action", userId);
+        const response = await StudyPlanService.fetchStudyPlan(userId);
+        const studyPlan = response.data;
+        commit("SET_STUDYPLAN", studyPlan);
+
+        if (!studyPlan.semesterPlans || studyPlan.semesterPlans.length == 0) {
+          await dispatch("fillEmptyStudyPlanWithOfficalCourses", userId);
+        }
+      }
+    } catch (error) {
+      const notification = {
+        type: "error",
+        message: "There was a problem fetching a studyplan: " + error.message,
+      };
+      console.log(notification);
+    } finally {
+      commit("SET_PENDING", false);
     }
   },
   async createStudyPlan(
     { state, commit, rootState, dispatch },
     { program, stupo, userId }
   ) {
-    state.studyPlan = {
-      program: {
-        code: program.code,
-        name: program.name,
-        version: stupo,
-      },
-    };
     try {
-      let studyplan = await StudyPlanService.createStudyPlan(state.studyPlan);
-      if (studyplan) {
-        commit("SET_STUDYPLAN", studyplan.data);
-        await StudyPlanService.saveToUser(state.studyPlan, userId).then(
-          (response) => {
-            console.log("response", response.data);
-            if (response.data) {
-              rootState.user.user = response.data;
-              dispatch("user/updateUser", {}, { root: true });
-            }
-          }
-        );
-      }
+      commit("SET_PENDING", true);
+      state.studyPlan = {
+        program: {
+          code: program.code,
+          name: program.name,
+          version: stupo,
+        },
+      };
+
+      const response = await StudyPlanService.createStudyPlan(state.studyPlan);
+      const studyPlan = response.data;
+
+      commit("SET_STUDYPLAN", studyPlan);
+      const userResponse = await StudyPlanService.saveToUser(
+        state.studyPlan,
+        userId
+      );
+      const user = userResponse.data;
+      rootState.user.user = user;
+      dispatch("user/updateUser", {}, { root: true });
     } catch (error) {
       const notification = {
         type: "error",
         message: "There was a problem creating a studyplan: " + error.message,
       };
       console.log(notification);
+    } finally {
+      commit("SET_PENDING", false);
     }
   },
 
   async updateStudyPlan({ state, commit }) {
-    await StudyPlanService.updateStudyPlan(state.studyPlan)
-      .then((response) => {
-        commit("SET_STUDYPLAN", response.data);
-      })
-      .catch((error) => {
-        const notification = {
-          type: "error",
-          message: "There was a problem updating a studyplan: " + error.message,
-        };
-        console.log(notification);
-      });
+    try {
+      commit("SET_PENDING", true);
+      const response = await StudyPlanService.updateStudyPlan(state.studyPlan);
+      const studyPlan = response.data;
+      commit("SET_STUDYPLAN", studyPlan);
+    } catch (error) {
+      const notification = {
+        type: "error",
+        message: "There was a problem updating a studyplan: " + error.message,
+      };
+      console.log(notification);
+    } finally {
+      commit("SET_PENDING", false);
+    }
   },
 
   async fillEmptyStudyPlanWithOfficalCourses(
-    { rootGetters, dispatch },
+    { state, rootGetters, dispatch },
     userId
   ) {
     let helperArrayForSemesterPlans = [];
@@ -136,10 +139,12 @@ export const actions = {
       };
       helperArrayForSemesterPlans.push(obj);
     }
+
     state.studyPlan.semesterPlans = assignSemestersToSemesterPlans(
       rootGetters["semester/getSemesters"],
       helperArrayForSemesterPlans
     );
+
     await dispatch("updateStudyPlan");
   },
 

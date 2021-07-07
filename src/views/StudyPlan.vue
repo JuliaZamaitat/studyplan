@@ -16,7 +16,8 @@ export default {
     });
 
     await this.$store.dispatch("semester/fetchSemesters");
-    await this.$store.dispatch("studyplan/fetchStudyPlan", `${this.user.id}`);
+    console.log(this.user._id);
+    await this.$store.dispatch("studyplan/fetchStudyPlan", `${this.user._id}`);
   },
   mounted() {
     console.log("store", this.user);

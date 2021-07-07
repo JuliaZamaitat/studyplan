@@ -5,6 +5,7 @@ const mongoose = require("mongoose"),
       username: {
         type: String,
         trim: true,
+        unique: true,
       },
       email: {
         type: String,
@@ -15,11 +16,6 @@ const mongoose = require("mongoose"),
       password: {
         type: String,
         required: true,
-      },
-      matriculationNumber: {
-        type: String,
-        lowercase: true,
-        unique: true,
       },
       startOfStudy: {
         type: Schema.Types.ObjectId,
