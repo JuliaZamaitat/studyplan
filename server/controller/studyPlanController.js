@@ -57,6 +57,7 @@ module.exports = {
   },
   saveToUser: (req, res) => {
     let userId = req.body.userId;
+    console.log("saveToUser", userId);
     let studyPlan = req.body.studyPlan;
     User.findById(userId).then((user) => {
       user.studyPlan = studyPlan;

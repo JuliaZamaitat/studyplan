@@ -17,7 +17,7 @@ export default {
         type: Boolean,
         default: "false",
       },
-      color: "rgb(143, 44,27)",
+      color: "#76b900",
     };
   },
   async created() {

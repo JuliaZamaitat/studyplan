@@ -18,8 +18,10 @@
       </header>
 
       <section class="modal-body">
+        <pulse-loader :loading="pending" :color="color"></pulse-loader>
+
         <BaseCourseDetails
-          v-if="!fetching"
+          v-if="!pending"
           :course="course"
           :semester="semester"
           :isChildCourse="isChildCourse"
@@ -47,10 +49,15 @@ export default {
         type: Object,
       },
       parentCourseCode: null,
-      fetching: true,
+      pending: {
+        type: Boolean,
+        default: "false",
+      },
+      color: "#76b900",
     };
   },
   async created() {
+    this.pending = true;
     document.documentElement.style.overflow = "hidden";
     this.semester = this.getSemesterByName(this.$route.params.semester);
     if (this.$route.params.parentCode) {
@@ -62,7 +69,7 @@ export default {
       code: this.$route.params.code,
       semester: this.semester.name,
     });
-    this.fetching = false; //move to store maybe (state.pending)
+    this.pending = false;
   },
   async destroyed() {
     await this.$store.dispatch("course/clearCourse");

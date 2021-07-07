@@ -79,6 +79,7 @@ export const actions = {
       commit("SET_STUDYPLAN", studyPlan);
       await dispatch("fillEmptyStudyPlanWithOfficalCourses", userId);
 
+      console.log("save", userId);
       const userResponse = await StudyPlanService.saveToUser(
         state.studyPlan,
         userId
