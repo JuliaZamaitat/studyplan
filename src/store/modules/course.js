@@ -19,6 +19,9 @@ export const mutations = {
   SET_COURSE(state, course) {
     state.course = course;
   },
+  SET_PENDING(state, status) {
+    state.pending = status;
+  },
 };
 
 export const actions = {

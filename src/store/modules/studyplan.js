@@ -48,10 +48,6 @@ export const actions = {
         const response = await StudyPlanService.fetchStudyPlan(userId);
         const studyPlan = response.data;
         commit("SET_STUDYPLAN", studyPlan);
-
-        if (!studyPlan.semesterPlans || studyPlan.semesterPlans.length == 0) {
-          await dispatch("fillEmptyStudyPlanWithOfficalCourses", userId);
-        }
       }
     } catch (error) {
       const notification = {
@@ -81,6 +77,8 @@ export const actions = {
       const studyPlan = response.data;
 
       commit("SET_STUDYPLAN", studyPlan);
+      await dispatch("fillEmptyStudyPlanWithOfficalCourses", userId);
+
       const userResponse = await StudyPlanService.saveToUser(
         state.studyPlan,
         userId
