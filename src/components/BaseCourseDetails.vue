@@ -12,12 +12,7 @@
       <p>{{ course.course_program.semester }}</p>
     </div>
 
-    <div
-      v-if="
-        !(!isChildCourse && course.child_courses.length == 0) &&
-        !isExampleStudyPlan
-      "
-    >
+    <div v-if="!isExampleStudyPlan">
       <BaseBookedAndPassedCourseDetails
         :course="course"
         :isChildCourse="isChildCourse"
@@ -27,6 +22,7 @@
     </div>
 
     <div v-else>
+      hier
       <div v-if="course.child_courses.length > 0 && !isChildCourse">
         <h3 v-if="requiredCourses.length == 0">
           Muss belegt werden durch einer dieser Kurse
