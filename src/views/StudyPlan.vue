@@ -1,6 +1,8 @@
 <template>
   <div>
     <BaseHeading><h1>Mein StudyPlan</h1></BaseHeading>
+    <pulse-loader :loading="pending" :color="color"></pulse-loader>
+
     <BaseStudyPlan :coursesInSemester="getSemesterPlans" />
   </div>
 </template>
@@ -9,15 +11,29 @@
 import { mapState, mapGetters } from "vuex";
 
 export default {
+  data() {
+    return {
+      pending: {
+        type: Boolean,
+        default: "false",
+      },
+      color: "rgb(143, 44,27)",
+    };
+  },
   async created() {
+    this.pending = true;
+
+    await this.$store.dispatch("semester/fetchSemesters");
+    console.log("id", this.user.id);
+    await this.$store.dispatch("studyplan/fetchStudyPlan", {
+      userId: this.user.id || this.user._id,
+    });
     await this.$store.dispatch("program/fetchProgram", {
       code: this.user.studyPlan.program.code.toLowerCase(),
       version: this.user.studyPlan.program.version,
     });
-
-    await this.$store.dispatch("semester/fetchSemesters");
-    console.log(this.user._id);
-    await this.$store.dispatch("studyplan/fetchStudyPlan", `${this.user._id}`);
+    console.log("hier");
+    this.pending = false;
   },
   mounted() {
     console.log("store", this.user);

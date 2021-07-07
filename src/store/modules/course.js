@@ -37,62 +37,63 @@ export const actions = {
   ) {
     //ask for the semester route -> if there is a 404, so no semester info is there yet,
     // check the basic vuex course state
+    try {
+      commit("SET_PENDING", true);
+      console.log(state.pending);
+      if (!semester) {
+        var course = getters.getCourseByCode(code); //take the basic stored course
+        if (course) {
+          commit("SET_COURSE", course);
+        }
+      } else {
+        await CourseService.fetchCourseWithSemester(
+          program,
+          version,
+          code,
+          semester
+        )
+          .then((response) => {
+            commit("SET_COURSE", response.data);
+          })
+          .catch(async (error) => {
+            if (error.response.status == 404) {
+              //there is no semester information yet
+              await CourseService.fetchCourseWithoutSemester(
+                program,
+                version,
+                code
+              )
+                .then((response) => {
+                  commit("SET_COURSE", response.data);
+                })
+                .catch((error) => {
+                  const notification = {
+                    type: "error",
+                    message:
+                      "There was a problem fetching course with code " +
+                      code +
+                      ": " +
+                      error.message,
+                  };
 
-    if (!semester) {
-      var course = getters.getCourseByCode(code); //take the basic stored course
-      if (course) {
-        commit("SET_COURSE", course);
+                  console.log(notification);
+                });
+            } else {
+              const notification = {
+                type: "error",
+                message:
+                  "There was a problem fetching course with code " +
+                  code +
+                  ": " +
+                  error.message,
+              };
+              console.log(notification);
+            }
+          });
       }
-    } else {
-      await CourseService.fetchCourseWithSemester(
-        program,
-        version,
-        code,
-        semester
-      )
-        .then((response) => {
-          commit("SET_COURSE", response.data);
-        })
-        .catch(async (error) => {
-          if (error.response.status == 404) {
-            //there is no semester information yet
-            await CourseService.fetchCourseWithoutSemester(
-              program,
-              version,
-              code
-            )
-              .then((response) => {
-                commit("SET_COURSE", response.data);
-                //   let courses = state.courses;
-                //   courses.push(response.data);
-                //   commit("SET_COURSES", courses);
-                //   commit("SET_COURSES_TOTAL", courses.length);
-                //   console.log(state.courses);
-              })
-              .catch((error) => {
-                const notification = {
-                  type: "error",
-                  message:
-                    "There was a problem fetching course with code " +
-                    code +
-                    ": " +
-                    error.message,
-                };
-
-                console.log(notification);
-              });
-          } else {
-            const notification = {
-              type: "error",
-              message:
-                "There was a problem fetching course with code " +
-                code +
-                ": " +
-                error.message,
-            };
-            console.log(notification);
-          }
-        });
+    } finally {
+      commit("SET_PENDING", false);
+      console.log(state.pending);
     }
   },
   clearCourse({ commit }) {

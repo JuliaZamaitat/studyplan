@@ -6,6 +6,9 @@ import Vuelidate from "vuelidate";
 Vue.use(Vuelidate);
 Vue.config.productionTip = false;
 
+import PulseLoader from "vue-spinner/src/PulseLoader.vue";
+Vue.component("pulse-loader", PulseLoader);
+
 import upperFirst from "lodash/upperFirst";
 import camelCase from "lodash/camelCase";
 

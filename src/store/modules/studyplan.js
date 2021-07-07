@@ -37,7 +37,7 @@ export const actions = {
       commit("SET_PENDING", false);
     }
   },
-  async fetchStudyPlan({ commit, dispatch, getters }, userId) {
+  async fetchStudyPlan({ commit, dispatch, getters }, { userId }) {
     try {
       commit("SET_PENDING", true);
       var studyPlan = getters.getStudyPlanByUserId(userId);
