@@ -44,9 +44,27 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from "vuex";
+
 export default {
+  computed: {
+    ...mapState("user", ["user"]),
+    ...mapState("studyplan", ["studyplan"]),
+  },
   methods: {
-    deleteStudyPlan() {},
+    ...mapMutations("user", ["SET_USER"]),
+    ...mapMutations("studplan", ["SET_STUDYPLAN"]),
+    async deleteStudyPlan() {
+      await this.$store.dispatch(
+        "studyplan/deleteStudyPlan",
+        {},
+        { root: true }
+      );
+      this.$router.push("/select-program");
+
+      //Set studyplan to {}
+      //set startofstudy to undefined
+    },
   },
 };
 </script>

@@ -92,7 +92,11 @@ export const actions = {
   ) {
     await dispatch(
       "studyplan/createStudyPlan",
-      { program: program, stupo: stupo, userId: state.user.id },
+      {
+        program: program,
+        stupo: stupo,
+        userId: state.user.id || state.user._id,
+      },
       { root: true }
     );
 

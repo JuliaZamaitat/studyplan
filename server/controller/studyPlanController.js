@@ -18,6 +18,21 @@ module.exports = {
         return;
       });
   },
+  delete: (req, res) => {
+    StudyPlan.findByIdAndRemove(req.params.id)
+      .then(async () => {
+        const user = await User.findOneAndUpdate(
+          { studyPlan: req.params.id },
+          { studyPlan: undefined },
+          { new: true }
+        );
+        res.send(user);
+      })
+      .catch((error) => {
+        console.log(`Error deleting studentplan by ID: ${error.message}`);
+        return;
+      });
+  },
   show: (req, res) => {
     let userId = req.params.id;
     User.findById(userId)
@@ -29,7 +44,7 @@ module.exports = {
           });
       })
       .catch((error) => {
-        console.log(`Error fetching student by ID: ${error.message}`);
+        console.log(`Error fetching studyplan by ID: ${error.message}`);
       });
   },
 

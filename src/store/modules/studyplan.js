@@ -84,11 +84,30 @@ export const actions = {
       );
       const user = userResponse.data;
       rootState.user.user = user;
-      dispatch("user/updateUser", {}, { root: true });
+      await dispatch("user/updateUser", {}, { root: true });
     } catch (error) {
       const notification = {
         type: "error",
         message: "There was a problem creating a studyplan: " + error.message,
+      };
+      console.log(notification);
+    } finally {
+      commit("SET_PENDING", false);
+    }
+  },
+  async deleteStudyPlan({ state, commit, rootState, dispatch }) {
+    try {
+      commit("SET_PENDING", true);
+      await StudyPlanService.deleteStudyPlan(state.studyPlan);
+      const studyPlan = undefined;
+      commit("SET_STUDYPLAN", studyPlan);
+      rootState.user.user.studyPlan = studyPlan;
+      rootState.user.user.startOfStudy = undefined;
+      await dispatch("user/updateUser", {}, { root: true });
+    } catch (error) {
+      const notification = {
+        type: "error",
+        message: "There was a problem deleting a studyplan: " + error.message,
       };
       console.log(notification);
     } finally {

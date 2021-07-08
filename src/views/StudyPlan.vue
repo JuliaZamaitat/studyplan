@@ -15,27 +15,27 @@ export default {
     return {
       pending: {
         type: Boolean,
-        default: "false",
+        default: false,
       },
       color: "#76b900",
     };
   },
-  async created() {
+
+  async mounted() {
     this.pending = true;
-    await this.$store.dispatch("semester/fetchSemesters");
-    await this.$store.dispatch("studyplan/fetchStudyPlan", {
-      userId: this.user.id || this.user._id,
-    });
-    await this.$store.dispatch("program/fetchProgram", {
-      code: this.user.studyPlan.program.code.toLowerCase(),
-      version: this.user.studyPlan.program.version,
-    });
-    this.pending = false;
-  },
-  mounted() {
     if (!this.$store.state.user.user.startOfStudy) {
       this.$router.push("/select-program");
+    } else {
+      await this.$store.dispatch("semester/fetchSemesters");
+      await this.$store.dispatch("studyplan/fetchStudyPlan", {
+        userId: this.user.id || this.user._id,
+      });
+      await this.$store.dispatch("program/fetchProgram", {
+        code: this.user.studyPlan.program.code.toLowerCase(),
+        version: this.user.studyPlan.program.version,
+      });
     }
+    this.pending = false;
   },
 
   computed: {

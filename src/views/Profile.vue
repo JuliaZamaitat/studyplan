@@ -97,15 +97,16 @@ export default {
       email,
     },
   },
-  mounted() {
+  created() {
     if (!this.user.startOfStudy) {
       this.$router.push("/select-program");
+    } else {
+      this.username = this.user.username;
+      this.email = this.user.email;
+      this.startOfStudy = this.user.startOfStudy.name;
+      this.program = this.user.studyPlan.program.name;
+      this.version = this.user.studyPlan.program.version;
     }
-    this.username = this.user.username;
-    this.email = this.user.email;
-    this.startOfStudy = this.user.startOfStudy.name;
-    this.program = this.user.studyPlan.program.name;
-    this.version = this.user.studyPlan.program.version;
   },
   computed: {
     ...mapState("user", ["user"]),

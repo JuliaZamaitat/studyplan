@@ -22,6 +22,15 @@ export default {
       headers: authHeader(),
     });
   },
+  deleteStudyPlan(studyPlan) {
+    return server.delete(
+      `studyplan/${studyPlan._id}`,
+      {
+        headers: authHeader(),
+      },
+      { studyPlan }
+    );
+  },
   saveToUser(studyPlan, userId) {
     return server.post(
       `studyplan/save`,

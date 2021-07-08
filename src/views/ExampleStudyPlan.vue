@@ -22,22 +22,21 @@ export default {
     };
   },
   async created() {
-    this.pending = true;
-    await this.$store.dispatch("program/fetchProgram", {
-      code: this.user.studyPlan.program.code.toLowerCase(),
-      version: this.user.studyPlan.program.version,
-    });
-    this.pending = false;
+    if (!this.$store.state.user.user.startOfStudy) {
+      this.$router.push("/select-program");
+    } else {
+      this.pending = true;
+      await this.$store.dispatch("program/fetchProgram", {
+        code: this.user.studyPlan.program.code.toLowerCase(),
+        version: this.user.studyPlan.program.version,
+      });
+      this.pending = false;
+    }
   },
   computed: {
     ...mapState("program", ["program"]),
     ...mapState("user", ["user"]),
     ...mapGetters("program", ["officialCoursesInSemester"]),
-  },
-  mounted() {
-    if (!this.$store.state.user.user.startOfStudy) {
-      this.$router.push("/select-program");
-    }
   },
 };
 </script>
