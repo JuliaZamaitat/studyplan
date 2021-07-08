@@ -42,4 +42,20 @@ export default {
         return response.data;
       });
   },
+  updatePassword(user, password) {
+    console.log("userservice", password);
+    const id = user.id || user._id;
+    return server
+      .put(
+        `users/${id}/updatePassword`,
+        { password: password },
+        {
+          headers: authHeader(),
+        }
+      )
+      .then((response) => {
+        localStorage.setItem("user", JSON.stringify(response.data));
+        return response.data;
+      });
+  },
 };

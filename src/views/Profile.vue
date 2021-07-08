@@ -31,6 +31,15 @@
         />
       </div>
     </div>
+    <div class="changePassword">
+      <router-link
+        :to="{
+          name: 'baseChangePasswordModal',
+        }"
+      >
+        Passwort ändern
+      </router-link>
+    </div>
     <div v-if="$v.username.$error || $v.email.$error">
       <p v-if="!$v.email.email" class="error-message">
         Bitte gib eine gülitge Emailadresse an
@@ -39,7 +48,7 @@
         v-if="!$v.username.required || !$v.email.required"
         class="error-message"
       >
-        Benutzername und Email dürfen nicht leer sein.
+        Felder dürfen nicht leer sein.
       </p>
     </div>
     <div v-if="message" role="alert" class="error-message">
@@ -113,6 +122,7 @@ export default {
   },
   methods: {
     ...mapMutations("user", ["SET_USER"]),
+
     async handleUpdate(e, attribute) {
       this.$v.$touch();
       if (!this.$v.$invalid) {
@@ -163,6 +173,13 @@ export default {
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
+
+.changePassword {
+  margin-bottom: 40px;
+  a {
+    color: inherit;
+  }
+}
 
 .error-message {
   color: #f8153d;

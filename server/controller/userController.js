@@ -114,6 +114,7 @@ module.exports = {
     // });
   },
   update: async (req, res) => {
+    console.log(req.body);
     let userParams = {
       username: req.body.username,
       email: req.body.email,
@@ -123,6 +124,24 @@ module.exports = {
       accessToken: req.body.accessToken,
     };
     User.findByIdAndUpdate(req.params.id, { $set: userParams }, { new: true })
+      .populate("studyPlan")
+      .populate("startOfStudy")
+      .then((user, err) => {
+        if (err) console.log(err.message);
+        else {
+          return res.json(user);
+        }
+      });
+  },
+  updatePassword: async (req, res) => {
+    console.log(req.body);
+    const password = bcrypt.hashSync(req.body.password, 8);
+
+    User.findByIdAndUpdate(
+      req.params.id,
+      { $set: { password: password } },
+      { new: true }
+    )
       .populate("studyPlan")
       .populate("startOfStudy")
       .then((user, err) => {

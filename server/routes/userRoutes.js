@@ -7,6 +7,8 @@ router.put(
   userController.update
 );
 
+router.put("/:id/updatePassword", userController.updatePassword);
+
 router.post("/login", userController.login);
 router.post(
   "/register",

@@ -86,6 +86,26 @@ export const actions = {
       commit("SET_PENDING", false);
     }
   },
+  async changePassword({ commit }, { password }) {
+    try {
+      commit("SET_PENDING", true);
+      console.log("passwort", password);
+      await UserService.updatePassword(state.user, password);
+      //change access token?
+    } catch (error) {
+      const notification = {
+        type: "error",
+        message: "There was a problem updating the password: " + error.message,
+      };
+      console.log(notification);
+      return {
+        code: error.response.status,
+        message: error.response.data.message,
+      };
+    } finally {
+      commit("SET_PENDING", false);
+    }
+  },
   async saveProgramAndStartOfStudy(
     { state, dispatch, commit },
     { program, stupo, startOfStudy }

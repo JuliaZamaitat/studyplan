@@ -160,7 +160,11 @@
       </p>
     </div>
 
-    <button class="download-button" @click="downloadInformation">
+    <button
+      v-if="!isExampleStudyPlan"
+      class="download-button"
+      @click="downloadInformation"
+    >
       Informationen herunterladen
     </button>
     <router-view></router-view>
