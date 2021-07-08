@@ -154,12 +154,15 @@
     </div>
 
     <div v-if="course.course.updated_at">
-      <h4>Zulettzt geupdated</h4>
+      <h4>Zuletzt geupdated</h4>
       <p>
         {{ new Date(course.course.updated_at).toLocaleDateString("de-DE") }}
       </p>
     </div>
 
+    <button class="download-button" @click="downloadInformation">
+      Informationen herunterladen
+    </button>
     <router-view></router-view>
   </div>
 </template>
@@ -220,6 +223,18 @@ export default {
         }
       }
     },
+    downloadInformation() {
+      const fileName = `${this.course.course.code}-${this.course.course.name}-${this.semester.name}`;
+      var dataStr =
+        "data:text/plain;charset=utf-8," +
+        encodeURIComponent(JSON.stringify(this.course));
+      var downloadAnchorNode = document.createElement("a");
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", fileName + ".txt");
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+    },
   },
 };
 </script>
@@ -231,6 +246,13 @@ $belegtBackground: rgba(253, 177, 62, 0.55);
 a {
   text-decoration: none;
   color: inherit;
+}
+h3 {
+  font-size: 18px;
+}
+
+h4 {
+  color: $htwGruen;
 }
 
 .course-details-code {
@@ -297,7 +319,6 @@ a {
           font-size: 12px;
           padding: 3px;
           margin: 0 auto;
-
           max-width: 100%;
           word-wrap: break-word;
           border-radius: 14px;
@@ -307,22 +328,31 @@ a {
   }
 }
 
+.download-button {
+  background: none;
+  color: $htwGruen;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  text-decoration: underline;
+  font-weight: bold;
+  font-size: 15px;
+  margin-top: 30px;
+}
+
 @media screen and (max-width: 1000px) {
   p {
     max-width: 75% !important;
+    margin: 0 auto;
   }
 }
 
 @media screen and (max-width: 800px) {
   p {
     max-width: 65% !important;
+    margin: 0 auto;
   }
-}
-h3 {
-  font-size: 18px;
-}
-
-h4 {
-  color: $htwGruen;
 }
 </style>

@@ -319,6 +319,7 @@ export default {
 $htwGruen: #76b900;
 $belegtFont: rgba(253, 177, 62, 1);
 $belegtBackground: rgba(253, 177, 62, 0.55);
+
 a {
   text-decoration: none;
   color: inherit;
@@ -430,12 +431,14 @@ h4 {
 @media screen and (max-width: 1000px) {
   p {
     max-width: 75% !important;
+    margin: 0 auto;
   }
 }
 
 @media screen and (max-width: 800px) {
   p {
     max-width: 65% !important;
+    margin: 0 auto;
   }
 }
 </style>
