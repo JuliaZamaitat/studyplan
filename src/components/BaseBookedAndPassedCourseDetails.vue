@@ -1,10 +1,13 @@
 <template>
   <div>
     <!-- Bestanden/Belegt wenn keine Child Courses -->
-    <div v-if="course.child_courses.length == 0" class="checkbox">
+    <div
+      v-if="course.child_courses.length == 0"
+      class="checkbox"
+      :class="{ booked: booked, passed: passed }"
+    >
       <Checkbox
         id="mycheck1"
-        :class="{ booked: booked }"
         v-model="booked"
         :value="booked"
         color="rgba(253, 177, 62, 1)"
@@ -16,7 +19,6 @@
       <Checkbox
         id="mycheck2"
         v-model="passed"
-        :class="{ passed: passed }"
         :value="passed"
         color="#76b900"
         @change="togglePassed($event, course.course.code, semester)"
@@ -56,7 +58,7 @@
                 <p class="childCourses-course-content-text--code">
                   {{ childCourse.code }}
                 </p>
-                <p>{{ childCourse.name }}</p>
+                <p v-if="!mobileView">{{ childCourse.name }}</p>
               </div>
             </router-link>
           </div>
@@ -95,7 +97,9 @@
                   <p class="childCourses-course-content-text--code">
                     {{ childCourse }}
                   </p>
-                  <p>{{ getNameOfChildCourse(childCourse) }}</p>
+                  <p v-if="!mobileView">
+                    {{ getNameOfChildCourse(childCourse) }}
+                  </p>
                 </div>
               </router-link>
             </div>
@@ -172,7 +176,7 @@
                   <p class="childCourses-course-content-text--code">
                     {{ childCourse.course.code }}
                   </p>
-                  <p>{{ childCourse.course.name }}</p>
+                  <p v-if="!mobileView">{{ childCourse.course.name }}</p>
                 </div>
               </router-link>
             </div>
@@ -215,6 +219,7 @@ export default {
       passed: false,
       requiredCourses: [],
       requiredParentCourses: [],
+      mobileView: false,
     };
   },
   created() {
@@ -226,6 +231,8 @@ export default {
     this.booked = states.booked;
     this.passed = states.passed;
     this.getRequiredCourses();
+    this.mobileView = window.innerWidth <= 600;
+    window.addEventListener("resize", this.isMobileView);
   },
   computed: {
     ...mapGetters("studyplan", [
@@ -262,6 +269,9 @@ export default {
     },
   },
   methods: {
+    isMobileView() {
+      this.mobileView = window.innerWidth <= 600;
+    },
     toggleBooked(e, courseCode, semester) {
       this.$store.dispatch("studyplan/toggleBookedStateOfCourseInSemester", {
         courseCode: courseCode,
@@ -335,6 +345,8 @@ a {
 }
 
 ::v-deep .m-chckbox--ripple {
+  width: 0;
+  height: 0;
   transform: translate(0) !important;
 }
 
@@ -384,6 +396,7 @@ h4 {
       background: rgba(118, 185, 0, 0.45);
       border: 1px solid $htwGruen;
     }
+
     &-content {
       display: flex;
       justify-content: center;
@@ -404,13 +417,25 @@ h4 {
           padding: 0px;
           font-size: 12px;
           padding: 3px;
-          margin: 0;
-          max-width: 95%;
+          margin: 0 auto;
+          max-width: 100%;
           word-wrap: break-word;
           border-radius: 14px;
         }
       }
     }
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  p {
+    max-width: 75% !important;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  p {
+    max-width: 65% !important;
   }
 }
 </style>

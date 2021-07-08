@@ -7,9 +7,11 @@
     </h2>
     <p class="course-details-ects">{{ course.course.ects }} ECTS</p>
 
-    <div>
+    <div v-if="course.course_program.semester != 0">
       <h3>Empfohlenes Semester</h3>
-      <p>{{ course.course_program.semester }}</p>
+      <p>
+        {{ course.course_program.semester }}
+      </p>
     </div>
 
     <div v-if="!isExampleStudyPlan">
@@ -49,7 +51,7 @@
                 <p class="childCourses-course-content-text--code">
                   {{ childCourse.course.code }}
                 </p>
-                <p>{{ childCourse.course.name }}</p>
+                <p v-if="!mobileView">{{ childCourse.course.name }}</p>
               </div>
             </router-link>
           </div>
@@ -167,6 +169,7 @@ export default {
   data() {
     return {
       requiredCourses: [],
+      mobileView: false,
     };
   },
   props: {
@@ -195,9 +198,14 @@ export default {
   },
   created() {
     this.getRequiredCourses();
+    this.mobileView = window.innerWidth <= 600;
+    window.addEventListener("resize", this.isMobileView);
   },
 
   methods: {
+    isMobileView() {
+      this.mobileView = window.innerWidth <= 600;
+    },
     getRequiredCourses() {
       if (this.isChildCourse) {
         this.requiredParentCourses = this.$route.params.requiredParentCourses;
@@ -288,13 +296,26 @@ a {
           padding: 0px;
           font-size: 12px;
           padding: 3px;
-          margin: 0;
-          max-width: 95%;
+          margin: 0 auto;
+
+          max-width: 100%;
           word-wrap: break-word;
           border-radius: 14px;
         }
       }
     }
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  p {
+    max-width: 75% !important;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  p {
+    max-width: 65% !important;
   }
 }
 h3 {
