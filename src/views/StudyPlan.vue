@@ -3,12 +3,12 @@
     <BaseHeading><h1>Mein StudyPlan</h1></BaseHeading>
     <pulse-loader :loading="pending" :color="color"></pulse-loader>
 
-    <BaseStudyPlan :coursesInSemester="getSemesterPlans" />
+    <BaseStudyPlan :coursesInSemester="this.studyPlan.semesterPlans" />
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState } from "vuex";
 
 export default {
   data() {
@@ -42,7 +42,6 @@ export default {
     ...mapState("program", ["program"]),
     ...mapState("studyplan", ["studyPlan"]),
     ...mapState("user", ["user"]),
-    ...mapGetters("studyplan", ["getSemesterPlans"]),
   },
 };
 </script>

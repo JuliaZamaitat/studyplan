@@ -118,7 +118,9 @@ export const actions = {
   async updateStudyPlan({ state, commit }) {
     try {
       commit("SET_PENDING", true);
+      console.log("im update", state.studyPlan.semesterPlans);
       const response = await StudyPlanService.updateStudyPlan(state.studyPlan);
+      console.log("response", response.data);
       const studyPlan = response.data;
       commit("SET_STUDYPLAN", studyPlan);
     } catch (error) {
@@ -133,7 +135,7 @@ export const actions = {
   },
 
   async fillEmptyStudyPlanWithOfficalCourses(
-    { state, rootGetters, dispatch },
+    { state, rootGetters, rootState, dispatch },
     userId
   ) {
     let helperArrayForSemesterPlans = [];
@@ -156,9 +158,14 @@ export const actions = {
       helperArrayForSemesterPlans.push(obj);
     }
 
+    const startOfStudy = rootState.user.user.startOfStudy;
+
+    console.log("startOfStudy", startOfStudy);
+
     state.studyPlan.semesterPlans = assignSemestersToSemesterPlans(
       rootGetters["semester/getSemesters"],
-      helperArrayForSemesterPlans
+      helperArrayForSemesterPlans,
+      startOfStudy
     );
 
     await dispatch("updateStudyPlan");
@@ -202,17 +209,26 @@ export const actions = {
     await dispatch("updateStudyPlan");
   },
 
-  async deleteSemester({ state, dispatch }, { semesterIndex }) {
+  async deleteSemester({ state, dispatch, commit }, { semesterIndex }) {
     let semesterPlans = state.studyPlan.semesterPlans;
     const removed = semesterPlans.splice(semesterIndex, 1);
     //change semester names
     var newSemesterName = removed[0].semester.name;
+    var newId = removed[0].semester._id;
+
     for (let i = semesterIndex; i < semesterPlans.length; i++) {
       semesterPlans[i].currentSemesterCount -= 1;
       let oldSemesterName = semesterPlans[i].semester.name;
+      let oldId = semesterPlans[i].semester._id;
       semesterPlans[i].semester.name = newSemesterName;
+      semesterPlans[i].semester._id = newId;
+
       newSemesterName = oldSemesterName;
+      newId = oldId;
     }
+    state.studyPlan.semesterPlans = semesterPlans;
+
+    commit("SET_STUDYPLAN", state.studyPlan);
     await dispatch("updateStudyPlan");
   },
 
@@ -371,8 +387,11 @@ export const getters = {
   },
 };
 
-function assignSemestersToSemesterPlans(semesters, semesterPlans) {
-  const startOfStudy = "SoSe15"; //TODO change to query from user
+function assignSemestersToSemesterPlans(
+  semesters,
+  semesterPlans,
+  startOfStudy
+) {
   for (let i in semesters) {
     if (semesters[i].name === startOfStudy) {
       semesters = semesters.splice(i);

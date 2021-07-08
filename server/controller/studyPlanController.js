@@ -49,20 +49,23 @@ module.exports = {
   },
 
   update: (req, res) => {
-    let studyplanParams = {
-      program: req.body.program,
-      semesterPlans: req.body.semesterPlans,
-    };
     let studyPlanId = req.params.id;
+
     StudyPlan.findByIdAndUpdate(
       studyPlanId,
-      { $set: studyplanParams },
+      {
+        $set: {
+          program: req.body.program,
+          semesterPlans: req.body.semesterPlans,
+        },
+      },
       { new: true }
     )
       .populate("semesterPlans.semester")
       .then((studyPlan, err) => {
         if (err) console.log(err.message);
         else {
+          console.log("plan", studyPlan.semesterPlans);
           res.json(studyPlan);
         }
       });
