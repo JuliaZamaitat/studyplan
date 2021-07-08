@@ -112,8 +112,12 @@ export default {
     },
   },
   async created() {
-    await this.$store.dispatch("program/fetchPrograms");
-    await this.$store.dispatch("semester/fetchSemesters");
+    if (this.$store.state.user.user.startOfStudy) {
+      this.$router.push("/my-studyplan");
+    } else {
+      await this.$store.dispatch("program/fetchPrograms");
+      await this.$store.dispatch("semester/fetchSemesters");
+    }
   },
   computed: {
     ...mapState("studyplan", ["studyPlan"]),

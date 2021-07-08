@@ -41,18 +41,7 @@ module.exports = {
       })
       .catch((e) => console.log(e));
   },
-  courseProgramWithCourse: (req, res) => {
-    const data = getParams(req.params);
-    return axios
-      .get(
-        url +
-          `/${data.program}/${data.stupo}/${data.course}/${data.course2}.json`
-      )
-      .then((course) => {
-        res.json(course.data);
-      })
-      .catch((e) => console.log(e));
-  },
+
   courseProgramWithSemester: (req, res) => {
     const data = getParams(req.params);
     return axios
@@ -67,17 +56,5 @@ module.exports = {
         res.sendStatus(e.response.status);
         console.log(e);
       });
-  },
-  courseProgramWithCourseAndSemester: (req, res) => {
-    const data = getParams(req.params);
-    return axios
-      .get(
-        url +
-          `/${data.program}/${data.stupo}/${data.course}/${data.course2}/semester/${data.semester}.json`
-      )
-      .then((course) => {
-        res.json(course.data);
-      })
-      .catch((e) => console.log(e));
   },
 };
