@@ -1,28 +1,36 @@
 <template>
   <div>
     <div v-if="!mobileView" class="navigation">
-      <div
-        v-if="currentUser && currentUser.startOfStudy"
-        class="navigation-container"
-      >
-        <router-link class="link" to="/my-studyplan"
-          >Mein StudyPlan</router-link
-        >
+      <div class="navigation-container">
+        <div v-if="currentUser">
+          <div v-if="currentUser.startOfStudy" class="navigation-left">
+            <router-link class="link" to="/my-studyplan"
+              >Mein StudyPlan</router-link
+            >
 
-        <router-link class="link" to="/example-studyplan"
-          >Exemplarischer Studienplan</router-link
-        >
-        <router-link class="link" to="/hilfe">Hilfe</router-link>
+            <router-link class="link" to="/example-studyplan"
+              >Exemplarischer Studienplan</router-link
+            >
+            <router-link class="link" to="/hilfe">Hilfe</router-link>
+          </div>
 
-        <router-link class="link icon" to="/profile">
-          <font-awesome-icon :icon="['fas', 'user']" size="1x" />
-        </router-link>
-        <a class="link" href @click.prevent="logOut">
-          <font-awesome-icon
-            class="icon"
-            :icon="['fas', 'sign-out-alt']"
-            size="2x"
-        /></a>
+          <div v-if="currentUser" class="navigation-right">
+            <router-link
+              v-if="currentUser.startOfStudy"
+              class="link icon"
+              to="/profile"
+            >
+              <font-awesome-icon :icon="['fas', 'user']" size="1x" />
+            </router-link>
+
+            <a class="link logout-desktop" href @click.prevent="logOut">
+              <font-awesome-icon
+                class="icon"
+                :icon="['fas', 'sign-out-alt']"
+                size="2x"
+            /></a>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -65,7 +73,9 @@
             Profil
           </router-link>
 
-          <a class="link" href @click.prevent="logOut"> Logout</a>
+          <a class="link link-logout-mobile" href @click.prevent="logOut">
+            Logout</a
+          >
         </div>
       </div>
     </div>
@@ -106,6 +116,15 @@ export default {
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
+
+.navigation-right {
+  display: inline;
+  position: absolute;
+  right: 30px;
+}
+.navigation-left {
+  display: inline;
+}
 
 .navigation {
   &-container {

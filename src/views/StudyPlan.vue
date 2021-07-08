@@ -22,9 +22,7 @@ export default {
   },
   async created() {
     this.pending = true;
-
     await this.$store.dispatch("semester/fetchSemesters");
-    console.log("id", this.user.id);
     await this.$store.dispatch("studyplan/fetchStudyPlan", {
       userId: this.user.id || this.user._id,
     });
@@ -32,11 +30,9 @@ export default {
       code: this.user.studyPlan.program.code.toLowerCase(),
       version: this.user.studyPlan.program.version,
     });
-    console.log("hier");
     this.pending = false;
   },
   mounted() {
-    console.log("store", this.user);
     if (!this.$store.state.user.user.startOfStudy) {
       this.$router.push("/select-program");
     }

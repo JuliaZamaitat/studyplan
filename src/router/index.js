@@ -6,6 +6,8 @@ import StudyPlan from "../views/StudyPlan.vue";
 import Help from "../views/Help.vue";
 import Profile from "../views/Profile.vue";
 import Register from "../views/Register.vue";
+import PrivacyPolicy from "../views/PrivacyPolicy.vue";
+import Imprint from "../views/Imprint.vue";
 import ProgramSelection from "../views/ProgramSelection.vue";
 import BaseModalChildCourse from "../components/BaseModalChildCourse.vue";
 import BaseModalParentCourse from "../components/BaseModalParentCourse.vue";
@@ -71,6 +73,16 @@ const routes = [
     path: "/profile",
     name: "Profile",
     component: Profile,
+  },
+  {
+    path: "/datenschutz",
+    name: "PrivacyPolicy",
+    component: PrivacyPolicy,
+  },
+  {
+    path: "/impressum",
+    name: "Imprint",
+    component: Imprint,
   },
 ];
 

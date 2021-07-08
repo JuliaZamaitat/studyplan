@@ -1,22 +1,34 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <BaseNavigation />
+    <div class="content-wrap">
+      <div id="nav">
+        <BaseNavigation />
+      </div>
+      <router-view />
     </div>
-    <router-view />
+    <BaseFooter />
   </div>
 </template>
 
 <style lang="scss">
+html,
+body {
+  max-height: 100vh;
+  max-width: 100vw;
+}
 #app {
   font-family: Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #3d3d3d;
+  position: relative;
+  min-height: 100vh;
+  width: 100vw;
 }
-body {
-  margin-bottom: 50px;
+
+.content-wrap {
+  padding-bottom: 100px;
 }
 
 #nav {
