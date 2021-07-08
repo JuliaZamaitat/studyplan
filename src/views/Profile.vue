@@ -59,7 +59,16 @@
           :disabled="true"
         />
       </div>
-      <a class="danger" href="#">Angaben zum Studium ändern</a>
+
+      <router-link
+        class="danger"
+        :to="{
+          name: 'baseDeleteStudyplanModal',
+        }"
+      >
+        Angaben zum Studium ändern
+      </router-link>
+      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -156,13 +165,13 @@ export default {
 $htwGruen: #76b900;
 
 .error-message {
-  color: red;
+  color: #f8153d;
   margin-bottom: 30px;
   margin-top: 0;
 }
 
 .error {
-  border-color: red !important;
+  border-color: #f8153d !important;
 }
 
 .fields {
@@ -216,7 +225,7 @@ $htwGruen: #76b900;
     }
 
     .danger {
-      color: red;
+      color: #f8153d;
       padding-top: 20px;
     }
   }

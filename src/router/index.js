@@ -11,6 +11,7 @@ import Imprint from "../views/Imprint.vue";
 import ProgramSelection from "../views/ProgramSelection.vue";
 import BaseModalChildCourse from "../components/BaseModalChildCourse.vue";
 import BaseModalParentCourse from "../components/BaseModalParentCourse.vue";
+import BaseDeleteStudyplanModal from "../components/BaseDeleteStudyplanModal.vue";
 
 Vue.use(VueRouter);
 
@@ -73,6 +74,13 @@ const routes = [
     path: "/profile",
     name: "Profile",
     component: Profile,
+    children: [
+      {
+        path: "/delete-studyplan",
+        component: BaseDeleteStudyplanModal,
+        name: "baseDeleteStudyplanModal",
+      },
+    ],
   },
   {
     path: "/datenschutz",

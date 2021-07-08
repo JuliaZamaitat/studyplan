@@ -1,100 +1,28 @@
 <!--source https://www.digitalocean.com/community/tutorials/vuejs-vue-modal-component -->
 
 <template>
-  <div
-    class="overlay"
-    @click.self="
-      isExampleStudyPlan
-        ? $router.push('/example-studyplan')
-        : $router.push('/my-studyplan')
-    "
-  >
+  <div class="overlay" @click.self="$router.push(route)">
     <div class="modal">
       <header class="modal-header">
-        <button
-          v-if="!isChildCourse"
-          type="button"
-          class="btn-close"
-          @click="$router.push('/my-studyplan')"
-        >
-          x
-        </button>
-        <button v-else type="button" class="btn-back" @click="$router.go(-1)">
-          <font-awesome-icon :icon="['fas', 'arrow-left']" size="1x" />
-        </button>
+        <slot name="header"></slot>
       </header>
 
       <section class="modal-body">
-        <pulse-loader :loading="pending" :color="color"></pulse-loader>
-
-        <BaseCourseDetails
-          v-if="!pending"
-          :course="course"
-          :semester="semester"
-          :isChildCourse="isChildCourse"
-          :parentCourseCode="parentCourseCode"
-          :isExampleStudyPlan="isExampleStudyPlan"
-        />
+        <slot name="body"></slot>
+      </section>
+      <section class="modal-footer">
+        <slot name="footer"></slot>
       </section>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
-
 export default {
   props: {
-    isChildCourse: {
-      type: Boolean,
+    route: {
+      type: String,
       required: true,
-      default: false,
-    },
-  },
-  data() {
-    return {
-      semester: {
-        type: Object,
-      },
-      parentCourseCode: null,
-      pending: {
-        type: Boolean,
-        default: "false",
-      },
-      color: "#76b900",
-      isExampleStudyPlan: false,
-    };
-  },
-  async created() {
-    this.pending = true;
-    this.isExampleStudyPlan =
-      this.$route.fullPath.includes("example-studyplan");
-    document.documentElement.style.overflow = "hidden";
-    this.semester = this.getSemesterByName(this.$route.params.semester);
-    if (this.$route.params.parentCode) {
-      this.parentCourseCode = this.$route.params.parentCode;
-    }
-
-    await this.$store.dispatch("course/fetchCourse", {
-      program: this.$route.params.program.toLowerCase(),
-      version: this.$route.params.version,
-      code: this.$route.params.code,
-      semester: this.semester ? this.semester.name : undefined,
-    });
-    this.pending = false;
-  },
-  async destroyed() {
-    await this.$store.dispatch("course/clearCourse");
-    document.documentElement.style.overflow = "auto";
-  },
-  computed: {
-    ...mapState("course", ["course"]),
-    ...mapState("studyplan", ["studyPlan"]),
-    ...mapGetters("semester", ["getSemesterByName"]),
-  },
-  methods: {
-    close() {
-      this.$emit("close");
     },
   },
 };
@@ -118,6 +46,7 @@ $htwGruen: #76b900;
 
 .modal {
   z-index: 500;
+  position: relative;
   background: #ffffff;
   width: 40vw;
   height: 80vh;
@@ -157,12 +86,18 @@ $htwGruen: #76b900;
   padding: 15px;
   display: flex;
   position: relative;
-
   flex-direction: column;
 }
 
 .modal-body {
   padding: 20px 10px;
+}
+
+.modal-footer {
+  position: absolute;
+  bottom: 20px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .btn-close {
@@ -175,20 +110,6 @@ $htwGruen: #76b900;
   padding: 10px;
   cursor: pointer;
   font-weight: bold;
-  color: $htwGruen;
-  background: transparent;
-}
-
-.btn-back {
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin-left: 30px;
-  margin-top: 30px;
-  border: none;
-  font-size: 30px;
-  padding: 10px;
-  cursor: pointer;
   color: $htwGruen;
   background: transparent;
 }
