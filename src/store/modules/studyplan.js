@@ -44,7 +44,6 @@ export const actions = {
       if (studyPlan) {
         commit("SET_STUDYPLAN", studyPlan);
       } else {
-        console.log("action", userId);
         const response = await StudyPlanService.fetchStudyPlan(userId);
         const studyPlan = response.data;
         commit("SET_STUDYPLAN", studyPlan);
@@ -79,7 +78,6 @@ export const actions = {
       commit("SET_STUDYPLAN", studyPlan);
       await dispatch("fillEmptyStudyPlanWithOfficalCourses", userId);
 
-      console.log("save", userId);
       const userResponse = await StudyPlanService.saveToUser(
         state.studyPlan,
         userId

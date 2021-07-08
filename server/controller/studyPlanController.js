@@ -11,7 +11,6 @@ module.exports = {
     };
     StudyPlan.create(studyplanParams)
       .then((studyPlan) => {
-        console.log(studyPlan);
         res.json(studyPlan);
       })
       .catch((error) => {
@@ -49,14 +48,12 @@ module.exports = {
       .then((studyPlan, err) => {
         if (err) console.log(err.message);
         else {
-          console.log("success updating");
           res.json(studyPlan);
         }
       });
   },
   saveToUser: (req, res) => {
     let userId = req.body.userId;
-    console.log("saveToUser", userId);
     let studyPlan = req.body.studyPlan;
     User.findById(userId).then((user) => {
       user.studyPlan = studyPlan;

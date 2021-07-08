@@ -10,7 +10,6 @@ export default {
     return server.get("studyplans");
   },
   fetchStudyPlan(userId) {
-    console.log("fetch", userId);
     return server.get(`studyplan/${userId}`, { headers: authHeader() });
   },
   updateStudyPlan(studyPlan) {

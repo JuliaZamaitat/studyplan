@@ -105,7 +105,6 @@ export default {
                 }
               },
               (error) => {
-                console.log("error,", error);
                 // this.loading = false;
                 this.message =
                   (error.response &&

@@ -32,7 +32,6 @@ export const mutations = {
   },
   SET_USER(state, user) {
     state.user = user;
-    console.log("setting", user);
   },
   SET_PENDING(state, status) {
     state.pending = status;
@@ -71,12 +70,9 @@ export const actions = {
   async updateUser({ state, commit }) {
     try {
       commit("SET_PENDING", true);
-      console.log(state.user);
       const user = await UserService.updateUser(state.user);
-      console.log("hier trotzdem");
       commit("SET_USER", user);
     } catch (error) {
-      console.log("im error", state.user);
       const notification = {
         type: "error",
         message: "There was a problem updating a user: " + error.message,
@@ -101,7 +97,6 @@ export const actions = {
     );
 
     state.user.startOfStudy = startOfStudy;
-    console.log("state", state.user);
     await dispatch("updateUser");
     return;
   },

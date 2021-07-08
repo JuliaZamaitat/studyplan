@@ -34,7 +34,7 @@
         <button
           type="button"
           class="button button-danger"
-          @click="$router.push('#')"
+          @click="deleteStudyPlan"
         >
           Trotzdem ändern
         </button>
@@ -44,7 +44,11 @@
 </template>
 
 <script>
-export default {};
+export default {
+  methods: {
+    deleteStudyPlan() {},
+  },
+};
 </script>
 
 <style lang="scss" scoped>

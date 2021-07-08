@@ -18,7 +18,6 @@ module.exports = {
         return;
       }
       if (user && user._id != id) {
-        console.log("user", user);
         res
           .status(400)
           .send({ message: "Failed! Username is already in use!" });
@@ -33,8 +32,6 @@ module.exports = {
           return;
         }
         if (user && user._id != id) {
-          console.log("user", user);
-
           res.status(400).send({ message: "Failed! Email is already in use!" });
           return;
         }
@@ -103,7 +100,6 @@ module.exports = {
         });
         user.accessToken = token;
         user.save();
-        console.log("user.accessToken", user.accessToken);
         res.status(200).send({
           id: user._id,
           username: user.username,

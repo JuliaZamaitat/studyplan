@@ -98,7 +98,6 @@ export default {
     },
   },
   mounted() {
-    console.log("this.user", this.user);
     if (!this.user.startOfStudy) {
       this.$router.push("/select-program");
     }
