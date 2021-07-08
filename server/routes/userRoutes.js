@@ -1,7 +1,11 @@
 const userController = require("../controller/userController"),
   router = require("express").Router();
 
-router.put("/:id", userController.update);
+router.put(
+  "/:id",
+  userController.checkDuplicateUsernameOrEmail,
+  userController.update
+);
 
 router.post("/login", userController.login);
 router.post(

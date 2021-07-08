@@ -8,6 +8,7 @@ const secret = "some-secret";
 
 module.exports = {
   checkDuplicateUsernameOrEmail: (req, res, next) => {
+    const id = req.body._id || req.body.id;
     // Username
     User.findOne({
       username: req.body.username,
@@ -16,7 +17,8 @@ module.exports = {
         res.status(500).send({ message: err });
         return;
       }
-      if (user) {
+      if (user && user._id != id) {
+        console.log("user", user);
         res
           .status(400)
           .send({ message: "Failed! Username is already in use!" });
@@ -30,7 +32,9 @@ module.exports = {
           res.status(500).send({ message: err });
           return;
         }
-        if (user) {
+        if (user && user._id != id) {
+          console.log("user", user);
+
           res.status(400).send({ message: "Failed! Email is already in use!" });
           return;
         }

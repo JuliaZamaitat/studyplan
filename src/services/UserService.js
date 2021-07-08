@@ -34,8 +34,9 @@ export default {
     });
   },
   updateUser(user) {
+    const id = user.id || user._id;
     return server
-      .put(`users/${user._id}`, user, {
+      .put(`users/${id}`, user, {
         headers: authHeader(),
       })
       .then((response) => {
