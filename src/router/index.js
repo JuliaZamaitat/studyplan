@@ -13,6 +13,8 @@ import BaseModalChildCourse from "../components/BaseModalChildCourse.vue";
 import BaseModalParentCourse from "../components/BaseModalParentCourse.vue";
 import BaseDeleteStudyplanModal from "../components/BaseDeleteStudyplanModal.vue";
 import BaseChangePasswordModal from "../components/BaseChangePasswordModal.vue";
+import BaseResendVerification from "../components/BaseResendVerification.vue";
+import BaseResetPassword from "../components/BaseResetPassword.vue";
 
 Vue.use(VueRouter);
 
@@ -21,11 +23,25 @@ const routes = [
     path: "/login",
     name: "Login",
     component: Login,
+    children: [
+      {
+        path: "/reset-password",
+        component: BaseResetPassword,
+        name: "baseResetPassword",
+      },
+    ],
   },
   {
     path: "/register",
     name: "Register",
     component: Register,
+    children: [
+      {
+        path: "/resend-verification",
+        component: BaseResendVerification,
+        name: "baseResendVerification",
+      },
+    ],
   },
   {
     path: "/select-program",
@@ -107,7 +123,13 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const publicPages = ["/login", "/register", "/help"];
+  const publicPages = [
+    "/login",
+    "/register",
+    "/help",
+    "/resend-verification",
+    "/reset-password",
+  ];
   const authRequired = !publicPages.includes(to.path);
   const loggedIn = localStorage.getItem("user");
 

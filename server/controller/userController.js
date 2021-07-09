@@ -1,11 +1,13 @@
 //code partially taken from https://bezkoder.com/node-js-mongodb-auth-jwt/
 
 const User = require("../model/user"),
+  Token = require("../model/token"),
   jwt = require("jsonwebtoken"),
-  bcrypt = require("bcryptjs");
+  bcrypt = require("bcryptjs"),
+  nodemailer = require("nodemailer"),
+  { gmailTransporter } = require("../services/oauthService");
 
 const secret = "some-secret";
-
 module.exports = {
   checkDuplicateUsernameOrEmail: (req, res, next) => {
     const id = req.body._id || req.body.id;
@@ -51,7 +53,7 @@ module.exports = {
       next();
     });
   },
-  register: (req, res) => {
+  register: (req, res, next) => {
     const user = new User({
       username: req.body.username,
       email: req.body.email,
@@ -64,8 +66,55 @@ module.exports = {
         res.status(500).send({ message: err.message });
         return;
       } else {
-        res.send({ message: "Nuter erfolgreich registriert!" });
+        var token = new Token({
+          _userId: user._id,
+          token: jwt.sign({ id: user.id }, secret, {
+            expiresIn: 86400, // 24 hours
+          }),
+        });
+
+        token.save(function (err) {
+          if (err) {
+            return res.status(500).send({ msg: err.message });
+          }
+        });
+        res.locals.token = token;
+        res.locals.user = user;
+        next();
       }
+    });
+  },
+
+  confirmation: (req, res) => {
+    Token.findOne({ token: req.params.token }, function (err, token) {
+      if (!token)
+        return res.status(400).send({
+          type: "not-verified",
+          msg: "We were unable to find a valid token. Your token may have expired.",
+        });
+
+      // If we found a token, find a matching user
+      User.findOne({ _id: token._userId }, function (err, user) {
+        if (!user)
+          return res
+            .status(400)
+            .send({ msg: "We were unable to find a user for this token." });
+        if (user.isVerified)
+          return res.status(400).send("Der Nutzer wurde bereits bestätigt.");
+
+        // Verify and save the user
+        user.isVerified = true;
+        user.save(function (err) {
+          if (err) {
+            return res.status(500).send({ msg: err.message });
+          }
+          res
+            .status(200)
+            .send(
+              "The account has been verified. Please log in. localhost:8080/login"
+            );
+        });
+      });
     });
   },
 
@@ -95,6 +144,13 @@ module.exports = {
             message: "Invalid Password!",
           });
         }
+        if (!user.isVerified) {
+          return res.status(401).send({
+            type: "not-verified",
+            message:
+              "Dein Account wurde noch nicht bestätigt. Checke deine Mails",
+          });
+        }
         var token = jwt.sign({ id: user.id }, secret, {
           expiresIn: 86400, // 24 hours
         });
@@ -109,10 +165,146 @@ module.exports = {
           accessToken: user.accessToken,
         });
       });
-    // });
+  },
+  resendVerificationEmail: (req, res, next) => {
+    User.findOne({ email: req.body.email }, function (err, user) {
+      if (!user)
+        return res
+          .status(400)
+          .send({ message: "Kein Benutzer mit dieser Mailadresse gefunden" });
+      if (user.isVerified)
+        return res.status(400).send({
+          message: "Der Account wurde schon bestätigt. Bitte logge dich ein",
+        });
+      res.locals.user = user;
+      // Create a verification token, save it, and send email
+      var token = new Token({
+        _userId: user._id,
+        token: jwt.sign({ id: user.id }, secret, {
+          expiresIn: 86400, // 24 hours
+        }),
+      });
+
+      // Save the token
+      token.save(function (err) {
+        if (err) {
+          return res.status(500).send({ message: err.message });
+        }
+        res.locals.token = token;
+
+        next();
+      });
+    });
+  },
+  resetPassword: (req, res, next) => {
+    User.findOne({ email: req.body.email }, function (err, user) {
+      if (!user)
+        return res
+          .status(400)
+          .send({ message: "Kein Benutzer mit dieser Mailadresse gefunden" });
+      if (!user.isVerified) {
+        return res.status(401).send({
+          type: "not-verified",
+          message:
+            "Dein Account wurde noch nicht bestätigt. Checke deine Mails oder fordere eine neue Mail an.",
+        });
+      }
+      //create a new password, save it to the user, and send it to the user in an email
+      const newRandomPassword = Math.random().toString(36).slice(-8);
+      const hashedPassword = bcrypt.hashSync(newRandomPassword, 8);
+      user.password = hashedPassword;
+      user.save((err, user) => {
+        if (err) {
+          res.status(500).send({ message: err.message });
+          return;
+        } else {
+          res.locals.user = user;
+          res.locals.password = newRandomPassword;
+          next();
+        }
+      });
+    });
+  },
+  sendEmailWithNewPassword: (req, res) => {
+    let transporter;
+    if (process.env.PRODUCTION) {
+      transporter = gmailTransporter;
+    } else {
+      //Developmemt mode
+      transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        auth: {
+          user: "arielle.mayer39@ethereal.email",
+          pass: "KkrfJrfSEvv86Q8N9s",
+        },
+      });
+
+      var mailOptions = {
+        from: "studyplanhtwberlin@gmail.com",
+        to: res.locals.user.email,
+        subject: "New Password",
+        text:
+          "Hello,\n\n" +
+          "This is your new password. Please update it in your profile settings soon.\n\n" +
+          res.locals.password,
+      };
+      transporter.sendMail(mailOptions, function (err) {
+        if (err) {
+          return res.status(500).send({ msg: err.message });
+        }
+        res
+          .status(200)
+          .send(
+            "An email with a new password has been sent to " +
+              res.locals.user.email +
+              "."
+          );
+      });
+    }
+  },
+  sendVerificationEmail: (req, res) => {
+    // Send the email
+    let transporter;
+    if (process.env.PRODUCTION) {
+      transporter = gmailTransporter;
+    } else {
+      //Developmemt mode
+      transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        auth: {
+          user: "arielle.mayer39@ethereal.email",
+          pass: "KkrfJrfSEvv86Q8N9s",
+        },
+      });
+
+      var mailOptions = {
+        from: "studyplanhtwberlin@gmail.com",
+        to: res.locals.user.email,
+        subject: "Account Verification Token",
+        text:
+          "Hello,\n\n" +
+          "Please verify your account by clicking the link: \nhttp://" +
+          req.headers.host +
+          "/users/confirmation/" +
+          res.locals.token.token,
+      };
+      transporter.sendMail(mailOptions, function (err) {
+        if (err) {
+          return res.status(500).send({ msg: err.message });
+        }
+        res
+          .status(200)
+          .send(
+            "A verification email has been sent to " +
+              res.locals.user.email +
+              "."
+          );
+      });
+    }
   },
   update: async (req, res) => {
-    console.log(req.body);
     let userParams = {
       username: req.body.username,
       email: req.body.email,
@@ -132,15 +324,11 @@ module.exports = {
       });
   },
   updatePassword: async (req, res) => {
-    console.log(req.body);
     const oldPassword = req.body.oldPassword;
-
     const newPassword = bcrypt.hashSync(req.body.newPassword, 8);
 
     //find user and compare old password that is stored to this oldPassword
-
     const user = await User.findById(req.params.id);
-
     var passwordIsValid = bcrypt.compareSync(oldPassword, user.password);
     if (passwordIsValid) {
       User.findByIdAndUpdate(

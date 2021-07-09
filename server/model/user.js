@@ -17,6 +17,9 @@ const mongoose = require("mongoose"),
         type: String,
         required: true,
       },
+      passwordResetToken: String,
+      passwordResetExpires: Date,
+
       startOfStudy: {
         type: Schema.Types.ObjectId,
         ref: "Semester",
@@ -26,6 +29,7 @@ const mongoose = require("mongoose"),
       accessToken: {
         type: String,
       },
+      isVerified: { type: Boolean, default: false },
     },
     {
       timestamps: true,
