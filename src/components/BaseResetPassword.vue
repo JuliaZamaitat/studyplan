@@ -5,12 +5,14 @@
         <button type="button" class="btn-close" @click="$router.push('/login')">
           x
         </button>
-        <h2>Hast du dein Passwort vergessen?</h2>
-        <h3>
-          Fordere eine neues Passwort an mit der Mailadresse, mit der du
-          registriert bist. Denke danach dran, dein Passwort in deinem Profil zu
-          ändern.
-        </h3>
+        <div class="headings">
+          <h2>Hast du dein Passwort vergessen?</h2>
+          <h3>
+            Fordere eine neues Passwort an mit der Mailadresse, mit der du
+            registriert bist. Denke danach dran, dein Passwort in deinem Profil
+            zu ändern.
+          </h3>
+        </div>
       </template>
       <template v-slot:body>
         <div class="fieldgroup">
@@ -104,9 +106,17 @@ export default {
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
-
-h3 {
-  font-weight: 500;
+.headings {
+  width: 90%;
+  margin: 0 auto;
+  h2 {
+    margin-top: 30px;
+  }
+  h3 {
+    margin-top: 30px;
+    font-weight: 500;
+    line-height: 30px;
+  }
 }
 
 .error {

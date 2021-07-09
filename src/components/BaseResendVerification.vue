@@ -9,11 +9,13 @@
         >
           x
         </button>
-        <h2>Hast du keine Mail erhalten oder der Link ist abgelaufen?</h2>
-        <h3>
-          Fordere eine neue Email an mit der Mailadresse, mit der du registriert
-          bist.
-        </h3>
+        <div class="headings">
+          <h2>Hast du keine Mail erhalten oder der Link ist abgelaufen?</h2>
+          <h3>
+            Fordere eine neue Email an mit der Mailadresse, mit der du
+            registriert bist.
+          </h3>
+        </div>
       </template>
       <template v-slot:body>
         <div class="fieldgroup">
@@ -111,10 +113,18 @@ export default {
 <style lang="scss" scoped>
 $htwGruen: #76b900;
 
-h3 {
-  font-weight: 500;
+.headings {
+  width: 90%;
+  margin: 0 auto;
+  h2 {
+    margin-top: 30px;
+  }
+  h3 {
+    margin-top: 30px;
+    font-weight: 500;
+    line-height: 30px;
+  }
 }
-
 .error {
   border-color: #f8153d !important;
 }
