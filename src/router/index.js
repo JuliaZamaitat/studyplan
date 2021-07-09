@@ -19,6 +19,7 @@ import BaseResetPassword from "../components/BaseResetPassword.vue";
 Vue.use(VueRouter);
 
 const routes = [
+  { path: "/", redirect: { name: "StudyPlan" } },
   {
     path: "/login",
     name: "Login",
