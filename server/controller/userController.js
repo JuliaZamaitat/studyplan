@@ -53,7 +53,7 @@ module.exports = {
       next();
     });
   },
-  register: (req, res) => {
+  register: (req, res, next) => {
     const user = new User({
       username: req.body.username,
       email: req.body.email,
@@ -77,53 +77,16 @@ module.exports = {
           if (err) {
             return res.status(500).send({ msg: err.message });
           }
-
-          // Send the email
-          if (process.env.PRODUCTION) {
-            //configure account for production
-          } else {
-            const transporter = nodemailer.createTransport({
-              host: "smtp.ethereal.email",
-              port: 587,
-              auth: {
-                user: "arielle.mayer39@ethereal.email",
-                pass: "KkrfJrfSEvv86Q8N9s",
-              },
-            });
-            var mailOptions = {
-              from: "no-reply@yourwebapplication.com",
-              to: user.email,
-              subject: "Account Verification Token",
-              text:
-                "Hello,\n\n" +
-                "Please verify your account by clicking the link: \nhttp://" +
-                req.headers.host +
-                "/users/confirmation/" +
-                token.token,
-            };
-            transporter.sendMail(mailOptions, function (err) {
-              if (err) {
-                return res.status(500).send({ msg: err.message });
-              }
-              res
-                .status(200)
-                .send(
-                  "A verification email has been sent to " + user.email + "."
-                );
-            });
-          }
         });
-
-        // res.send({ message: "Nuter erfolgreich registriert!" });
+        res.locals.token = token;
+        res.locals.user = user;
+        next();
       }
     });
   },
 
   confirmation: (req, res) => {
-    console.log("hier");
-    console.log("url", req.params.token);
     Token.findOne({ token: req.params.token }, function (err, token) {
-      console.log(err, token);
       if (!token)
         return res.status(400).send({
           type: "not-verified",
@@ -202,7 +165,74 @@ module.exports = {
           accessToken: user.accessToken,
         });
       });
-    // });
+  },
+  resendToken: (req, res, next) => {
+    User.findOne({ email: req.body.email }, function (err, user) {
+      if (!user)
+        return res
+          .status(400)
+          .send({ msg: "Kein Benutzer mit dieser Mailadresse gefunden" });
+      if (user.isVerified)
+        return res.status(400).send({
+          msg: "Der Account wurde schon bestätigt. Bitte logge dich ein",
+        });
+      res.locals.user = user;
+      // Create a verification token, save it, and send email
+      var token = new Token({
+        _userId: user._id,
+        token: jwt.sign({ id: user.id }, secret, {
+          expiresIn: 86400, // 24 hours
+        }),
+      });
+
+      // Save the token
+      token.save(function (err) {
+        if (err) {
+          return res.status(500).send({ msg: err.message });
+        }
+        res.locals.token = token;
+
+        next();
+      });
+    });
+  },
+  sendVerificationEmail: (req, res) => {
+    // Send the email
+    if (process.env.PRODUCTION) {
+      //configure account for production
+    } else {
+      const transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        auth: {
+          user: "arielle.mayer39@ethereal.email",
+          pass: "KkrfJrfSEvv86Q8N9s",
+        },
+      });
+      var mailOptions = {
+        from: "no-reply@yourwebapplication.com",
+        to: res.locals.user.email,
+        subject: "Account Verification Token",
+        text:
+          "Hello,\n\n" +
+          "Please verify your account by clicking the link: \nhttp://" +
+          req.headers.host +
+          "/users/confirmation/" +
+          res.locals.token.token,
+      };
+      transporter.sendMail(mailOptions, function (err) {
+        if (err) {
+          return res.status(500).send({ msg: err.message });
+        }
+        res
+          .status(200)
+          .send(
+            "A verification email has been sent to " +
+              res.locals.user.email +
+              "."
+          );
+      });
+    }
   },
   update: async (req, res) => {
     console.log(req.body);

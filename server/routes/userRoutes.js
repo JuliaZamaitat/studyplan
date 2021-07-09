@@ -15,8 +15,13 @@ router.post("/login", userController.login);
 router.post(
   "/register",
   userController.checkDuplicateUsernameOrEmail,
-  userController.register
+  userController.register,
+  userController.sendVerificationEmail
 );
-// router.post("/resend", userController.resendTokenPost);
+router.post(
+  "/resend",
+  userController.resendToken,
+  userController.sendVerificationEmail
+);
 
 module.exports = router;
