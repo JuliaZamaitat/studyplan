@@ -4,10 +4,10 @@ const User = require("../model/user"),
   Token = require("../model/token"),
   jwt = require("jsonwebtoken"),
   bcrypt = require("bcryptjs"),
-  nodemailer = require("nodemailer");
+  nodemailer = require("nodemailer"),
+  { gmailTransporter } = require("../services/oauthService");
 
 const secret = "some-secret";
-
 module.exports = {
   checkDuplicateUsernameOrEmail: (req, res, next) => {
     const id = req.body._id || req.body.id;
@@ -226,10 +226,12 @@ module.exports = {
     });
   },
   sendEmailWithNewPassword: (req, res) => {
+    let transporter;
     if (process.env.PRODUCTION) {
-      //configure account for production
+      transporter = gmailTransporter;
     } else {
-      const transporter = nodemailer.createTransport({
+      //Developmemt mode
+      transporter = nodemailer.createTransport({
         host: "smtp.ethereal.email",
         port: 587,
         auth: {
@@ -237,8 +239,9 @@ module.exports = {
           pass: "KkrfJrfSEvv86Q8N9s",
         },
       });
+
       var mailOptions = {
-        from: "no-reply@studyplan.com",
+        from: "studyplanhtwberlin@gmail.com",
         to: res.locals.user.email,
         subject: "New Password",
         text:
@@ -262,10 +265,12 @@ module.exports = {
   },
   sendVerificationEmail: (req, res) => {
     // Send the email
+    let transporter;
     if (process.env.PRODUCTION) {
-      //configure account for production
+      transporter = gmailTransporter;
     } else {
-      const transporter = nodemailer.createTransport({
+      //Developmemt mode
+      transporter = nodemailer.createTransport({
         host: "smtp.ethereal.email",
         port: 587,
         auth: {
@@ -273,8 +278,9 @@ module.exports = {
           pass: "KkrfJrfSEvv86Q8N9s",
         },
       });
+
       var mailOptions = {
-        from: "no-reply@studyplan.com",
+        from: "studyplanhtwberlin@gmail.com",
         to: res.locals.user.email,
         subject: "Account Verification Token",
         text:
