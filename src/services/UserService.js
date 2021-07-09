@@ -53,7 +53,13 @@ export default {
         }
       )
       .then((response) => {
-        // localStorage.setItem("user", JSON.stringify(response.data));
+        return response.data;
+      });
+  },
+  resetPassword(email) {
+    return server
+      .post("users/reset-password", { email: email })
+      .then((response) => {
         return response.data;
       });
   },

@@ -123,6 +123,25 @@ export const actions = {
       commit("SET_PENDING", false);
     }
   },
+  async resetPassword({ commit }, { email }) {
+    try {
+      commit("SET_PENDING", true);
+      await UserService.resetPassword(email);
+    } catch (error) {
+      const notification = {
+        type: "error",
+        message:
+          "There was a problem resetting your password: " + error.message,
+      };
+      console.log(notification);
+      return {
+        code: error.response.status,
+        message: error.response.data.message,
+      };
+    } finally {
+      commit("SET_PENDING", false);
+    }
+  },
   async saveProgramAndStartOfStudy(
     { state, dispatch, commit },
     { program, stupo, startOfStudy }

@@ -43,6 +43,15 @@
           Bitte fülle alle Felder aus.
         </p>
         <a class="register-link" href="/register">zur Registrierung</a>
+        <router-link
+          class="reset-password-link"
+          :to="{
+            name: 'baseResetPassword',
+          }"
+        >
+          Passwort vergessen
+        </router-link>
+        <router-view></router-view>
       </div>
       <div>
         <div v-if="message" role="alert" class="error-message">
@@ -63,7 +72,6 @@ export default {
       username: "",
       password: "",
       message: "",
-      // loading: false,
     };
   },
   validations: {
@@ -202,7 +210,14 @@ input[type="submit"] {
 }
 .register-link {
   display: block;
+  color: $htwGruen;
+  font-size: 15px;
+}
+
+.reset-password-link {
+  display: block;
   color: inherit;
   font-size: 15px;
+  margin-top: 30px;
 }
 </style>

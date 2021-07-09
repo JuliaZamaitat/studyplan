@@ -64,6 +64,7 @@
           <a class="login-link" href="/login">zum Login</a>
 
           <router-link
+            class="verification-link"
             :to="{
               name: 'baseResendVerification',
             }"
@@ -252,7 +253,14 @@ input[type="submit"] {
 
 .login-link {
   display: block;
+  color: $htwGruen;
+  font-size: 15px;
+}
+
+.verification-link {
+  display: block;
   color: inherit;
   font-size: 15px;
+  margin-top: 30px;
 }
 </style>

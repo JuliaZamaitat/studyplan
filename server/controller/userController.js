@@ -166,7 +166,7 @@ module.exports = {
         });
       });
   },
-  resendToken: (req, res, next) => {
+  resendVerificationEmail: (req, res, next) => {
     User.findOne({ email: req.body.email }, function (err, user) {
       if (!user)
         return res
@@ -196,6 +196,70 @@ module.exports = {
       });
     });
   },
+  resetPassword: (req, res, next) => {
+    User.findOne({ email: req.body.email }, function (err, user) {
+      if (!user)
+        return res
+          .status(400)
+          .send({ message: "Kein Benutzer mit dieser Mailadresse gefunden" });
+      if (!user.isVerified) {
+        return res.status(401).send({
+          type: "not-verified",
+          message:
+            "Dein Account wurde noch nicht bestätigt. Checke deine Mails oder fordere eine neue Mail an.",
+        });
+      }
+      //create a new password, save it to the user, and send it to the user in an email
+      const newRandomPassword = Math.random().toString(36).slice(-8);
+      const hashedPassword = bcrypt.hashSync(newRandomPassword, 8);
+      user.password = hashedPassword;
+      user.save((err, user) => {
+        if (err) {
+          res.status(500).send({ message: err.message });
+          return;
+        } else {
+          res.locals.user = user;
+          res.locals.password = newRandomPassword;
+          next();
+        }
+      });
+    });
+  },
+  sendEmailWithNewPassword: (req, res) => {
+    if (process.env.PRODUCTION) {
+      //configure account for production
+    } else {
+      const transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        port: 587,
+        auth: {
+          user: "arielle.mayer39@ethereal.email",
+          pass: "KkrfJrfSEvv86Q8N9s",
+        },
+      });
+      var mailOptions = {
+        from: "no-reply@studyplan.com",
+        to: res.locals.user.email,
+        subject: "New Password",
+        text:
+          "Hello,\n\n" +
+          "This is your new password. Please update it in your profile settings soon.\n\n" +
+          res.locals.password,
+      };
+      transporter.sendMail(mailOptions, function (err) {
+        if (err) {
+          return res.status(500).send({ msg: err.message });
+        }
+        res
+          .status(200)
+          .send(
+            "An email with a new password has been sent to " +
+              res.locals.user.email +
+              "."
+          );
+      });
+    }
+  },
   sendVerificationEmail: (req, res) => {
     // Send the email
     if (process.env.PRODUCTION) {
@@ -210,7 +274,7 @@ module.exports = {
         },
       });
       var mailOptions = {
-        from: "no-reply@yourwebapplication.com",
+        from: "no-reply@studyplan.com",
         to: res.locals.user.email,
         subject: "Account Verification Token",
         text:
@@ -235,7 +299,6 @@ module.exports = {
     }
   },
   update: async (req, res) => {
-    console.log(req.body);
     let userParams = {
       username: req.body.username,
       email: req.body.email,
@@ -255,15 +318,11 @@ module.exports = {
       });
   },
   updatePassword: async (req, res) => {
-    console.log(req.body);
     const oldPassword = req.body.oldPassword;
-
     const newPassword = bcrypt.hashSync(req.body.newPassword, 8);
 
     //find user and compare old password that is stored to this oldPassword
-
     const user = await User.findById(req.params.id);
-
     var passwordIsValid = bcrypt.compareSync(oldPassword, user.password);
     if (passwordIsValid) {
       User.findByIdAndUpdate(

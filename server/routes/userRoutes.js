@@ -20,8 +20,14 @@ router.post(
 );
 router.post(
   "/resend",
-  userController.resendToken,
+  userController.resendVerificationEmail,
   userController.sendVerificationEmail
+);
+
+router.post(
+  "/reset-password",
+  userController.resetPassword,
+  userController.sendEmailWithNewPassword
 );
 
 module.exports = router;

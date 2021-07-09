@@ -1,18 +1,15 @@
 <template>
   <div>
-    <BaseModal :route="'/register'">
+    <BaseModal :route="'/login'">
       <template v-slot:header>
-        <button
-          type="button"
-          class="btn-close"
-          @click="$router.push('/profile')"
-        >
+        <button type="button" class="btn-close" @click="$router.push('/login')">
           x
         </button>
-        <h2>Hast du keine Mail erhalten oder der Link ist abgelaufen?</h2>
+        <h2>Hast du dein Passwort vergessen?</h2>
         <h3>
-          Fordere eine neue Email an mit der Mailadresse, mit der du registriert
-          bist.
+          Fordere eine neues Passwort an mit der Mailadresse, mit der du
+          registriert bist. Denke danach dran, dein Passwort in deinem Profil zu
+          ändern.
         </h3>
       </template>
       <template v-slot:body>
@@ -51,9 +48,9 @@
           :disabled="$v.$invalid"
           class="submit"
           :class="{ disabled: $v.$invalid }"
-          @click.prevent="resendConfirmation"
+          @click.prevent="resetPassword"
         >
-          Neue Verifizierungsmail beantragen
+          Neues Passwort beantragen
         </button>
       </template>
     </BaseModal>
@@ -79,24 +76,21 @@ export default {
   },
 
   methods: {
-    async resendConfirmation() {
+    async resetPassword() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
         this.message = "";
 
-        const response = await this.$store.dispatch(
-          "user/resendVerificationEmail",
-          {
-            email: this.email,
-          }
-        );
+        const response = await this.$store.dispatch("user/resetPassword", {
+          email: this.email,
+        });
         if (response) {
           //not resend
           this.message = response.message;
           this.successful = false;
         } else {
           //everything went ok
-          this.message = "Verifizierungsmail erneut gesendet!";
+          this.message = "Mail mit neuem Passwort erhalten!";
           this.successful = true;
           this.email = "";
 
