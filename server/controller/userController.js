@@ -18,9 +18,7 @@ module.exports = {
         return;
       }
       if (user && user._id != id) {
-        res
-          .status(400)
-          .send({ message: "Failed! Username is already in use!" });
+        res.status(400).send({ message: "Benutzername bereits vergeben!" });
         return;
       }
       // Email
@@ -32,7 +30,7 @@ module.exports = {
           return;
         }
         if (user && user._id != id) {
-          res.status(400).send({ message: "Failed! Email is already in use!" });
+          res.status(400).send({ message: "Email bereits vergeben!" });
           return;
         }
         next();
@@ -66,7 +64,7 @@ module.exports = {
         res.status(500).send({ message: err.message });
         return;
       } else {
-        res.send({ message: "User was successfully registered!" });
+        res.send({ message: "Nuter erfolgreich registriert!" });
       }
     });
   },
@@ -84,7 +82,7 @@ module.exports = {
           return;
         }
         if (!user) {
-          return res.status(404).send({ message: "User Not found." });
+          return res.status(404).send({ message: "Nutzer nicht gefunden!" });
         }
         var passwordIsValid = bcrypt.compareSync(
           req.body.password,
@@ -135,20 +133,33 @@ module.exports = {
   },
   updatePassword: async (req, res) => {
     console.log(req.body);
-    const password = bcrypt.hashSync(req.body.password, 8);
+    const oldPassword = req.body.oldPassword;
 
-    User.findByIdAndUpdate(
-      req.params.id,
-      { $set: { password: password } },
-      { new: true }
-    )
-      .populate("studyPlan")
-      .populate("startOfStudy")
-      .then((user, err) => {
-        if (err) console.log(err.message);
-        else {
-          return res.json(user);
-        }
-      });
+    const newPassword = bcrypt.hashSync(req.body.newPassword, 8);
+
+    //find user and compare old password that is stored to this oldPassword
+
+    const user = await User.findById(req.params.id);
+
+    var passwordIsValid = bcrypt.compareSync(oldPassword, user.password);
+    if (passwordIsValid) {
+      User.findByIdAndUpdate(
+        req.params.id,
+        { $set: { password: newPassword } },
+        { new: true }
+      )
+        .populate("studyPlan")
+        .populate("startOfStudy")
+        .then((user, err) => {
+          if (err) console.log(err.message);
+          else {
+            res.send({ message: "Passwort wurde erfolgreich aktualisiert!" });
+          }
+        });
+    } else {
+      return res
+        .status(500)
+        .send({ message: "Altes Passwort ist nicht korrekt!" });
+    }
   },
 };

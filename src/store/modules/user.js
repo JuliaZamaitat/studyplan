@@ -86,12 +86,10 @@ export const actions = {
       commit("SET_PENDING", false);
     }
   },
-  async changePassword({ commit }, { password }) {
+  async changePassword({ commit }, { oldPassword, newPassword }) {
     try {
       commit("SET_PENDING", true);
-      console.log("passwort", password);
-      await UserService.updatePassword(state.user, password);
-      //change access token?
+      await UserService.updatePassword(state.user, oldPassword, newPassword);
     } catch (error) {
       const notification = {
         type: "error",

@@ -16,7 +16,7 @@
             @blur="$v.username.$touch()"
           />
           <div v-if="$v.username.$error">
-            <p v-if="!$v.username.required" class="error-message">
+            <p v-if="!$v.username.required" class="message--error">
               Gib einen Nutzernamen an
             </p>
           </div>
@@ -31,10 +31,10 @@
             @blur="$v.email.$touch()"
           />
           <div v-if="$v.email.$error">
-            <p v-if="!$v.email.email" class="error-message">
+            <p v-if="!$v.email.email" class="message--error">
               Bitte gib eine gülitge Emailadresse an
             </p>
-            <p v-if="!$v.email.required" class="error-message">
+            <p v-if="!$v.email.required" class="message--error">
               Gib eine Emailadresse an
             </p>
           </div>
@@ -49,7 +49,7 @@
             @blur="$v.password.$touch()"
           />
           <div v-if="$v.password.$error">
-            <p v-if="!$v.password.required" class="error-message">
+            <p v-if="!$v.password.required" class="message--error">
               Gib ein Passwort an
             </p>
           </div>
@@ -58,7 +58,7 @@
           <button :disabled="$v.$invalid" :class="{ disabled: $v.$invalid }">
             Registrieren
           </button>
-          <p v-if="$v.$anyError" class="error-message">
+          <p v-if="$v.$anyError" class="message--error">
             Bitte fülle alle Felder aus.
           </p>
           <a class="login-link" href="/login">zum Login</a>
@@ -222,7 +222,7 @@ input[type="submit"] {
 
 .message {
   &--error {
-    color: red;
+    color: #f8153d;
     margin-bottom: 30px;
     margin-top: 0;
   }
@@ -238,7 +238,7 @@ input[type="submit"] {
 }
 
 .error {
-  border-color: red;
+  border-color: #f8153d;
 }
 
 .login-link {

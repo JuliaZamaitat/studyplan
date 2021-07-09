@@ -118,9 +118,7 @@ export const actions = {
   async updateStudyPlan({ state, commit }) {
     try {
       commit("SET_PENDING", true);
-      console.log("im update", state.studyPlan.semesterPlans);
       const response = await StudyPlanService.updateStudyPlan(state.studyPlan);
-      console.log("response", response.data);
       const studyPlan = response.data;
       commit("SET_STUDYPLAN", studyPlan);
     } catch (error) {
@@ -159,8 +157,6 @@ export const actions = {
     }
 
     const startOfStudy = rootState.user.user.startOfStudy;
-
-    console.log("startOfStudy", startOfStudy);
 
     state.studyPlan.semesterPlans = assignSemestersToSemesterPlans(
       rootGetters["semester/getSemesters"],

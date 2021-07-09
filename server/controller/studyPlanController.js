@@ -65,7 +65,6 @@ module.exports = {
       .then((studyPlan, err) => {
         if (err) console.log(err.message);
         else {
-          console.log("plan", studyPlan.semesterPlans);
           res.json(studyPlan);
         }
       });
@@ -80,7 +79,6 @@ module.exports = {
           console.log(err.message);
           return;
         } else {
-          console.log("success updating");
           res.json(user);
         }
       });

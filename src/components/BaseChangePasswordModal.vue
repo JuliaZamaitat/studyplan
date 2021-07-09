@@ -13,7 +13,7 @@
       </template>
 
       <template v-slot:body>
-        <form name="form" @submit.prevent="handleUpdate">
+        <form name="form">
           <div class="fields">
             <div class="fieldgroup">
               <label for="oldPassword" class="password-label"
@@ -38,12 +38,6 @@
               </div>
             </div>
 
-            <div v-if="$v.oldPassword.$error">
-              <p v-if="!$v.oldPassword.required" class="error-message">
-                Darf nicht leer sein
-              </p>
-            </div>
-
             <div class="fieldgroup">
               <label for="newPassword" class="password-label"
                 >Neues Passwort</label
@@ -66,15 +60,37 @@
                 <label for="checkbox">Passwort zeigen</label>
               </div>
             </div>
-            <button
-              :disabled="$v.$invalid"
-              class="submit"
-              :class="{ disabled: $v.$invalid }"
-            >
-              <span>Passwort ändern</span>
-            </button>
+            <div v-if="$v.newPassword.$error">
+              <p
+                v-if="!$v.newPassword.required || $v.oldPassword.required"
+                class="message--error"
+              >
+                Darf nicht leer sein
+              </p>
+            </div>
           </div>
         </form>
+        <div
+          v-if="message"
+          class="message"
+          :class="{
+            'message message--error': !successful,
+            'message message--success': successful,
+          }"
+        >
+          {{ message }}
+        </div>
+      </template>
+
+      <template v-slot:footer>
+        <button
+          :disabled="$v.$invalid"
+          class="submit"
+          :class="{ disabled: $v.$invalid }"
+          @click="handlePasswordUpdate"
+        >
+          Passwort ändern
+        </button>
       </template>
     </BaseModal>
   </div>
@@ -88,8 +104,10 @@ export default {
     return {
       oldPassword: "",
       newPassword: "",
+      message: "",
     };
   },
+
   validations: {
     oldPassword: {
       required,
@@ -98,6 +116,7 @@ export default {
       required,
     },
   },
+
   methods: {
     showPassword(type) {
       var x = document.getElementById(type);
@@ -107,10 +126,25 @@ export default {
         x.type = "password";
       }
     },
-    handleUpdate() {
+    async handlePasswordUpdate() {
       this.$v.$touch();
       if (!this.$v.$invalid) {
-        console.log("good");
+        const response = await this.$store.dispatch("user/changePassword", {
+          oldPassword: this.oldPassword,
+          newPassword: this.newPassword,
+        });
+        if (response) {
+          //not updated
+          this.message = response.message;
+          this.successful = false;
+        } else {
+          //everything went ok
+          this.message = "Password erfolgreich geändert!";
+          this.successful = true;
+          this.oldPassword = "";
+          this.newPassword = "";
+          this.$v.$reset();
+        }
       }
     },
   },
@@ -119,14 +153,20 @@ export default {
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
-.error-message {
-  color: #f8153d;
-  margin-bottom: 30px;
-  margin-top: 0;
-}
 
 .error {
   border-color: #f8153d !important;
+}
+
+.message {
+  &--error {
+    color: #f8153d;
+    margin-bottom: 30px;
+    margin-top: 0;
+  }
+  &--success {
+    color: $htwGruen;
+  }
 }
 
 .fields {
@@ -146,12 +186,12 @@ $htwGruen: #76b900;
     text-align: center;
     border-radius: 12px;
     height: 50px;
-    margin-top: 20px;
-    margin-bottom: 30px;
+    margin-top: 30px;
+    margin-bottom: 20px;
   }
 
   .fieldgroup {
-    margin-bottom: 40px;
+    margin-bottom: 50px;
     input {
       border: 3px solid $htwGruen;
       display: inline;
@@ -178,7 +218,6 @@ $htwGruen: #76b900;
     font-weight: bold;
     font-size: 18px;
     margin-top: 20px;
-    margin-bottom: 20px;
   }
 
   .disabled {
