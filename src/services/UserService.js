@@ -57,4 +57,9 @@ export default {
         return response.data;
       });
   },
+  resendVerificationEmail(email) {
+    return server.post("users/resend", { email: email }).then((response) => {
+      return response.data;
+    });
+  },
 };

@@ -171,10 +171,10 @@ module.exports = {
       if (!user)
         return res
           .status(400)
-          .send({ msg: "Kein Benutzer mit dieser Mailadresse gefunden" });
+          .send({ message: "Kein Benutzer mit dieser Mailadresse gefunden" });
       if (user.isVerified)
         return res.status(400).send({
-          msg: "Der Account wurde schon bestätigt. Bitte logge dich ein",
+          message: "Der Account wurde schon bestätigt. Bitte logge dich ein",
         });
       res.locals.user = user;
       // Create a verification token, save it, and send email
@@ -188,7 +188,7 @@ module.exports = {
       // Save the token
       token.save(function (err) {
         if (err) {
-          return res.status(500).send({ msg: err.message });
+          return res.status(500).send({ message: err.message });
         }
         res.locals.token = token;
 

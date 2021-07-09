@@ -62,6 +62,15 @@
             Bitte fülle alle Felder aus.
           </p>
           <a class="login-link" href="/login">zum Login</a>
+
+          <router-link
+            :to="{
+              name: 'baseResendVerification',
+            }"
+          >
+            Verifizierungslink nochmal senden
+          </router-link>
+          <router-view></router-view>
         </div>
       </div>
     </form>
@@ -131,7 +140,7 @@ export default {
           })
           .then(
             (data) => {
-              this.message = data.message;
+              this.message = data;
               this.successful = true;
             },
             (error) => {
