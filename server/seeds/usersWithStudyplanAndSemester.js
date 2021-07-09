@@ -16,7 +16,7 @@ mongoose
     console.log("connected to db in development environment");
   });
 
-async function loadUsersAndStudyPlansWithSemester() {
+async function loadUser() {
   await Semester.deleteMany({});
   await StudyPlan.deleteMany({});
   await User.deleteMany({});
@@ -39,39 +39,21 @@ async function loadUsersAndStudyPlansWithSemester() {
       username: "test",
       password: bcrypt.hashSync("test", 8),
       email: "test@mail.de",
-      startOfStudy: sose18._id,
+      isVerified: true,
     }),
   ];
 
-  const studyPlanData = [
-    new StudyPlan({
-      program: {
-        code: "imi-b",
-        name: "Internationaler Studiengang Medieninformatik",
-        version: "1",
-      },
-      semesterPlans: [],
-    }),
-  ];
-
-  const studyPlans = await StudyPlan.create(studyPlanData);
   const users = await User.create(userData);
-  for (let user in users) {
-    users[user].studyPlan = studyPlans[0];
-    await users[user].save();
-  }
 
   console.log("----");
   console.log("database seeded with:");
   console.log("----");
   console.log("users: " + JSON.stringify(users));
   console.log("----");
-  console.log("studyPlans: " + JSON.stringify(studyPlans));
-  console.log("----");
   return ".";
 }
 
-loadUsersAndStudyPlansWithSemester().then(() => {
+loadUser().then(() => {
   mongoose.disconnect();
   console.log("database connection closed after seeding.");
 });

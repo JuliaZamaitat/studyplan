@@ -1,8 +1,10 @@
 //code partially taken from https://bezkoder.com/node-js-mongodb-auth-jwt/
 
 const User = require("../model/user"),
+  Token = require("../model/token"),
   jwt = require("jsonwebtoken"),
-  bcrypt = require("bcryptjs");
+  bcrypt = require("bcryptjs"),
+  nodemailer = require("nodemailer");
 
 const secret = "some-secret";
 
@@ -64,8 +66,92 @@ module.exports = {
         res.status(500).send({ message: err.message });
         return;
       } else {
-        res.send({ message: "Nuter erfolgreich registriert!" });
+        var token = new Token({
+          _userId: user._id,
+          token: jwt.sign({ id: user.id }, secret, {
+            expiresIn: 86400, // 24 hours
+          }),
+        });
+
+        token.save(function (err) {
+          if (err) {
+            return res.status(500).send({ msg: err.message });
+          }
+
+          // Send the email
+          if (process.env.PRODUCTION) {
+            //configure account for production
+          } else {
+            const transporter = nodemailer.createTransport({
+              host: "smtp.ethereal.email",
+              port: 587,
+              auth: {
+                user: "arielle.mayer39@ethereal.email",
+                pass: "KkrfJrfSEvv86Q8N9s",
+              },
+            });
+            var mailOptions = {
+              from: "no-reply@yourwebapplication.com",
+              to: user.email,
+              subject: "Account Verification Token",
+              text:
+                "Hello,\n\n" +
+                "Please verify your account by clicking the link: \nhttp://" +
+                req.headers.host +
+                "/users/confirmation/" +
+                token.token,
+            };
+            transporter.sendMail(mailOptions, function (err) {
+              if (err) {
+                return res.status(500).send({ msg: err.message });
+              }
+              res
+                .status(200)
+                .send(
+                  "A verification email has been sent to " + user.email + "."
+                );
+            });
+          }
+        });
+
+        // res.send({ message: "Nuter erfolgreich registriert!" });
       }
+    });
+  },
+
+  confirmation: (req, res) => {
+    console.log("hier");
+    console.log("url", req.params.token);
+    Token.findOne({ token: req.params.token }, function (err, token) {
+      console.log(err, token);
+      if (!token)
+        return res.status(400).send({
+          type: "not-verified",
+          msg: "We were unable to find a valid token. Your token may have expired.",
+        });
+
+      // If we found a token, find a matching user
+      User.findOne({ _id: token._userId }, function (err, user) {
+        if (!user)
+          return res
+            .status(400)
+            .send({ msg: "We were unable to find a user for this token." });
+        if (user.isVerified)
+          return res.status(400).send("Der Nutzer wurde bereits bestätigt.");
+
+        // Verify and save the user
+        user.isVerified = true;
+        user.save(function (err) {
+          if (err) {
+            return res.status(500).send({ msg: err.message });
+          }
+          res
+            .status(200)
+            .send(
+              "The account has been verified. Please log in. localhost:8080/login"
+            );
+        });
+      });
     });
   },
 
@@ -93,6 +179,13 @@ module.exports = {
           return res.status(401).send({
             accessToken: null,
             message: "Invalid Password!",
+          });
+        }
+        if (!user.isVerified) {
+          return res.status(401).send({
+            type: "not-verified",
+            message:
+              "Dein Account wurde noch nicht bestätigt. Checke deine Mails",
           });
         }
         var token = jwt.sign({ id: user.id }, secret, {
