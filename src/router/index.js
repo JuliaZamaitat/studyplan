@@ -12,6 +12,7 @@ import ProgramSelection from "../views/ProgramSelection.vue";
 import BaseModalChildCourse from "../components/BaseModalChildCourse.vue";
 import BaseModalParentCourse from "../components/BaseModalParentCourse.vue";
 import BaseDeleteStudyplanModal from "../components/BaseDeleteStudyplanModal.vue";
+import BaseChangePasswordModal from "../components/BaseChangePasswordModal.vue";
 
 Vue.use(VueRouter);
 
@@ -79,6 +80,11 @@ const routes = [
         path: "/delete-studyplan",
         component: BaseDeleteStudyplanModal,
         name: "baseDeleteStudyplanModal",
+      },
+      {
+        path: "/change-password",
+        component: BaseChangePasswordModal,
+        name: "baseChangePasswordModal",
       },
     ],
   },

@@ -97,68 +97,6 @@ export default {
 <style lang="scss" scoped>
 $htwGruen: #76b900;
 
-.overlay {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(2px);
-}
-
-.modal {
-  z-index: 500;
-  background: #ffffff;
-  width: 40vw;
-  height: 80vh;
-  // box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border: 4px solid #76b900;
-  border-radius: 12px;
-  overflow-x: auto;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-@media screen and (max-width: 1400px) {
-  .modal {
-    width: 60vw;
-  }
-}
-
-@media screen and (max-width: 1200px) {
-  .modal {
-    width: 60vw;
-  }
-}
-
-@media screen and (max-width: 1000px) {
-  .modal {
-    width: 70vw;
-  }
-}
-
-@media screen and (max-width: 800px) {
-  .modal {
-    width: 80vw;
-  }
-}
-
-.modal-header {
-  padding: 15px;
-  display: flex;
-  position: relative;
-
-  flex-direction: column;
-}
-
-.modal-body {
-  padding: 20px 10px;
-}
-
 .btn-close {
   position: absolute;
   top: 0;
