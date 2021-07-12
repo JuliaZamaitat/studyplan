@@ -151,8 +151,14 @@ router.beforeEach((to, from, next) => {
   const authRequired = !publicPages.includes(to.path);
 
   const user = JSON.parse(localStorage.getItem("user"));
-  if (!authRequired) next();
-  if (!user) next("/login");
+  if (!authRequired) {
+    next();
+    return;
+  }
+  if (!user || user == null) {
+    next("/login");
+    return;
+  }
   let loggedIn = parseJwt(user.accessToken);
 
   if (loggedIn.exp < Date.now() / 1000) {

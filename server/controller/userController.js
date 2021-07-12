@@ -165,6 +165,7 @@ module.exports = {
           startOfStudy: user.startOfStudy,
           studyPlan: user.studyPlan,
           accessToken: user.accessToken,
+          password: user.password,
         });
       });
   },
