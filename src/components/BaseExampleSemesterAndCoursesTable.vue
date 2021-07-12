@@ -186,4 +186,10 @@ a {
     }
   }
 }
+
+@media screen and (max-width: 1400px) {
+  .container {
+    max-width: 90% !important;
+  }
+}
 </style>

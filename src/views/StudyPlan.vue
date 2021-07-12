@@ -3,7 +3,10 @@
     <BaseHeading><h1>Mein StudyPlan</h1></BaseHeading>
     <pulse-loader :loading="pending" :color="color"></pulse-loader>
 
-    <BaseStudyPlan :coursesInSemester="this.studyPlan.semesterPlans" />
+    <BaseStudyPlan
+      v-show="!pending"
+      :coursesInSemester="this.studyPlan.semesterPlans"
+    />
   </div>
 </template>
 
@@ -15,17 +18,17 @@ export default {
     return {
       pending: {
         type: Boolean,
-        default: false,
+        default: "false",
       },
       color: "#76b900",
     };
   },
 
   async mounted() {
-    this.pending = true;
     if (!this.$store.state.user.user.startOfStudy) {
       this.$router.push("/select-program");
     } else {
+      this.pending = true;
       await this.$store.dispatch("semester/fetchSemesters");
       await this.$store.dispatch("studyplan/fetchStudyPlan", {
         userId: this.user.id || this.user._id,
