@@ -66,7 +66,7 @@ export default {
       return ects;
     },
     courseWidth(course) {
-      const width = course.ects * 25 + (course.ects / 5 - 1) * 25;
+      const width = course.ects * 30 + (course.ects / 5 - 1) * 25;
       return `${width}px`;
     },
   },
@@ -87,7 +87,7 @@ a {
 .container {
   display: grid;
   margin: 0 auto;
-  max-width: 80%;
+  max-width: 1350px;
   border-radius: 20px;
 
   p {

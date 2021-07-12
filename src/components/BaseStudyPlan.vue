@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="padding">
     <div class="container">
       <div class="shadowBox">
         <BaseSemesterRow
@@ -11,6 +11,7 @@
           :coursesInSemester="coursesInSemester"
           :semesterName="semester.semester"
         />
+        <router-view></router-view>
       </div>
     </div>
     <div class="addSemester">
@@ -46,10 +47,13 @@ p {
 button {
   margin: 30px;
 }
+.padding {
+  padding: 0 2rem;
+}
 .container {
   display: grid;
   margin: 0 auto;
-  max-width: 80%;
+  max-width: 1350px;
   border-radius: 20px;
 
   .shadowBox {

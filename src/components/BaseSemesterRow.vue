@@ -49,7 +49,6 @@
         </div>
       </div>
     </div>
-    <router-view></router-view>
   </div>
 </template>
 
@@ -82,7 +81,7 @@ export default {
 
   methods: {
     courseWidth(course) {
-      const width = course.ects * 25 + (course.ects / 5 - 1) * 25;
+      const width = course.ects * 30 + (course.ects / 5 - 1) * 30;
       return `${width}px`;
     },
     pickupCourse(e, fromCourseIndex, fromSemesterIndex) {

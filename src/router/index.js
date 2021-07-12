@@ -15,6 +15,7 @@ import BaseDeleteStudyplanModal from "../components/BaseDeleteStudyplanModal.vue
 import BaseChangePasswordModal from "../components/BaseChangePasswordModal.vue";
 import BaseResendVerification from "../components/BaseResendVerification.vue";
 import BaseResetPassword from "../components/BaseResetPassword.vue";
+import store from "../store";
 
 Vue.use(VueRouter);
 
@@ -123,6 +124,22 @@ const router = new VueRouter({
   routes,
 });
 
+function parseJwt(token) {
+  var base64Url = token.split(".")[1];
+  var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  var jsonPayload = decodeURIComponent(
+    Buffer.from(base64, "base64")
+      .toString("ascii")
+      .split("")
+      .map(function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
+
+  return JSON.parse(jsonPayload);
+}
+
 router.beforeEach((to, from, next) => {
   const publicPages = [
     "/login",
@@ -132,11 +149,16 @@ router.beforeEach((to, from, next) => {
     "/reset-password",
   ];
   const authRequired = !publicPages.includes(to.path);
-  const loggedIn = localStorage.getItem("user");
 
-  // trying to access a restricted page + not logged in
-  // redirect to login page
-  if (authRequired && !loggedIn) {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!authRequired) next();
+  if (!user) next("/login");
+  let loggedIn = parseJwt(user.accessToken);
+
+  if (loggedIn.exp < Date.now() / 1000) {
+    // token expired
+    loggedIn = false;
+    store.dispatch("user/logout");
     next("/login");
   } else {
     next();

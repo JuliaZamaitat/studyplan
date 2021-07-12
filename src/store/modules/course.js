@@ -39,6 +39,7 @@ export const actions = {
     // check the basic vuex course state
     try {
       commit("SET_PENDING", true);
+      console.log("fetching");
       if (!semester) {
         var course = getters.getCourseByCode(code); //take the basic stored course
         if (!course) {

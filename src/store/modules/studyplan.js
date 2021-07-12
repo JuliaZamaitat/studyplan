@@ -136,6 +136,7 @@ export const actions = {
     { state, rootGetters, rootState, dispatch },
     userId
   ) {
+    console.log("filling");
     let helperArrayForSemesterPlans = [];
     const officialCoursesInSemester =
       rootGetters["program/officialCoursesInSemester"];

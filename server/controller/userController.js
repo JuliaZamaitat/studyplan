@@ -133,6 +133,8 @@ module.exports = {
         if (!user) {
           return res.status(404).send({ message: "Nutzer nicht gefunden!" });
         }
+
+        console.log(user.password);
         var passwordIsValid = bcrypt.compareSync(
           req.body.password,
           user.password
