@@ -86,7 +86,7 @@ export const actions = {
       commit("SET_PENDING", false);
     }
   },
-  async changePassword({ commit }, { oldPassword, newPassword }) {
+  async changePassword({ state, commit }, { oldPassword, newPassword }) {
     try {
       commit("SET_PENDING", true);
       await UserService.updatePassword(state.user, oldPassword, newPassword);
