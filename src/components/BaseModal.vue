@@ -10,6 +10,7 @@
       <section class="modal-body">
         <slot name="body"></slot>
       </section>
+
       <section class="modal-footer">
         <slot name="footer"></slot>
       </section>
@@ -112,5 +113,12 @@ $htwGruen: #76b900;
   font-weight: bold;
   color: $htwGruen;
   background: transparent;
+}
+
+@media screen and (max-width: 400px) {
+  .modal-footer {
+    position: relative;
+    bottom: 0px;
+  }
 }
 </style>

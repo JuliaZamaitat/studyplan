@@ -233,4 +233,12 @@ $htwGruen: #76b900;
     cursor: auto;
   }
 }
+
+@media screen and (max-width: 500px) {
+  .password-input {
+    max-width: 80vw !important;
+    font-size: 15px !important;
+    height: 50px !important;
+  }
+}
 </style>
