@@ -45,9 +45,21 @@
             v-model="password"
             type="password"
             name="password"
+            id="password"
             :class="{ error: $v.password.$error }"
             @blur="$v.password.$touch()"
           />
+          <div class="checkbox">
+            <input
+              class="checkbox checkbox-box"
+              type="checkbox"
+              name="checkbox"
+              @click="showPassword('password')"
+            />
+            <label for="checkbox" class="checkbox checkbox-label"
+              >Passwort zeigen</label
+            >
+          </div>
           <div v-if="$v.password.$error">
             <p v-if="!$v.password.required" class="message--error">
               Gib ein Passwort an
@@ -126,6 +138,14 @@ export default {
     }
   },
   methods: {
+    showPassword(type) {
+      var x = document.getElementById(type);
+      if (x.type === "password") {
+        x.type = "text";
+      } else {
+        x.type = "password";
+      }
+    },
     handleRegister() {
       this.$v.$touch();
 
@@ -175,6 +195,18 @@ label {
   height: 39px;
   margin-bottom: 30px;
 }
+.checkbox {
+  margin-bottom: 10px;
+  &-box {
+    display: inline;
+    margin-right: 15px;
+  }
+
+  &-label {
+    display: inline;
+    font-weight: 500;
+  }
+}
 
 h1,
 h2 {
@@ -192,7 +224,9 @@ h3 {
   font-size: 23px;
 }
 
-input {
+input[type="text"],
+input[type="password"],
+input[type="email"] {
   font-size: 20px;
   text-align: center;
   border: 3px solid $htwGruen;
