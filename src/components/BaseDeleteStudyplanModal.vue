@@ -47,6 +47,13 @@
 import { mapState, mapMutations } from "vuex";
 
 export default {
+  created() {
+    document.documentElement.style.overflow = "hidden";
+  },
+
+  destroyed() {
+    document.documentElement.style.overflow = "auto";
+  },
   computed: {
     ...mapState("user", ["user"]),
     ...mapState("studyplan", ["studyplan"]),
