@@ -22,14 +22,6 @@ export default {
       }
     );
   },
-  fetchCourseWithoutSemester(program, version, code) {
-    code = unifyCode(code);
-    program = program.replace(/\//g, "");
-    version = version.replace(/\//g, "");
-    return Api().get(`${program}/${version}/${code}`, {
-      headers: authHeader(),
-    });
-  },
 };
 
 function unifyCode(code) {

@@ -77,8 +77,7 @@ export default {
     });
     this.pending = false;
   },
-  async destroyed() {
-    await this.$store.dispatch("course/clearCourse");
+  async beforeDestroy() {
     document.documentElement.style.overflow = "auto";
   },
   computed: {

@@ -6,15 +6,11 @@ export const namespaced = true;
 export const state = {
   courses: [],
   course: {},
-  coursesTotal: 0,
 };
 
 export const mutations = {
   SET_COURSES(state, courses) {
     state.courses = courses;
-  },
-  SET_COURSES_TOTAL(state, coursesTotal) {
-    state.coursesTotal = coursesTotal;
   },
   SET_COURSE(state, course) {
     state.course = course;
@@ -25,12 +21,6 @@ export const mutations = {
 };
 
 export const actions = {
-  // getCourses({ commit, rootGetters }) {
-  //   const courses = rootGetters["program/courses"];
-  //   if (!courses) return;
-  //   commit("SET_COURSES_TOTAL", courses.length);
-  //   commit("SET_COURSES", courses);
-  // },
   async fetchCourse(
     { state, commit, getters },
     { program, version, code, semester }
@@ -39,19 +29,22 @@ export const actions = {
     // check the basic vuex course state
     try {
       commit("SET_PENDING", true);
-      console.log("fetching");
       if (!semester) {
-        var course = getters.getCourseByCode(code); //take the basic stored course
-        if (!course) {
+        //no semester given, only in component 'example-studyplan'
+        var savedCourse = getters.getCourseByCode(code); //take the basic stored course
+        if (!savedCourse) {
           const response = await CourseService.fetchCourse(
             program,
             version,
             code
           );
-          course = response.data;
-        }
-        if (course) {
+          let course = response.data;
+          let courses = state.courses || [];
+          courses.push(response.data);
+          commit("SET_COURSES", courses);
           commit("SET_COURSE", course);
+        } else if (savedCourse) {
+          commit("SET_COURSE", savedCourse);
         }
       } else {
         await CourseService.fetchCourseWithSemester(
@@ -61,18 +54,17 @@ export const actions = {
           semester
         )
           .then((response) => {
-            commit("SET_COURSE", response.data);
+            commit("SET_COURSE", response.data); //don't save the course to vuex, because we don't save the semester versions
           })
           .catch(async (error) => {
             if (error.response.status == 404) {
-              //there is no semester information yet
-              await CourseService.fetchCourseWithoutSemester(
-                program,
-                version,
-                code
-              )
+              //there is no semester information yet, so fetching and saving the basic course
+              await CourseService.fetchCourse(program, version, code)
                 .then((response) => {
+                  let courses = state.courses || [];
+                  courses.push(response.data);
                   commit("SET_COURSE", response.data);
+                  commit("SET_COURSES", courses);
                 })
                 .catch((error) => {
                   const notification = {
@@ -103,13 +95,11 @@ export const actions = {
       commit("SET_PENDING", false);
     }
   },
-  clearCourse({ commit }) {
-    commit("SET_COURSE", {});
-  },
 };
 
 export const getters = {
   getCourseByCode: (state) => (code) => {
-    return state.courses.find((course) => course.code === code);
+    if (!state.courses) return;
+    return state.courses.find((course) => course.course.code === code);
   },
 };
