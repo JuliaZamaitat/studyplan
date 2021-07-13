@@ -51,10 +51,7 @@ export default {
         type: Object,
       },
       parentCourseCode: null,
-      pending: {
-        type: Boolean,
-        default: false,
-      },
+      pending: false,
       color: "#76b900",
       isExampleStudyPlan: false,
     };

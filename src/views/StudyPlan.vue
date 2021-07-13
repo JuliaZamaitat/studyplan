@@ -75,15 +75,9 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-      pending: {
-        type: Boolean,
-        default: false,
-      },
+      pending: false,
       color: "#76b900",
-      showingExplanations: {
-        type: Boolean,
-        default: false,
-      },
+      showingExplanations: false,
     };
   },
 

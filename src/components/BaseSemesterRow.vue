@@ -18,7 +18,9 @@
           v-for="(course, $courseIndex) in semester.plannedCourses"
           :key="$courseIndex"
           @drop.stop="moveCourse($event, semester.plannedCourses, $courseIndex)"
-          :style="{ width: courseWidth(course) }"
+          :style="{
+            width: `${courseWidth(course)}px`,
+          }"
         >
           <router-link
             class="course-content-container"
@@ -42,7 +44,13 @@
                 <p class="course-content-container-content-text--code">
                   {{ course.code }}
                 </p>
-                <p>{{ course.name }}</p>
+                <p
+                  :style="{
+                    fontSize: courseWidth(course) < 50 ? '9px' : '12px',
+                  }"
+                >
+                  {{ course.name }}
+                </p>
               </div>
             </div>
           </router-link>
@@ -81,8 +89,7 @@ export default {
 
   methods: {
     courseWidth(course) {
-      const width = course.ects * 30 + (course.ects / 5 - 1) * 30;
-      return `${width}px`;
+      return course.ects * 30 + (course.ects / 5 - 1) * 30;
     },
     pickupCourse(e, fromCourseIndex, fromSemesterIndex) {
       e.dataTransfer.effectAllowed = "move";
@@ -147,9 +154,9 @@ p {
       align-items: center;
 
       &-content-container {
+        transform: translate(0, 0);
         position: relative;
         background: rgba(193, 193, 193, 0.55);
-        transform: translate(0, 0);
         min-height: 87px;
         border-radius: 14px;
         width: 100%;
@@ -172,9 +179,8 @@ p {
             border-radius: 14px;
 
             p {
-              padding: 0px;
               font-size: 12px;
-              padding: 3px;
+              padding: 3px 5px;
               margin: 0;
               max-width: 95%;
               word-wrap: break-word;
