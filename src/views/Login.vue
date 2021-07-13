@@ -192,6 +192,7 @@ h3 {
     font-weight: 500;
   }
 }
+
 input[type="text"],
 input[type="password"] {
   font-size: 20px;

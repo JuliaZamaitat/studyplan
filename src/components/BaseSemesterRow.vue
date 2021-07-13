@@ -24,7 +24,10 @@
         >
           <router-link
             class="course-content-container"
-            :class="{ booked: course.booked, passed: course.passed }"
+            :class="{
+              'course-content-container--booked': course.booked,
+              'course-content-container--passed': course.passed,
+            }"
             :to="{
               name: 'baseModalParentCourse',
               params: {
@@ -119,22 +122,6 @@ export default {
 $htwGruen: #76b900;
 $belegtBackground: rgba(253, 177, 62, 0.55);
 
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-p {
-  font-weight: 700;
-}
-
-.booked {
-  background-color: $belegtBackground !important;
-}
-
-.passed {
-  background-color: rgba(118, 185, 0, 0.45) !important;
-}
 .semesterRow {
   max-width: 100%;
   display: grid;
@@ -153,6 +140,11 @@ p {
       display: flex;
       align-items: center;
 
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
       &-content-container {
         transform: translate(0, 0);
         position: relative;
@@ -164,6 +156,13 @@ p {
         justify-content: center;
         align-items: center;
 
+        &--booked {
+          background-color: $belegtBackground !important;
+        }
+
+        &--passed {
+          background-color: rgba(118, 185, 0, 0.45) !important;
+        }
         &-content {
           display: flex;
           justify-content: center;
@@ -180,6 +179,7 @@ p {
 
             p {
               font-size: 12px;
+              font-weight: 700;
               padding: 3px 5px;
               margin: 0;
               max-width: 95%;

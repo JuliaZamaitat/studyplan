@@ -416,7 +416,6 @@ h4 {
       justify-content: center;
       align-items: center;
       margin: 0 auto;
-
       width: 100%;
       &-text {
         max-width: 100%;

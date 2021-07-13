@@ -33,6 +33,7 @@
             <p v-if="!$v.email.required" class="message--error">
               Darf nicht leer sein
             </p>
+            <p v-else class="message--error">Keine gültige Email</p>
           </div>
         </div>
 
@@ -79,7 +80,13 @@ export default {
       email,
     },
   },
+  created() {
+    document.documentElement.style.overflow = "hidden";
+  },
 
+  destroyed() {
+    document.documentElement.style.overflow = "auto";
+  },
   methods: {
     async resendConfirmation() {
       this.$v.$touch();
@@ -112,6 +119,7 @@ export default {
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
+$errorRed: #f8153d;
 
 .headings {
   width: 90%;
@@ -126,12 +134,12 @@ $htwGruen: #76b900;
   }
 }
 .error {
-  border-color: #f8153d !important;
+  border-color: $errorRed !important;
 }
 
 .message {
   &--error {
-    color: #f8153d;
+    color: $errorRed;
     margin-bottom: 30px;
     margin-top: 0;
   }
@@ -140,35 +148,36 @@ $htwGruen: #76b900;
   }
 }
 
-.email-label {
-  display: block;
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.email-input {
-  width: 50%;
-  text-align: center;
-  border-radius: 12px;
-  height: 50px;
-  margin-top: 30px;
-  margin-bottom: 20px;
-}
-
 .fieldgroup {
   margin-top: 60px;
   margin-bottom: 50px;
   input {
     border: 3px solid $htwGruen;
     display: inline;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   .checkbox {
     display: inline;
   }
 
-  input:focus {
-    outline: none;
+  .email-label {
+    display: block;
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .email-input {
+    width: 50%;
+    text-align: center;
+    border-radius: 12px;
+    height: 50px;
+    font-size: 16px;
+    margin-top: 30px;
+    margin-bottom: 20px;
   }
 }
 .submit,
