@@ -282,25 +282,36 @@ h4 {
   font-size: 16px;
   font-weight: 700;
 }
+.course-content-container {
+  padding-top: 10px;
+}
 
+.childCourses-course:hover {
+  max-height: 20000px;
+  min-height: 87px;
+  height: auto;
+  transition: max-height 1s ease-in-out;
+}
 .childCourses {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 
   &-course {
     background: rgba(193, 193, 193, 0.55);
     border: 1px solid #c1c1c1;
-
+    max-height: 87px;
     min-height: 87px;
+    overflow: hidden;
     width: 10vw;
     border-radius: 14px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     margin: 9px;
+    transition: max-height 0.3s ease-in-out;
 
     &-content {
       display: flex;
@@ -311,7 +322,6 @@ h4 {
       &-text {
         max-width: 100%;
         height: 100%;
-        overflow: hidden;
         border-radius: 14px;
 
         &--code {
@@ -357,6 +367,12 @@ h4 {
   p {
     max-width: 65% !important;
     margin: 0 auto;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .childCourses-course {
+    align-items: center;
   }
 }
 </style>
