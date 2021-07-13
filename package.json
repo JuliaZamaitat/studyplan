@@ -17,6 +17,7 @@
     "lodash": "^4.17.21",
     "nodemailer": "^6.6.2",
     "vue": "^2.6.11",
+    "vue-cookie-law": "^1.13.3",
     "vue-material-checkbox": "^2.2.0",
     "vue-router": "^3.2.0",
     "vue-spinner": "^1.0.4",
