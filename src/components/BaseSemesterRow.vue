@@ -149,6 +149,7 @@ p {
       &-content-container {
         position: relative;
         background: rgba(193, 193, 193, 0.55);
+        transform: translate(0, 0);
         min-height: 87px;
         border-radius: 14px;
         width: 100%;

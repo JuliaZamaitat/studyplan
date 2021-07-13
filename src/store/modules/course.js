@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import CourseService from "@/services/Api/CourseService.js";
 
 export const namespaced = true;
