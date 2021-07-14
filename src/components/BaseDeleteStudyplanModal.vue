@@ -68,9 +68,6 @@ export default {
         { root: true }
       );
       this.$router.push("/select-program");
-
-      //Set studyplan to {}
-      //set startofstudy to undefined
     },
   },
 };
@@ -78,6 +75,7 @@ export default {
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
+$errorRed: #f8153d;
 
 .text {
   width: 90%;
@@ -93,11 +91,11 @@ $htwGruen: #76b900;
 }
 
 ::v-deep .modal {
-  border: 4px solid #f8153d !important;
+  border: 4px solid $errorRed !important;
 }
 
 ::v-deep .btn-close {
-  color: #f8153d !important;
+  color: $errorRed !important;
 }
 
 .button {
@@ -119,7 +117,7 @@ $htwGruen: #76b900;
     color: $htwGruen;
   }
   &-danger {
-    color: #f8153d;
+    color: $errorRed;
   }
 }
 </style>

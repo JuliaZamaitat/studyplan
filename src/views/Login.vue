@@ -151,6 +151,8 @@ export default {
 
 <style scoped lang="scss">
 $htwGruen: #76b900;
+$errorRed: #f8153d;
+
 label {
   display: block;
   font-weight: bold;
@@ -233,13 +235,13 @@ input[type="submit"] {
 }
 
 .error-message {
-  color: red;
+  color: $errorRed;
   margin-bottom: 30px;
   margin-top: 0;
 }
 
 .error {
-  border-color: red;
+  border-color: $errorRed;
 }
 .register-link {
   display: block;

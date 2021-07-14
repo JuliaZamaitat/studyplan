@@ -117,20 +117,21 @@ export default {
 <style lang="scss" scoped>
 $htwGruen: #76b900;
 
-.navigation-right {
-  display: inline;
-  position: absolute;
-  right: 30px;
-}
-.navigation-left {
-  display: inline;
-}
-
 .navigation {
   &-container {
     width: 100%;
     display: flex;
     align-items: baseline;
+
+    .navigation-left,
+    .navigation-right {
+      display: inline;
+    }
+
+    .navigation-right {
+      position: absolute;
+      right: 30px;
+    }
 
     .link {
       margin-left: 15px;

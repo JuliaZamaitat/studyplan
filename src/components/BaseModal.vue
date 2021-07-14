@@ -34,10 +34,7 @@ $htwGruen: #76b900;
 
 .overlay {
   position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -51,74 +48,64 @@ $htwGruen: #76b900;
   background: #ffffff;
   width: 40vw;
   height: 80vh;
-  // box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border: 4px solid #76b900;
   border-radius: 12px;
   overflow-x: auto;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-}
-@media screen and (max-width: 1400px) {
-  .modal {
+
+  @media screen and (max-width: 1400px) {
     width: 60vw;
   }
-}
 
-@media screen and (max-width: 1200px) {
-  .modal {
+  @media screen and (max-width: 1200px) {
     width: 60vw;
   }
-}
 
-@media screen and (max-width: 1000px) {
-  .modal {
+  @media screen and (max-width: 1000px) {
     width: 70vw;
   }
-}
 
-@media screen and (max-width: 800px) {
-  .modal {
+  @media screen and (max-width: 800px) {
     width: 80vw;
   }
-}
 
-.modal-header {
-  padding: 15px;
-  display: flex;
-  position: relative;
-  flex-direction: column;
-}
-
-.modal-body {
-  padding: 20px 10px;
-}
-
-.modal-footer {
-  position: absolute;
-  bottom: 20px;
-  margin: 0 auto;
-  width: 100%;
-}
-
-.btn-close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin-right: 5px;
-  border: none;
-  font-size: 20px;
-  padding: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  color: $htwGruen;
-  background: transparent;
-}
-
-@media screen and (max-width: 400px) {
-  .modal-footer {
+  .modal-header {
+    padding: 15px;
+    display: flex;
     position: relative;
-    bottom: 0px;
+    flex-direction: column;
+  }
+
+  .modal-body {
+    padding: 20px 10px;
+  }
+
+  .modal-footer {
+    position: absolute;
+    bottom: 20px;
+    margin: 0 auto;
+    width: 100%;
+
+    @media screen and (max-width: 400px) {
+      position: relative;
+      bottom: 0px;
+    }
+  }
+
+  .btn-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-right: 5px;
+    border: none;
+    font-size: 20px;
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    color: $htwGruen;
+    background: transparent;
   }
 }
 </style>

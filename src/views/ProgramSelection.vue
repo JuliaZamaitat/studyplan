@@ -157,10 +157,7 @@ export default {
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
-label {
-  display: block;
-  font-weight: bold;
-}
+$errorRed: #f8153d;
 
 .line {
   border-top: 3px solid;
@@ -217,6 +214,11 @@ input[type="submit"] {
   align-items: center;
   text-align: center;
 
+  label {
+    display: block;
+    font-weight: bold;
+  }
+
   &--box {
     margin: 10px;
   }
@@ -233,13 +235,13 @@ input[type="submit"] {
     border: 3px solid $htwGruen;
     border-radius: 12px;
     padding: 5px;
+
+    &:focus {
+      outline: none;
+    }
     &--small {
       max-width: 200px;
     }
-  }
-
-  select:focus {
-    outline: none;
   }
 
   option {
@@ -248,12 +250,12 @@ input[type="submit"] {
 }
 
 .error-message {
-  color: red;
+  color: $errorRed;
   margin-bottom: 30px;
   margin-top: 0;
 }
 
 .error {
-  border-color: red !important;
+  border-color: $errorRed !important;
 }
 </style>

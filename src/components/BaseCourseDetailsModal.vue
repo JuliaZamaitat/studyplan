@@ -10,7 +10,11 @@
           v-if="!isChildCourse"
           type="button"
           class="btn-close"
-          @click="$router.push('/my-studyplan')"
+          @click="
+            isExampleStudyPlan
+              ? $router.push('/example-studyplan')
+              : $router.push('/my-studyplan')
+          "
         >
           x
         </button>

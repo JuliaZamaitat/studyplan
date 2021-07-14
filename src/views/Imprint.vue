@@ -8,13 +8,11 @@
         Marienstra&szlig;e 2<br />
         12459 Berlin
       </p>
-
       <h2>Kontakt</h2>
       <p>
         Telefon: 017620786909<br />
         E-Mail: j.zamaitat [@] gmail.com
       </p>
-
       <p>
         Quelle: <a href="https://www.e-recht24.de">https://www.e-recht24.de</a>
       </p>
