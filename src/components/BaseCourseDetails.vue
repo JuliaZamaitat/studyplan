@@ -160,13 +160,6 @@
       </p>
     </div>
 
-    <button
-      v-if="!isExampleStudyPlan"
-      class="download-button"
-      @click="downloadInformation"
-    >
-      Informationen herunterladen
-    </button>
     <router-view></router-view>
   </div>
 </template>
@@ -226,18 +219,6 @@ export default {
           this.requiredCourses.push(this.course.child_courses[i]);
         }
       }
-    },
-    downloadInformation() {
-      const fileName = `${this.course.course.code}-${this.course.course.name}-${this.semester.name}`;
-      var dataStr =
-        "data:text/plain;charset=utf-8," +
-        encodeURIComponent(JSON.stringify(this.course));
-      var downloadAnchorNode = document.createElement("a");
-      downloadAnchorNode.setAttribute("href", dataStr);
-      downloadAnchorNode.setAttribute("download", fileName + ".txt");
-      document.body.appendChild(downloadAnchorNode);
-      downloadAnchorNode.click();
-      downloadAnchorNode.remove();
     },
   },
 };
