@@ -32,7 +32,7 @@
       <!-- wenn nicht belegt -->
       <div v-if="!booked">
         <h3 v-if="requiredCourses.length == 0">
-          Muss belegt werden durch einer dieser Kurse
+          Kann belegt werden durch einer dieser Kurse
         </h3>
         <h3 v-else>Muss durch folgende Kurse belegt werden</h3>
 
