@@ -149,6 +149,8 @@ $belegtBackground: rgba(253, 177, 62, 0.55);
         transform: translate(0, 0);
         position: relative;
         background: rgba(193, 193, 193, 0.55);
+        border: 1px solid rgba(193, 193, 193, 0.3);
+
         min-height: 87px;
         border-radius: 14px;
         width: 100%;
@@ -158,10 +160,12 @@ $belegtBackground: rgba(253, 177, 62, 0.55);
 
         &--booked {
           background-color: $belegtBackground !important;
+          border: 1px solid rgba(253, 177, 62, 0.3);
         }
 
         &--passed {
           background-color: rgba(118, 185, 0, 0.45) !important;
+          border: 1px solid rgba(118, 185, 0, 0.3);
         }
         &-content {
           display: flex;
