@@ -143,9 +143,17 @@ export const actions = {
     }
   },
   async saveProgramAndStartOfStudy(
-    { state, dispatch, commit },
+    { state, dispatch },
     { program, stupo, startOfStudy }
   ) {
+    await dispatch(
+      "program/fetchProgram",
+      {
+        code: program.code.toLowerCase(),
+        version: stupo,
+      },
+      { root: true }
+    );
     await dispatch(
       "studyplan/createStudyPlan",
       {

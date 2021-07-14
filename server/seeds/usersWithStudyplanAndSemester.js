@@ -31,9 +31,6 @@ async function loadUser() {
     await Semester.create(semesterData[semester]);
   }
 
-  const sose18 = await Semester.findOne({ name: "SoSe18" });
-  console.log(sose18);
-
   const userData = [
     new User({
       username: "test",

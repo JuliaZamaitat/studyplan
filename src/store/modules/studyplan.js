@@ -103,6 +103,8 @@ export const actions = {
       commit("SET_STUDYPLAN", studyPlan);
       rootState.user.user.studyPlan = studyPlan;
       rootState.user.user.startOfStudy = undefined;
+      // rootState.program.program = undefined;
+
       await dispatch("user/updateUser", {}, { root: true });
     } catch (error) {
       const notification = {
@@ -132,13 +134,21 @@ export const actions = {
     }
   },
 
-  async fillEmptyStudyPlanWithOfficalCourses(
-    { state, rootGetters, rootState, dispatch },
-    userId
-  ) {
+  async fillEmptyStudyPlanWithOfficalCourses({
+    state,
+    rootGetters,
+    rootState,
+    dispatch,
+  }) {
     let helperArrayForSemesterPlans = [];
-    const officialCoursesInSemester =
-      rootGetters["program/officialCoursesInSemester"];
+    // const officialCoursesInSemester =
+    //   rootGetters["program/officialCoursesInSemester"];
+    const officialCoursesInSemester = await dispatch(
+      "program/getOfficialCoursesInSemester",
+      {},
+      { root: true }
+    );
+    console.log("officialCoursesInSemester", officialCoursesInSemester);
     for (let semester in officialCoursesInSemester) {
       const courseCodes = [];
       for (let course in officialCoursesInSemester[semester]) {

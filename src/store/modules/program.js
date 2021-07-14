@@ -5,7 +5,6 @@ export const namespaced = true;
 export const state = {
   programs: [],
   program: {},
-  programsTotal: 0,
   pending: false,
 };
 
@@ -39,17 +38,16 @@ export const actions = {
       commit("SET_PENDING", false);
     }
   },
-  async fetchProgram({ commit, getters }, { code, version }) {
+  async fetchProgram({ state, commit }, { code, version }) {
     commit("SET_PENDING", true);
     try {
-      var program = getters.getProgramByCodeAndVersion(code, version);
+      var program = getProgramByCodeAndVersion(state, code, version);
       if (program) {
         commit("SET_PROGRAM", program);
       } else {
         const response = await ProgramService.fetchProgram(code, version);
         let program = response.data;
         program.version = version;
-
         commit("SET_PROGRAM", program);
       }
     } catch (error) {
@@ -62,53 +60,53 @@ export const actions = {
       commit("SET_PENDING", false);
     }
   },
-};
-
-export const getters = {
-  getProgramByCodeAndVersion: (state) => (code, version) => {
-    //TODO later save all programs in programs and search this array
-    // return state.programs.find((program) => program.code === code);
-    if (!state.program.code) return;
-    if (
-      state.program.code.toLowerCase() === code &&
-      state.program.version == version
-    )
-      return state.program;
-  },
-  courses: (state) => {
-    const courses = state.program.courses;
-    if (!courses) return;
-    return courses.sort(function (a, b) {
-      //sort in ascending order
-      var lowerCaseA = a.code.match(/\d+/)[0];
-      var lowerCaseB = b.code.match(/\d+/)[0];
-      return lowerCaseA - lowerCaseB;
-    });
-  },
-  semester: (state, getters) => {
-    const courses = getters.courses;
-    if (!courses) return;
-    const semester = [];
-    for (let i in getters.courses) {
-      let semesterCount = getters.courses[i].semester;
-      if (semester.indexOf(semesterCount) == -1) semester.push(semesterCount);
-    }
-    return semester.sort();
-  },
-  officialCoursesInSemester: (state, getters) => {
-    const semester = getters.semester;
+  async getOfficialCoursesInSemester({ state }) {
+    const semester = getSemester(state.program);
     if (!semester) return;
     const coursesInSemester = {};
-    for (let i in getters.semester) {
-      if (getters.semester[i] == 0) continue; //ohne Wahlpflichtfächer
+    for (let i in semester) {
+      if (semester[i] == 0) continue; //ohne Wahlpflichtfächer
       let courses = [];
-      for (let y in getters.courses) {
-        if (getters.courses[y].code.includes(".")) continue; //ohne B20.1, also required Submodule
-        if (getters.semester[i] == getters.courses[y].semester)
-          courses.push(getters.courses[y]);
+      let coursesInProgram = getCoursesInProgram(state.program);
+      for (let y in coursesInProgram) {
+        if (coursesInProgram[y].code.includes(".")) continue; //ohne B20.1, also required Submodule
+        if (semester[i] == coursesInProgram[y].semester)
+          courses.push(coursesInProgram[y]);
       }
-      coursesInSemester[getters.semester[i]] = courses;
+      coursesInSemester[semester[i]] = courses;
     }
     return coursesInSemester;
   },
 };
+
+function getProgramByCodeAndVersion(state, code, version) {
+  if (!state.program.code) return;
+  if (
+    state.program.code.toLowerCase() === code &&
+    state.program.version == version
+  )
+    return state.program;
+}
+
+function getCoursesInProgram(program) {
+  if (!program) return;
+  const courses = program.courses;
+  if (!courses) return;
+  return courses.sort(function (a, b) {
+    //sort in ascending order
+    var lowerCaseA = a.code.match(/\d+/)[0];
+    var lowerCaseB = b.code.match(/\d+/)[0];
+    return lowerCaseA - lowerCaseB;
+  });
+}
+
+function getSemester(program) {
+  const courses = getCoursesInProgram(program);
+  if (!courses) return;
+  const semester = [];
+  for (let i in courses) {
+    let semesterCount = courses[i].semester;
+    if (semester.indexOf(semesterCount) == -1) semester.push(semesterCount);
+  }
+  return semester.sort();
+}
