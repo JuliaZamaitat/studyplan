@@ -86,10 +86,6 @@ export default {
       this.$router.push("/select-program");
     } else {
       this.pending = true;
-      // await this.$store.dispatch("program/fetchProgram", {
-      //   code: this.user.studyPlan.program.code.toLowerCase(),
-      //   version: this.user.studyPlan.program.version,
-      // });
       await this.$store.dispatch("semester/fetchSemesters");
       await this.$store.dispatch("studyplan/fetchStudyPlan", {
         userId: this.user.id || this.user._id,
