@@ -151,6 +151,8 @@ export default {
 
 <style scoped lang="scss">
 $htwGruen: #76b900;
+$errorRed: #f8153d;
+
 label {
   display: block;
   font-weight: bold;
@@ -192,6 +194,7 @@ h3 {
     font-weight: 500;
   }
 }
+
 input[type="text"],
 input[type="password"] {
   font-size: 20px;
@@ -232,13 +235,13 @@ input[type="submit"] {
 }
 
 .error-message {
-  color: red;
+  color: $errorRed;
   margin-bottom: 30px;
   margin-top: 0;
 }
 
 .error {
-  border-color: red;
+  border-color: $errorRed;
 }
 .register-link {
   display: block;

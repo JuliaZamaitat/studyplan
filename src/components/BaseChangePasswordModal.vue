@@ -160,14 +160,15 @@ export default {
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
+$errorRed: #f8153d;
 
 .error {
-  border-color: #f8153d !important;
+  border-color: $errorRed !important;
 }
 
 .message {
   &--error {
-    color: #f8153d;
+    color: $errorRed;
     margin-bottom: 30px;
     margin-top: 0;
   }
@@ -181,35 +182,42 @@ $htwGruen: #76b900;
   flex-direction: column;
   margin: 0 auto;
 
-  .password-label {
-    display: block;
-    font-weight: bold;
-    font-size: 18px;
-  }
-
-  .password-input {
-    max-width: 35vw;
-    font-size: 20px;
-    text-align: center;
-    border-radius: 12px;
-    height: 50px;
-    margin-top: 30px;
-    margin-bottom: 20px;
-  }
-
   .fieldgroup {
     margin-bottom: 50px;
+
+    .password-label {
+      display: block;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    .password-input {
+      max-width: 35vw;
+      font-size: 20px;
+      text-align: center;
+      border-radius: 12px;
+      height: 50px;
+      margin-top: 30px;
+      margin-bottom: 20px;
+
+      @media screen and (max-width: 500px) {
+        max-width: 80vw;
+        font-size: 15px;
+        height: 50px;
+      }
+    }
+
     input {
       border: 3px solid $htwGruen;
       display: inline;
+
+      &:focus {
+        outline: none;
+      }
     }
 
     .checkbox {
       display: inline;
-    }
-
-    input:focus {
-      outline: none;
     }
   }
   .submit,
@@ -231,14 +239,6 @@ $htwGruen: #76b900;
     color: grey;
     text-decoration: none;
     cursor: auto;
-  }
-}
-
-@media screen and (max-width: 500px) {
-  .password-input {
-    max-width: 80vw !important;
-    font-size: 15px !important;
-    height: 50px !important;
   }
 }
 </style>

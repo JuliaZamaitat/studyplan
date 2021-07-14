@@ -125,7 +125,6 @@ module.exports = {
       .populate("studyPlan")
       .populate("startOfStudy")
       .then((user, err) => {
-        console.log(err);
         if (err) {
           res.status(500).send({ message: err });
           return;
@@ -134,7 +133,6 @@ module.exports = {
           return res.status(404).send({ message: "Nutzer nicht gefunden!" });
         }
 
-        console.log(user.password);
         var passwordIsValid = bcrypt.compareSync(
           req.body.password,
           user.password

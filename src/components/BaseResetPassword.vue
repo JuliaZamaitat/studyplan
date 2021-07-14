@@ -25,11 +25,11 @@
             @blur="$v.email.$touch()"
             :class="{ error: $v.email.$error }"
           />
-
           <div v-if="$v.email.$error">
             <p v-if="!$v.email.required" class="message--error">
               Darf nicht leer sein
             </p>
+            <p v-else class="message--error">Keine gültige Email</p>
           </div>
         </div>
 
@@ -67,14 +67,21 @@ export default {
     return {
       email: "",
       message: "",
+      successful: false,
     };
   },
-
   validations: {
     email: {
       required,
       email,
     },
+  },
+  created() {
+    document.documentElement.style.overflow = "hidden";
+  },
+
+  destroyed() {
+    document.documentElement.style.overflow = "auto";
   },
 
   methods: {
@@ -87,7 +94,7 @@ export default {
           email: this.email,
         });
         if (response) {
-          //not resend
+          //password was not sent via mail
           this.message = response.message;
           this.successful = false;
         } else {
@@ -95,7 +102,6 @@ export default {
           this.message = "Mail mit neuem Passwort erhalten!";
           this.successful = true;
           this.email = "";
-
           this.$v.$reset();
         }
       }
@@ -106,6 +112,7 @@ export default {
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
+$errorRed: #f8153d;
 .headings {
   width: 90%;
   margin: 0 auto;
@@ -120,12 +127,12 @@ $htwGruen: #76b900;
 }
 
 .error {
-  border-color: #f8153d !important;
+  border-color: $errorRed !important;
 }
 
 .message {
   &--error {
-    color: #f8153d;
+    color: $errorRed;
     margin-bottom: 30px;
     margin-top: 0;
   }
@@ -134,35 +141,36 @@ $htwGruen: #76b900;
   }
 }
 
-.email-label {
-  display: block;
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.email-input {
-  width: 50%;
-  text-align: center;
-  border-radius: 12px;
-  height: 50px;
-  margin-top: 30px;
-  margin-bottom: 20px;
-}
-
 .fieldgroup {
   margin-top: 60px;
   margin-bottom: 50px;
+
   input {
     border: 3px solid $htwGruen;
     display: inline;
+
+    &:focus {
+      outline: none;
+    }
   }
 
+  .email-label {
+    display: block;
+    font-weight: bold;
+    font-size: 18px;
+  }
+
+  .email-input {
+    width: 50%;
+    text-align: center;
+    border-radius: 12px;
+    height: 50px;
+    font-size: 16px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
   .checkbox {
     display: inline;
-  }
-
-  input:focus {
-    outline: none;
   }
 }
 .submit,

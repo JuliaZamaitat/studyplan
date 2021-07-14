@@ -7,7 +7,7 @@
       <div class="fieldgroup">
         <label for="username">Benutzername </label>
         <input
-          :value="username"
+          v-model="username"
           type="text"
           name="username"
           @blur="
@@ -20,8 +20,8 @@
       <div class="fieldgroup">
         <label for="email">Email </label>
         <input
-          :value="email"
-          type="text"
+          v-model="email"
+          type="email"
           name="email"
           @blur="
             $v.email.$touch();
@@ -40,15 +40,18 @@
         Passwort ändern
       </router-link>
     </div>
-    <div v-if="$v.username.$error || $v.email.$error">
+    <div v-if="$v.username.$error">
+      <p v-if="!$v.username.required" class="error-message">
+        Benutzername darf nicht leer sein.
+      </p>
+    </div>
+    <div v-if="$v.email.$error">
       <p v-if="!$v.email.email" class="error-message">
+        {{ $v.email }}
         Bitte gib eine gülitge Emailadresse an
       </p>
-      <p
-        v-if="!$v.username.required || !$v.email.required"
-        class="error-message"
-      >
-        Felder dürfen nicht leer sein.
+      <p v-if="!$v.email.required" class="error-message">
+        Gib eine Emailadresse an
       </p>
     </div>
     <div v-if="message" role="alert" class="error-message">
@@ -144,6 +147,7 @@ export default {
           } else {
             //everything went ok
             this.username = newName;
+            this.$v.$reset();
           }
         } else if (attribute == "email") {
           const newEmail = e.target.value;
@@ -163,6 +167,7 @@ export default {
           } else {
             //everything went ok
             this.email = newEmail;
+            this.$v.$reset();
           }
         }
       }

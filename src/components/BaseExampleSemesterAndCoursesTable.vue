@@ -15,7 +15,7 @@
           <div class="courses">
             <div
               class="course"
-              :style="{ width: courseWidth(course) }"
+              :style="{ width: `${courseWidth(course)}px` }"
               v-for="course in semester"
               :key="course.id"
             >
@@ -35,7 +35,13 @@
                     <p class="course-content-container-content-text--code">
                       {{ course.code }}
                     </p>
-                    <p>{{ course.name }}</p>
+                    <p
+                      :style="{
+                        fontSize: courseWidth(course) < 50 ? '9px' : '12px',
+                      }"
+                    >
+                      {{ course.name }}
+                    </p>
                   </div>
                 </div>
               </router-link>
@@ -66,8 +72,7 @@ export default {
       return ects;
     },
     courseWidth(course) {
-      const width = course.ects * 30 + (course.ects / 5 - 1) * 25;
-      return `${width}px`;
+      return course.ects * 30 + (course.ects / 5 - 1) * 25;
     },
   },
   computed: {
@@ -79,10 +84,6 @@ export default {
 
 <style lang="scss" scoped>
 $htwGruen: #76b900;
-a {
-  text-decoration: none;
-  color: inherit;
-}
 
 .container {
   display: grid;
@@ -90,9 +91,10 @@ a {
   max-width: 1350px;
   border-radius: 20px;
 
-  p {
-    font-weight: 700;
+  @media screen and (max-width: 1400px) {
+    max-width: 90% !important;
   }
+
   .shadowBox {
     box-shadow: 0px 7px 4px rgba(0, 0, 0, 0.23);
     border-radius: 20px;
@@ -146,6 +148,11 @@ a {
         display: flex;
         align-items: center;
 
+        a {
+          text-decoration: none;
+          color: inherit;
+        }
+
         &-content-container {
           border-radius: 14px;
 
@@ -171,9 +178,9 @@ a {
               overflow: hidden;
 
               p {
-                padding: 0px;
                 font-size: 12px;
-                padding: 3px;
+                font-weight: 700;
+                padding: 3px 5px;
                 margin: 0;
                 max-width: 95%;
                 word-wrap: break-word;
@@ -184,12 +191,6 @@ a {
         }
       }
     }
-  }
-}
-
-@media screen and (max-width: 1400px) {
-  .container {
-    max-width: 90% !important;
   }
 }
 </style>

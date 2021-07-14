@@ -110,7 +110,7 @@ export default {
 $htwGruen: #76b900;
 
 p {
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .explanation {
@@ -142,6 +142,13 @@ p {
     background: rgba(118, 185, 0, 0.12);
     border: 1px solid rgba(118, 185, 0, 0.36);
     border-radius: 12px;
+
+    @media screen and (max-width: 1600px) {
+      max-width: 90% !important;
+    }
+    @media screen and (max-width: 1600px) {
+      max-width: 90% !important;
+    }
   }
 
   &-questions {
@@ -150,10 +157,18 @@ p {
     flex-direction: row;
     flex-wrap: wrap;
     margin: auto;
+
+    @media screen and (max-width: 650px) {
+      flex-direction: column;
+    }
   }
   &-question {
     margin: 40px auto 40px;
     width: 25%;
+
+    @media screen and (max-width: 650px) {
+      width: 90%;
+    }
 
     &--question {
       margin: auto;
@@ -179,22 +194,6 @@ p {
         display: block;
       }
     }
-  }
-}
-
-@media screen and (max-width: 1600px) {
-  .explanation-container {
-    max-width: 90% !important;
-    margin: 0 auto;
-  }
-}
-
-@media screen and (max-width: 650px) {
-  .explanation-question {
-    width: 90%;
-  }
-  .explanation-questions {
-    flex-direction: column;
   }
 }
 </style>

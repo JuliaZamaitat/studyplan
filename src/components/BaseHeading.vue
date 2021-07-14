@@ -5,10 +5,6 @@
   </div>
 </template>
 
-<script>
-export default {};
-</script>
-
 <style lang="scss" scoped>
 $htwGruen: #76b900;
 h1 {

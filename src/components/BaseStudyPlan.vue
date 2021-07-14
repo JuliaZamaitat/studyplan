@@ -1,18 +1,16 @@
 <template>
-  <div class="padding">
-    <div class="container">
-      <div class="shadowBox">
-        <BaseSemesterRow
-          v-for="(semester, $semesterIndex) in coursesInSemester"
-          class="semester"
-          :key="semester.id"
-          :semester="semester"
-          :semesterIndex="$semesterIndex"
-          :coursesInSemester="coursesInSemester"
-          :semesterName="semester.semester"
-        />
-        <router-view></router-view>
-      </div>
+  <div class="container">
+    <div class="shadowBox">
+      <BaseSemesterRow
+        v-for="(semester, $semesterIndex) in coursesInSemester"
+        class="semester"
+        :key="semester.id"
+        :semester="semester"
+        :semesterIndex="$semesterIndex"
+        :coursesInSemester="coursesInSemester"
+        :semesterName="semester.semester"
+      />
+      <router-view></router-view>
     </div>
     <div class="addSemester">
       <button class="addSemester addSemester__button" @click="addSemester">
@@ -44,17 +42,17 @@ $htwGruen: #76b900;
 p {
   font-weight: 700;
 }
-button {
-  margin: 30px;
-}
-.padding {
-  padding: 0 2rem;
-}
+
 .container {
   display: grid;
+  padding: 0 2rem;
   margin: 0 auto;
   max-width: 1350px;
   border-radius: 20px;
+
+  @media screen and (max-width: 1400px) {
+    max-width: 90% !important;
+  }
 
   .shadowBox {
     box-shadow: 0px 7px 4px rgba(0, 0, 0, 0.23);
@@ -86,12 +84,6 @@ button {
   &__text {
     margin: 0;
     color: $htwGruen;
-  }
-}
-
-@media screen and (max-width: 1400px) {
-  .container {
-    max-width: 90% !important;
   }
 }
 </style>

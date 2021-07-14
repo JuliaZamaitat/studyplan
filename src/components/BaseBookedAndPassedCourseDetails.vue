@@ -11,7 +11,7 @@
         v-model="booked"
         :value="booked"
         color="rgba(253, 177, 62, 1)"
-        @change="toggleBooked($event, course.course.code, semester)"
+        @change="toggleBooked(course.course.code, semester)"
         :disabled="passed"
         >Belegt
       </Checkbox>
@@ -21,7 +21,7 @@
         v-model="passed"
         :value="passed"
         color="#76b900"
-        @change="togglePassed($event, course.course.code, semester)"
+        @change="togglePassed(course.course.code, semester)"
         :disabled="!booked"
         >Bestanden
       </Checkbox>
@@ -184,8 +184,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Allgemeine Informationen -->
   </div>
 </template>
 
@@ -272,7 +270,7 @@ export default {
     isMobileView() {
       this.mobileView = window.innerWidth <= 600;
     },
-    toggleBooked(e, courseCode, semester) {
+    toggleBooked(courseCode, semester) {
       this.$store.dispatch("studyplan/toggleBookedStateOfCourseInSemester", {
         courseCode: courseCode,
         parentCourseCode: this.parentCourseCode,
@@ -281,7 +279,7 @@ export default {
       });
     },
 
-    togglePassed(e, courseCode, semester) {
+    togglePassed(courseCode, semester) {
       this.$store.dispatch("studyplan/togglePassedStateOfCourseInSemester", {
         courseCode: courseCode,
         parentCourseCode: this.parentCourseCode,
@@ -320,10 +318,6 @@ $htwGruen: #76b900;
 $belegtFont: rgba(253, 177, 62, 1);
 $belegtBackground: rgba(253, 177, 62, 0.55);
 
-a {
-  text-decoration: none;
-  color: inherit;
-}
 .checkbox {
   margin: 0 auto;
   width: 40%;
@@ -354,19 +348,14 @@ a {
 h3 {
   font-size: 18px;
 }
+h4 {
+  color: $htwGruen;
+}
 .bookedThrough {
   color: $belegtFont;
 }
 .passedThrough {
   color: $htwGruen;
-}
-h4 {
-  color: $htwGruen;
-}
-
-.hint {
-  font-size: 12px;
-  font-style: italic;
 }
 
 .course-content-container {
@@ -386,6 +375,11 @@ h4 {
   align-items: flex-start;
   justify-content: center;
 
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
   &-course {
     background: rgba(193, 193, 193, 0.55);
     overflow: hidden;
@@ -400,6 +394,10 @@ h4 {
     align-items: flex-start;
     margin: 9px;
     transition: max-height 0.3s ease-in-out;
+
+    @media screen and (max-width: 600px) {
+      align-items: center;
+    }
 
     &--booked {
       background: $belegtBackground;
@@ -416,8 +414,8 @@ h4 {
       justify-content: center;
       align-items: center;
       margin: 0 auto;
-
       width: 100%;
+
       &-text {
         max-width: 100%;
         height: 100%;
@@ -435,29 +433,17 @@ h4 {
           max-width: 100%;
           word-wrap: break-word;
           border-radius: 14px;
+
+          @media screen and (max-width: 1000px) {
+            max-width: 75% !important;
+          }
+
+          @media screen and (max-width: 800px) {
+            max-width: 65% !important;
+          }
         }
       }
     }
-  }
-}
-
-@media screen and (max-width: 1000px) {
-  p {
-    max-width: 75% !important;
-    margin: 0 auto;
-  }
-}
-
-@media screen and (max-width: 800px) {
-  p {
-    max-width: 65% !important;
-    margin: 0 auto;
-  }
-}
-
-@media screen and (max-width: 600px) {
-  .childCourses-course {
-    align-items: center;
   }
 }
 </style>
