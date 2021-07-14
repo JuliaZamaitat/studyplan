@@ -254,5 +254,6 @@ input[type="submit"] {
   color: inherit;
   font-size: 15px;
   margin-top: 30px;
+  margin-bottom: 20px;
 }
 </style>
