@@ -58,10 +58,7 @@
 import { mapState } from "vuex";
 export default {
   props: {
-    coursesInSemester: {
-      type: Object,
-      default: () => {},
-    },
+    coursesInSemester: [],
   },
   methods: {
     ects(semester) {

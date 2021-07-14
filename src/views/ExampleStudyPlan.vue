@@ -2,14 +2,14 @@
   <div>
     <BaseHeading><h1>Exemplarischer Studienplan*</h1></BaseHeading>
     <BaseExampleSemesterAndCoursesTable
-      :coursesInSemester="officialCoursesInSemester"
+      :coursesInSemester="courses"
       v-show="!pending"
     />
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState } from "vuex";
 
 export default {
   data() {
@@ -19,6 +19,7 @@ export default {
         default: "false",
       },
       color: "#76b900",
+      courses: [],
     };
   },
   async created() {
@@ -30,13 +31,15 @@ export default {
         code: this.user.studyPlan.program.code.toLowerCase(),
         version: this.user.studyPlan.program.version,
       });
+      this.courses = await this.$store.dispatch(
+        "program/getOfficialCoursesInSemester"
+      );
       this.pending = false;
     }
   },
   computed: {
     ...mapState("program", ["program"]),
     ...mapState("user", ["user"]),
-    ...mapGetters("program", ["officialCoursesInSemester"]),
   },
 };
 </script>
