@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseHeading><h1>Exemplarischer Studienplan*</h1></BaseHeading>
+    <BaseHeading><h1>Plan nach Studienordnung</h1></BaseHeading>
     <BaseExampleSemesterAndCoursesTable
       :coursesInSemester="courses"
       v-show="!pending"

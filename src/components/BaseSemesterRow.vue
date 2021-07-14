@@ -150,22 +150,32 @@ $belegtBackground: rgba(253, 177, 62, 0.55);
         position: relative;
         background: rgba(193, 193, 193, 0.55);
         border: 1px solid rgba(193, 193, 193, 0.3);
-
         min-height: 87px;
         border-radius: 14px;
         width: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
+        transition: 0.2s;
+
+        &:hover {
+          background: rgba(193, 193, 193, 0.7);
+        }
 
         &--booked {
           background-color: $belegtBackground !important;
           border: 1px solid rgba(253, 177, 62, 0.3);
+          &:hover {
+            background-color: rgba(253, 177, 62, 0.7) !important;
+          }
         }
 
         &--passed {
           background-color: rgba(118, 185, 0, 0.45) !important;
           border: 1px solid rgba(118, 185, 0, 0.3);
+          &:hover {
+            background-color: rgba(118, 185, 0, 0.7) !important;
+          }
         }
         &-content {
           display: flex;

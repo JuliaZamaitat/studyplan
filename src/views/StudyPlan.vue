@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseHeading><h1>Mein StudyPlan</h1></BaseHeading>
+    <BaseHeading><h1>Mein Studienplan</h1></BaseHeading>
     <pulse-loader :loading="pending" :color="color"></pulse-loader>
 
     <BaseStudyPlan

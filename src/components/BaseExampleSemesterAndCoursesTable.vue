@@ -152,14 +152,18 @@ $htwGruen: #76b900;
 
         &-content-container {
           border-radius: 14px;
-
           position: relative;
-          background: #beebae;
+          background: rgba(190, 235, 174, 1);
           min-height: 87px;
           width: 100%;
           display: flex;
           justify-content: center;
           align-items: center;
+          transition: 0.2s;
+
+          &:hover {
+            background: rgba(190, 235, 174, 0.75);
+          }
 
           &-content {
             display: flex;

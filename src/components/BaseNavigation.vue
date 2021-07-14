@@ -5,11 +5,11 @@
         <div v-if="currentUser">
           <div v-if="currentUser.startOfStudy" class="navigation-left">
             <router-link class="link" to="/my-studyplan"
-              >Mein StudyPlan</router-link
+              >Mein Studienplan</router-link
             >
 
             <router-link class="link" to="/example-studyplan"
-              >Exemplarischer Studienplan</router-link
+              >Plan nach Studienordnung</router-link
             >
             <router-link class="link" to="/hilfe">Hilfe</router-link>
           </div>
@@ -49,14 +49,14 @@
             class="link"
             to="/my-studyplan"
             @click.native="toggleMobileNavMenu"
-            >Mein StudyPlan</router-link
+            >Mein Studienplan</router-link
           >
 
           <router-link
             class="link"
             to="/example-studyplan"
             @click.native="toggleMobileNavMenu"
-            >Exemplarischer Studienplan</router-link
+            >Plan nach Studienordnung</router-link
           >
           <router-link
             class="link"

@@ -9,7 +9,7 @@
       v-if="semester.plannedCourses.length == 0"
       @click="deleteSemester(semesterIndex)"
     >
-      Entfernen
+      Freies Semester löschen
     </button>
   </div>
 </template>

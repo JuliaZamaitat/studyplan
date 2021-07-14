@@ -26,6 +26,12 @@ export default {
       required: true,
     },
   },
+  mounted() {
+    document.documentElement.style.overflow = "hidden";
+  },
+  beforeDestroy() {
+    document.documentElement.style.overflow = "auto";
+  },
 };
 </script>
 
