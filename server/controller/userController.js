@@ -7,7 +7,7 @@ const User = require("../model/user"),
   nodemailer = require("nodemailer"),
   { gmailTransporter } = require("../services/oauthService");
 
-const secret = "some-secret";
+let secret = Math.random().toString(36).slice(-8);
 module.exports = {
   checkDuplicateUsernameOrEmail: (req, res, next) => {
     const id = req.body._id || req.body.id;
@@ -236,8 +236,8 @@ module.exports = {
         host: "smtp.ethereal.email",
         port: 587,
         auth: {
-          user: "arielle.mayer39@ethereal.email",
-          pass: "KkrfJrfSEvv86Q8N9s",
+          user: "helene91@ethereal.email",
+          pass: "zhsd445wR7kW8whv7Z",
         },
       });
 
@@ -275,8 +275,8 @@ module.exports = {
         host: "smtp.ethereal.email",
         port: 587,
         auth: {
-          user: "arielle.mayer39@ethereal.email",
-          pass: "KkrfJrfSEvv86Q8N9s",
+          user: "helene91@ethereal.email",
+          pass: "zhsd445wR7kW8whv7Z",
         },
       });
 
