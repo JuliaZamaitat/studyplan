@@ -1,0 +1,168 @@
+---
+  Studiengang: "Internationale Medieninformatik B"
+  Belegungen: 
+    - 
+      Semesteranzahl: 1
+      Kurse: 
+        - 
+          Code: "B1"
+          Name: "Informatik 1"
+          ECTS: 6
+          Bestanden-Durch: []
+        - 
+          Code: "B2"
+          Name: "Computersysteme"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B3"
+          Name: "Propädeutikum und  Medientheorie"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B4"
+          Name: "Mathematik für Medieninformatik 1"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B5"
+          Name: "Grundlagen  der  Webprogrammierung"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B6"
+          Name: "1. Fremdsprache 1"
+          ECTS: 4
+          Bestanden-Durch: []
+    - 
+      Semesteranzahl: 2
+      Kurse: 
+        - 
+          Code: "B7"
+          Name: "Informatik 2"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B8"
+          Name: "Grundlagen Digitaler Medien"
+          ECTS: 6
+          Bestanden-Durch: []
+        - 
+          Code: "B9"
+          Name: "Netzwerke"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B10"
+          Name: "Mathematik für Medieninformatik 2"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B11"
+          Name: "Medienwirtschaft"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B12"
+          Name: "1. Fremdsprache 2"
+          ECTS: 4
+          Bestanden-Durch: []
+    - 
+      Semesteranzahl: 3
+      Kurse: 
+        - 
+          Code: "B16"
+          Name: "2. Fremdsprache"
+          ECTS: 4
+          Bestanden-Durch: []
+        - 
+          Code: "B18"
+          Name: "3D-Design"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B17"
+          Name: "Computergrafik"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B15"
+          Name: "Informatik 3"
+          ECTS: 6
+          Bestanden-Durch: []
+        - 
+          Code: "B14"
+          Name: "Datenbanken"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B13"
+          Name: "Bildverarbeitung"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B19"
+          Name: "Internationale   Medienwirtschaft  und  Kommunikation"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B20"
+          Name: "Praxisphase 1:  Fachpraktikum im  Ausland"
+          ECTS: 25
+          Bestanden-Durch: []
+    - 
+      Semesteranzahl: 4
+      Kurse: 
+        - 
+          Code: "B21"
+          Name: "Wahlpflichtmodul 1"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B22"
+          Name: "Wahlpflichtmodul 2"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B23"
+          Name: "Wahlpflichtmodul 3"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B24"
+          Name: "Praxisphase 2:Praxisprojekt"
+          ECTS: 15
+          Bestanden-Durch: []
+    - 
+      Semesteranzahl: 5
+      Kurse: 
+        - 
+          Code: "B30"
+          Name: "Bachelorseminar/Kolloquium"
+          ECTS: 4
+          Bestanden-Durch: []
+        - 
+          Code: "B28"
+          Name: "AWE:  WP"
+          ECTS: 2
+          Bestanden-Durch: []
+        - 
+          Code: "B27"
+          Name: "AWE:  Medienrecht"
+          ECTS: 2
+          Bestanden-Durch: []
+        - 
+          Code: "B25"
+          Name: "Wahlpflichtmodul 4"
+          ECTS: 5
+          Bestanden-Durch: []
+        - 
+          Code: "B29"
+          Name: "Bachelorarbeit"
+          ECTS: 12
+          Bestanden-Durch: []
+        - 
+          Code: "B26"
+          Name: "Wahlpflichtmodul 5"
+          ECTS: 5
+          Bestanden-Durch: []

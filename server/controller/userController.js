@@ -7,7 +7,9 @@ const User = require("../model/user"),
   nodemailer = require("nodemailer"),
   { gmailTransporter } = require("../services/oauthService");
 
-let secret = Math.random().toString(36).slice(-8);
+// let secret = Math.random().toString(36).slice(-8);
+let secret = "some-secret";
+
 module.exports = {
   checkDuplicateUsernameOrEmail: (req, res, next) => {
     const id = req.body._id || req.body.id;

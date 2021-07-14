@@ -65,11 +65,17 @@
           </div>
         </div>
       </transition>
+      <button class="downLoadButton" @click="downloadStudyPlan">
+        Plan herunterladen
+      </button>
+      <pulse-loader :loading="downloading" :color="color"></pulse-loader>
     </div>
   </div>
 </template>
 
 <script>
+const YAML = require("yaml");
+
 import { mapState } from "vuex";
 
 export default {
@@ -78,6 +84,7 @@ export default {
       pending: false,
       color: "#76b900",
       showingExplanations: false,
+      downloading: false,
     };
   },
 
@@ -92,6 +99,84 @@ export default {
       });
     }
     this.pending = false;
+  },
+  methods: {
+    async downloadStudyPlan() {
+      this.downloading = true;
+      const studyPlan = this.$store.state.studyplan.studyPlan;
+      let semesterPlans = [];
+      for (let semester in studyPlan.semesterPlans) {
+        let courses = [];
+        for (let i in studyPlan.semesterPlans[semester].plannedCourses) {
+          await this.$store.dispatch("course/fetchCourse", {
+            program: studyPlan.program.code.toLowerCase(),
+            version: studyPlan.program.version,
+            code: studyPlan.semesterPlans[semester].plannedCourses[i].code,
+            semester: studyPlan.semesterPlans[semester].semester.name,
+          });
+          let fetchedCourse = this.$store.state.course.course;
+
+          let course = {
+            Code: fetchedCourse.course.code,
+            Name: fetchedCourse.course.name,
+            ECTS: fetchedCourse.course.ects,
+            Inhalte: fetchedCourse.course.contents,
+          };
+          if (
+            studyPlan.semesterPlans[semester].plannedCourses[i].passedThrough
+              .length != 0
+          ) {
+            let passedThroughCourses = [];
+            for (let y in studyPlan.semesterPlans[semester].plannedCourses[i]
+              .passedThrough) {
+              await this.$store.dispatch("course/fetchCourse", {
+                program: studyPlan.program.code.toLowerCase(),
+                version: studyPlan.program.version,
+                code: studyPlan.semesterPlans[semester].plannedCourses[i]
+                  .passedThrough[y],
+                semester: studyPlan.semesterPlans[semester].semester.name,
+              });
+              let course = this.$store.state.course.course;
+              let pC = {
+                Code: course.course.code,
+                Name: course.course.name,
+                Inhalte: course.course.contents,
+              };
+              passedThroughCourses.push(pC);
+            }
+            course["Bestanden durch"] = passedThroughCourses;
+          }
+          courses.push(course);
+        }
+        let semesterPlan = {
+          Semesteranzahl:
+            studyPlan.semesterPlans[semester].currentSemesterCount,
+          Semester: studyPlan.semesterPlans[semester].semester.name,
+          Kurse: courses,
+        };
+        semesterPlans.push(semesterPlan);
+      }
+
+      let plan = {
+        Studiengang: studyPlan.program.name,
+        Belegungen: semesterPlans,
+      };
+
+      const doc = new YAML.Document();
+      doc.contents = plan;
+      const date = new Date(Date.now());
+      const fileName = `stuyplan_${
+        this.$store.state.user.user.username
+      }_${date.toLocaleDateString("de-DE")}`;
+      var dataStr = "data:text/yaml;charset=utf-8," + encodeURIComponent(doc);
+      var downloadAnchorNode = document.createElement("a");
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", fileName + ".yaml");
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+      this.downloading = false;
+    },
   },
 
   computed: {
@@ -130,7 +215,6 @@ p {
     text-decoration: underline;
     font-weight: bold;
     font-size: 18px;
-    margin-bottom: 20px;
   }
   &-container {
     max-width: 1550px;
@@ -191,5 +275,21 @@ p {
       }
     }
   }
+}
+
+.downLoadButton {
+  display: block;
+  margin: 20px auto;
+  margin-bottom: 20px;
+  background: none;
+  color: rgb(127, 127, 127);
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  text-decoration: underline;
+  font-weight: bold;
+  font-size: 18px;
 }
 </style>

@@ -1,10 +1,6 @@
 const User = require("../model/user"),
   StudyPlan = require("../model/studyPlan");
-
 module.exports = {
-  index: (req, res) => {
-    res.json({});
-  },
   create: (req, res) => {
     let studyplanParams = {
       program: req.body.program,

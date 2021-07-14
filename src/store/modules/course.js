@@ -42,6 +42,7 @@ export const actions = {
           courses.push(response.data);
           commit("SET_COURSES", courses);
           commit("SET_COURSE", course);
+          console.log(state.course);
         } else if (savedCourse) {
           commit("SET_COURSE", savedCourse);
         }
