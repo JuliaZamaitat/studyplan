@@ -27,16 +27,24 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(express.static("public")); //In order to use static file
+// app.use(express.static("public")); //In order to use static file
 
 app.use(cors());
 
-app.use(serveStatic(__dirname + "/dist"));
+// app.use(serveStatic(__dirname + "/dist"));
 
 app.set("port", process.env.PORT || 3000);
 app.set("view engine", "ejs"); //To use EJS
 
 app.use("/", router);
+
+// Serve static assets
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// Redirect all requests to `index.html`
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+})
 
 app.listen(app.get("port"), () => {
   console.log(`Server running at http://localhost:${app.get("port")}`);
