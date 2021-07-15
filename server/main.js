@@ -3,7 +3,6 @@ const express = require("express"),
   mongoose = require("mongoose"),
   cors = require("cors"),
   router = require("./routes/index"),
-  path = require("path"),
   serveStatic = require("serve-static");
 
 app.use(express.json());
@@ -32,7 +31,7 @@ app.use(express.static("public")); //In order to use static file
 
 app.use(cors());
 
-app.use(serveStatic(__dirname + "../dist"));
+app.use(serveStatic(__dirname + "/client/dist"));
 
 app.set("port", process.env.PORT || 3000);
 app.set("view engine", "ejs"); //To use EJS
