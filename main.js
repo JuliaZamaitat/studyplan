@@ -3,6 +3,7 @@ const express = require("express"),
   mongoose = require("mongoose"),
   cors = require("cors"),
   router = require("./routes/index"),
+  path = require("path");
   serveStatic = require("serve-static");
 
 app.use(express.json());
