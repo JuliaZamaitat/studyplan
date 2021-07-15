@@ -45,13 +45,7 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 })
-app.use('/', (req, res, next) => {
-  if (req.method !== 'GET' && req.method !== 'HEAD') {
-      return next()
-  }
 
-  serveIndex(__dirname + "dist/index.html", { icons: true })(req, res, next)
-});
 
 app.use("/server", router);
 

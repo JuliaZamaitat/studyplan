@@ -8,6 +8,6 @@ export default () => {
   //     url = "http://localhost:3000/api";
   //   }
   return axios.create({
-    baseURL: "https://studyplan.herokuapp.com/server",
+    baseURL: "https://studyplan.herokuapp.com/server/",
   });
 };

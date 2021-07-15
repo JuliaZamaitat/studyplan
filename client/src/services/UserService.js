@@ -10,13 +10,13 @@ import authHeader from "./AuthHeader";
 //   console.log("hier2");
 // }
 const server = axios.create({
-  baseURL: "https://studyplan.herokuapp.com/server",
+  baseURL: "https://studyplan.herokuapp.com/server/",
 });
 
 export default {
   login(user) {
     return server
-      .post("/users/login", {
+      .post("users/login", {
         username: user.username,
         password: user.password,
       })
