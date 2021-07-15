@@ -7,7 +7,7 @@ const router = require("express").Router(),
 
 
 router.get("/miau", (req,res)=> {
-  res.send("miau");
+  res.send("miau2");
 })  
 router.use("/users", userRoutes);
 
