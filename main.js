@@ -3,7 +3,8 @@ const express = require("express"),
   mongoose = require("mongoose"),
   cors = require("cors"),
   router = require("./routes/index"),
-  // path = require("path");
+  history = require('connect-history-api-fallback'),
+  path = require("path"),
   serveStatic = require("serve-static");
 
   
@@ -25,6 +26,11 @@ mongoose.connect(mongodbURI, { useNewUrlParser: true }).then(
   }
 );
 mongoose.set("useFindAndModify", false);
+app.use(history({
+  // OPTIONAL: Includes more verbose logging
+  verbose: true
+}))
+
 
 app.use(
   express.urlencoded({
