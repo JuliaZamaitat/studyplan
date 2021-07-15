@@ -7,8 +7,8 @@ const User = require("../model/user"),
   nodemailer = require("nodemailer"),
   { gmailTransporter } = require("../services/oauthService");
 
-// let secret = Math.random().toString(36).slice(-8);
-let secret = "some-secret";
+let secret = Math.random().toString(36).slice(-8);
+// let secret = "some-secret";
 
 module.exports = {
   checkDuplicateUsernameOrEmail: (req, res, next) => {
@@ -230,7 +230,7 @@ module.exports = {
   },
   sendEmailWithNewPassword: (req, res) => {
     let transporter;
-    if (process.env.NODE_ENV == "production") {      
+    if (process.env.NODE_ENV == "production") {
       transporter = gmailTransporter;
     } else {
       //Developmemt mode
@@ -242,29 +242,29 @@ module.exports = {
           pass: "zhsd445wR7kW8whv7Z",
         },
       });
-
-      var mailOptions = {
-        from: "studyplanhtwberlin@gmail.com",
-        to: res.locals.user.email,
-        subject: "New Password",
-        text:
-          "Hello,\n\n" +
-          "This is your new password. Please update it in your profile settings soon.\n\n" +
-          res.locals.password,
-      };
-      transporter.sendMail(mailOptions, function (err) {
-        if (err) {
-          return res.status(500).send({ msg: err.message });
-        }
-        res
-          .status(200)
-          .send(
-            "An email with a new password has been sent to " +
-              res.locals.user.email +
-              "."
-          );
-      });
     }
+
+    var mailOptions = {
+      from: "studyplanhtwberlin@gmail.com",
+      to: res.locals.user.email,
+      subject: "New Password",
+      text:
+        "Hello,\n\n" +
+        "This is your new password. Please update it in your profile settings soon.\n\n" +
+        res.locals.password,
+    };
+    transporter.sendMail(mailOptions, function (err) {
+      if (err) {
+        return res.status(500).send({ msg: err.message });
+      }
+      res
+        .status(200)
+        .send(
+          "An email with a new password has been sent to " +
+            res.locals.user.email +
+            "."
+        );
+    });
   },
   sendVerificationEmail: (req, res) => {
     // Send the email
@@ -281,31 +281,29 @@ module.exports = {
           pass: "zhsd445wR7kW8whv7Z",
         },
       });
-
-      var mailOptions = {
-        from: "studyplanhtwberlin@gmail.com",
-        to: res.locals.user.email,
-        subject: "Account Verification Token",
-        text:
-          "Hello,\n\n" +
-          "Please verify your account by clicking the link: \nhttp://" +
-          req.headers.host +
-          "/users/confirmation/" +
-          res.locals.token.token,
-      };
-      transporter.sendMail(mailOptions, function (err) {
-        if (err) {
-          return res.status(500).send({ msg: err.message });
-        }
-        res
-          .status(200)
-          .send(
-            "A verification email has been sent to " +
-              res.locals.user.email +
-              "."
-          );
-      });
     }
+
+    var mailOptions = {
+      from: "studyplanhtwberlin@gmail.com",
+      to: res.locals.user.email,
+      subject: "Account Verification Token",
+      text:
+        "Hello,\n\n" +
+        "Please verify your account by clicking the link: \nhttp://" +
+        req.headers.host +
+        "/users/confirmation/" +
+        res.locals.token.token,
+    };
+    transporter.sendMail(mailOptions, function (err) {
+      if (err) {
+        return res.status(500).send({ msg: err.message });
+      }
+      res
+        .status(200)
+        .send(
+          "A verification email has been sent to " + res.locals.user.email + "."
+        );
+    });
   },
   update: async (req, res) => {
     let userParams = {
