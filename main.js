@@ -59,7 +59,7 @@ app.set("view engine", "ejs"); //To use EJS
 app.use(serveStatic(__dirname + '/dist'));
 
 
-app.use("/server", router);
+app.use("/", router);
 
 
 app.listen(app.get("port"), () => {

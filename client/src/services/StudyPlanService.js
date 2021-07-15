@@ -8,7 +8,7 @@ import authHeader from "./AuthHeader";
 //   url = "http://localhost:3000";
 // }
 const server = axios.create({
-  baseURL: "https://studyplan.herokuapp.com/server",
+  baseURL: "https://studyplan.herokuapp.com/",
 });
 
 export default {
