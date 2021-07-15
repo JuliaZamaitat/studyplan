@@ -31,7 +31,7 @@ app.use(express.static("public")); //In order to use static file
 
 app.use(cors());
 
-app.use(serveStatic(__dirname + "/client/dist"));
+app.use(serveStatic(__dirname + "/dist"));
 
 app.set("port", process.env.PORT || 3000);
 app.set("view engine", "ejs"); //To use EJS
