@@ -113,7 +113,7 @@ module.exports = {
           res
             .status(200)
             .send(
-              "The account has been verified. Please log in. localhost:8080/login"
+              "The account has been verified. Please log in: https://studyplan.herokuapp.com/login"
             );
         });
       });

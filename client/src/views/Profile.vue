@@ -47,7 +47,6 @@
     </div>
     <div v-if="$v.email.$error">
       <p v-if="!$v.email.email" class="error-message">
-        {{ $v.email }}
         Bitte gib eine gülitge Emailadresse an
       </p>
       <p v-if="!$v.email.required" class="error-message">
