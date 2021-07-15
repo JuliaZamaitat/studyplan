@@ -3,9 +3,11 @@ import authHeader from "./AuthHeader";
 
 let url;
 if (process.env.PRODUCTION) {
+  console.log("hier");
   url = "https://studyplan.herokuapp.com";
 } else {
   url = "http://localhost:3000";
+  console.log("hier2");
 }
 const server = axios.create({
   baseURL: url,
