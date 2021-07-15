@@ -1,7 +1,8 @@
 import axios from "axios";
+import url from "../url";
 
 export default () => {
   return axios.create({
-    baseURL: `http://localhost:3000/api`,
+    baseURL: `${url.url}api/`,
   });
 };

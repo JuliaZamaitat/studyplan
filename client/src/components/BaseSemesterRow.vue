@@ -24,10 +24,7 @@
         >
           <router-link
             class="course-content-container"
-            :class="{
-              'course-content-container--booked': course.booked,
-              'course-content-container--passed': course.passed,
-            }"
+            
             :to="{
               name: 'baseModalParentCourse',
               params: {
@@ -42,6 +39,10 @@
               class="course-content-container-content"
               draggable
               @dragstart="pickupCourse($event, $courseIndex, semesterIndex)"
+              :class="{
+              'course-content-container-content--booked': course.booked,
+              'course-content-container-content--passed': course.passed,
+            }"
             >
               <div class="course-content-container-content-text">
                 <p class="course-content-container-content-text--code">
@@ -148,8 +149,6 @@ $belegtBackground: rgba(253, 177, 62, 0.55);
       &-content-container {
         transform: translate(0, 0);
         position: relative;
-        background: rgba(193, 193, 193, 0.55);
-        border: 1px solid rgba(193, 193, 193, 0.3);
         min-height: 87px;
         border-radius: 14px;
         width: 100%;
@@ -157,26 +156,8 @@ $belegtBackground: rgba(253, 177, 62, 0.55);
         justify-content: center;
         align-items: center;
         transition: 0.2s;
-
-        &:hover {
-          background: rgba(193, 193, 193, 0.7);
-        }
-
-        &--booked {
-          background-color: $belegtBackground !important;
-          border: 1px solid rgba(253, 177, 62, 0.3);
-          &:hover {
-            background-color: rgba(253, 177, 62, 0.7) !important;
-          }
-        }
-
-        &--passed {
-          background-color: rgba(118, 185, 0, 0.45) !important;
-          border: 1px solid rgba(118, 185, 0, 0.3);
-          &:hover {
-            background-color: rgba(118, 185, 0, 0.7) !important;
-          }
-        }
+       
+        
         &-content {
           display: flex;
           justify-content: center;
@@ -184,7 +165,29 @@ $belegtBackground: rgba(253, 177, 62, 0.55);
           margin: 0 auto;
           width: 100%;
           min-height: 87px;
+          background: rgba(193, 193, 193, 0.55);
+          border: 1px solid rgba(193, 193, 193, 0.3);
+          border-radius: 14px;
+           &:hover {
+          background: rgba(193, 193, 193, 0.7);
+           }
 
+           &--booked {
+            background-color: $belegtBackground !important;
+            border: 1px solid rgba(253, 177, 62, 0.3);
+            &:hover {
+              background-color: rgba(253, 177, 62, 0.7) !important;
+            }
+          }
+
+          &--passed {
+            background-color: rgba(118, 185, 0, 0.45) !important;
+            border: 1px solid rgba(118, 185, 0, 0.3);
+            &:hover {
+              background-color: rgba(118, 185, 0, 0.7) !important;
+          }
+          }
+        
           &-text {
             max-width: 100%;
             height: 100%;
@@ -202,7 +205,8 @@ $belegtBackground: rgba(253, 177, 62, 0.55);
           }
         }
       }
+      }
     }
-  }
+  
 }
 </style>

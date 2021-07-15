@@ -5,6 +5,10 @@ const router = require("express").Router(),
   semesterRoutes = require("./semesterRoutes"),
   userController = require("../controller/userController");
 
+
+router.get("/miau", (req,res)=> {
+  res.send("miau2");
+})  
 router.use("/users", userRoutes);
 
 router.use(userController.verifyToken);

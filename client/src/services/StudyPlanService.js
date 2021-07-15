@@ -1,8 +1,9 @@
 import axios from "axios";
 import authHeader from "./AuthHeader";
+import url from "./url";
 
 const server = axios.create({
-  baseURL: `http://localhost:3000`,
+  baseURL: url.url,
 });
 
 export default {

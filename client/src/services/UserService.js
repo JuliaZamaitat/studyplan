@@ -1,14 +1,16 @@
 import axios from "axios";
 import authHeader from "./AuthHeader";
+import url from "./url";
 
+console.log(url.url);
 const server = axios.create({
-  baseURL: `http://localhost:3000`,
+  baseURL: url.url,
 });
 
 export default {
   login(user) {
     return server
-      .post("/users/login", {
+      .post("users/login", {
         username: user.username,
         password: user.password,
       })

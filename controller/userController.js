@@ -230,7 +230,7 @@ module.exports = {
   },
   sendEmailWithNewPassword: (req, res) => {
     let transporter;
-    if (process.env.PRODUCTION) {
+    if (process.env.NODE_ENV == "production") {      
       transporter = gmailTransporter;
     } else {
       //Developmemt mode
@@ -269,7 +269,7 @@ module.exports = {
   sendVerificationEmail: (req, res) => {
     // Send the email
     let transporter;
-    if (process.env.PRODUCTION) {
+    if (process.env.NODE_ENV == "production") {
       transporter = gmailTransporter;
     } else {
       //Developmemt mode
