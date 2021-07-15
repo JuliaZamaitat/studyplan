@@ -17,10 +17,12 @@
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "googleapis": "^81.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.8",
     "mongoose": "^5.12.14",
     "node-localstorage": "^2.2.1",
+    "nodemailer": "^6.6.3",
     "path": "^0.12.7",
     "serve-static": "^1.14.1"
   }
