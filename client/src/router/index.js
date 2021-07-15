@@ -147,6 +147,8 @@ router.beforeEach((to, from, next) => {
     "/hilfe",
     "/resend-verification",
     "/reset-password",
+    "/impressum",
+    "/datenschutz",
   ];
   const authRequired = !publicPages.includes(to.path);
 
