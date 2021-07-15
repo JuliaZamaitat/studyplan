@@ -37,7 +37,6 @@ app.use(cors());
 app.set("port", process.env.PORT || 3000);
 app.set("view engine", "ejs"); //To use EJS
 
-app.use("/", router);
 
 // Serve static assets
 app.use(express.static(path.join(__dirname, 'dist')));
@@ -46,6 +45,9 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 })
+
+app.use("/server", router);
+
 
 app.listen(app.get("port"), () => {
   console.log(`Server running at http://localhost:${app.get("port")}`);

@@ -10,7 +10,7 @@ import authHeader from "./AuthHeader";
 //   console.log("hier2");
 // }
 const server = axios.create({
-  baseURL: "https://studyplan.herokuapp.com",
+  baseURL: "https://studyplan.herokuapp.com/server",
 });
 
 export default {
