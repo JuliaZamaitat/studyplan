@@ -1,13 +1,8 @@
 import axios from "axios";
+import url from "../url";
 
 export default () => {
-  //   let url;
-  //   if (process.env.NODE_ENV == "production") {
-  //     url = "https://studyplan.herokuapp.com/api";
-  //   } else {
-  //     url = "http://localhost:3000/api";
-  //   }
   return axios.create({
-    baseURL: "https://studyplan.herokuapp.com/api",
+    baseURL: `${url.url}api/`,
   });
 };

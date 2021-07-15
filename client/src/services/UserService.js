@@ -1,16 +1,10 @@
 import axios from "axios";
 import authHeader from "./AuthHeader";
+import url from "./url";
 
-// let url;
-// if (process.env.NODE_ENV == "production") {
-//   console.log("hier");
-//   url = "https://studyplan.herokuapp.com";
-// } else {
-//   url = "http://localhost:3000";
-//   console.log("hier2");
-// }
+console.log(url.url);
 const server = axios.create({
-  baseURL: "https://studyplan.herokuapp.com/",
+  baseURL: url.url,
 });
 
 export default {
