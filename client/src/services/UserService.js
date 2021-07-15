@@ -2,7 +2,7 @@ import axios from "axios";
 import authHeader from "./AuthHeader";
 
 let url;
-if (process.env.PRODUCTION) {
+if (process.env.NODE_ENV == "production") {
   console.log("hier");
   url = "https://studyplan.herokuapp.com";
 } else {
