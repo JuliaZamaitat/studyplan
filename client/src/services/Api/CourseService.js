@@ -16,7 +16,7 @@ export default {
     program = program.replace(/\//g, "");
     version = version.replace(/\//g, "");
     return Api().get(
-      `${program}/${version}/${code}/semester/${semester.toLowerCase()}`,
+      `${program}/${version}/${code}/${semester.toLowerCase()}`,
       {
         headers: authHeader(),
       }
