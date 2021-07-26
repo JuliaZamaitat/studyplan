@@ -392,13 +392,16 @@ h4 {
     border: 1px solid #c1c1c1;
     max-height: 87px;
     min-height: 87px;
-    width: 10vw;
+    width: 20%;
     border-radius: 14px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
     margin: 9px;
     transition: max-height 0.3s ease-in-out;
+     &:hover {
+        background: rgba(193, 193, 193, 0.7);
+      }
 
     @media screen and (max-width: 600px) {
       align-items: center;
@@ -407,11 +410,17 @@ h4 {
     &--booked {
       background: $belegtBackground;
       border: 1px solid $belegtFont;
+       &:hover {
+        background-color: rgba(253, 177, 62, 0.7) !important;
+      }
     }
 
     &--passed {
       background: rgba(118, 185, 0, 0.45);
       border: 1px solid $htwGruen;
+      &:hover {
+        background-color: rgba(118, 185, 0, 0.7) !important;
+      }
     }
 
     &-content {
@@ -449,11 +458,11 @@ h4 {
           border-radius: 14px;
 
           @media screen and (max-width: 1000px) {
-            max-width: 75% !important;
+            max-width: 85% !important;
           }
 
           @media screen and (max-width: 800px) {
-            max-width: 65% !important;
+            max-width: 75% !important;
           }
         }
       }
