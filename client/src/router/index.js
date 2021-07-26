@@ -16,6 +16,7 @@ import BaseChangePasswordModal from "../components/BaseChangePasswordModal.vue";
 import BaseResendVerification from "../components/BaseResendVerification.vue";
 import BaseResetPassword from "../components/BaseResetPassword.vue";
 import store from "../store";
+import { AccessTokenValidation } from "../helper/accessTokenValidation.js";
 
 Vue.use(VueRouter);
 
@@ -124,22 +125,6 @@ const router = new VueRouter({
   routes,
 });
 
-function parseJwt(token) {
-  var base64Url = token.split(".")[1];
-  var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  var jsonPayload = decodeURIComponent(
-    Buffer.from(base64, "base64")
-      .toString("ascii")
-      .split("")
-      .map(function (c) {
-        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-      })
-      .join("")
-  );
-
-  return JSON.parse(jsonPayload);
-}
-
 router.beforeEach((to, from, next) => {
   const publicPages = [
     "/login",
@@ -161,7 +146,7 @@ router.beforeEach((to, from, next) => {
     next("/login");
     return;
   }
-  let loggedIn = parseJwt(user.accessToken);
+  let loggedIn = AccessTokenValidation.parseJwt(user.accessToken);
 
   if (loggedIn.exp < Date.now() / 1000) {
     // token expired
