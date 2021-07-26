@@ -165,7 +165,7 @@ export default {
       const doc = new YAML.Document();
       doc.contents = plan;
       const date = new Date(Date.now());
-      const fileName = `stuyplan_${
+      const fileName = `studyplan_${
         this.$store.state.user.user.username
       }_${date.toLocaleDateString("de-DE")}`;
       var dataStr = "data:text/yaml;charset=utf-8," + encodeURIComponent(doc);

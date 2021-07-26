@@ -79,7 +79,6 @@ export default {
     this.pending = false;
   },
   async beforeDestroy() {
-    console.log("destroyed");
     document.documentElement.style.overflow = "auto";
   },
   computed: {

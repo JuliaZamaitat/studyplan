@@ -43,7 +43,7 @@
             :key="childCourse.id"
           >
             <router-link
-              class="course-content-container"
+              class="childCourses-course-content-container"
               :to="{
                 name: 'baseModalChildCourse',
                 params: {
@@ -367,6 +367,10 @@ h4 {
   min-height: 87px;
   height: auto;
   transition: max-height 1s ease-in-out;
+
+  @media screen and (max-width: 600px) {
+    max-height: 87px;
+  }
 }
 .childCourses {
   display: flex;
@@ -378,6 +382,7 @@ h4 {
   a {
     text-decoration: none;
     color: inherit;
+    width: 100%;
   }
 
   &-course {
@@ -416,6 +421,16 @@ h4 {
       margin: 0 auto;
       width: 100%;
 
+      &-container {
+        min-height: 67px;
+        padding-top: 20px;
+
+        @media screen and (max-width: 600px) {
+          min-height: 0px;
+          padding-top: 0px;
+        }
+      }
+
       &-text {
         max-width: 100%;
         height: 100%;
@@ -426,7 +441,6 @@ h4 {
         }
 
         p {
-          padding: 0px;
           font-size: 12px;
           padding: 3px;
           margin: 0 auto;
