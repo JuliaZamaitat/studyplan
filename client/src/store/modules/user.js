@@ -160,6 +160,7 @@ export const actions = {
         program: program,
         stupo: stupo,
         userId: state.user.id || state.user._id,
+        startOfStudy: startOfStudy,
       },
       { root: true }
     );

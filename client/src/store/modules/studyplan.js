@@ -60,7 +60,7 @@ export const actions = {
   },
   async createStudyPlan(
     { state, commit, rootState, dispatch },
-    { program, stupo, userId }
+    { program, stupo, userId, startOfStudy }
   ) {
     try {
       commit("SET_PENDING", true);
@@ -76,7 +76,7 @@ export const actions = {
       const studyPlan = response.data;
 
       commit("SET_STUDYPLAN", studyPlan);
-      await dispatch("fillEmptyStudyPlanWithOfficalCourses", userId);
+      await dispatch("fillEmptyStudyPlanWithOfficalCourses", { startOfStudy });
 
       const userResponse = await StudyPlanService.saveToUser(
         state.studyPlan,
@@ -132,12 +132,10 @@ export const actions = {
     }
   },
 
-  async fillEmptyStudyPlanWithOfficalCourses({
-    state,
-    rootGetters,
-    rootState,
-    dispatch,
-  }) {
+  async fillEmptyStudyPlanWithOfficalCourses(
+    { state, rootGetters, dispatch },
+    { startOfStudy }
+  ) {
     let helperArrayForSemesterPlans = [];
     const officialCoursesInSemester = await dispatch(
       "program/getOfficialCoursesInSemester",
@@ -160,8 +158,6 @@ export const actions = {
       };
       helperArrayForSemesterPlans.push(obj);
     }
-
-    const startOfStudy = rootState.user.user.startOfStudy;
 
     state.studyPlan.semesterPlans = assignSemestersToSemesterPlans(
       rootGetters["semester/getSemesters"],
@@ -394,7 +390,7 @@ function assignSemestersToSemesterPlans(
   startOfStudy
 ) {
   for (let i in semesters) {
-    if (semesters[i].name === startOfStudy) {
+    if (semesters[i].name === startOfStudy.name) {
       semesters = semesters.splice(i);
       break;
     }

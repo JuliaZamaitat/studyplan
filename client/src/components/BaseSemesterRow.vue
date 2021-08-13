@@ -106,7 +106,6 @@ export default {
     moveCourse(e, toCourses, toCourseIndex) {
       e.preventDefault();
       const fromSemesterIndex = e.dataTransfer.getData("from-semester-index");
-      console.log("fromSemesterIndex", fromSemesterIndex);
       const fromCourses =
         this.coursesInSemester[fromSemesterIndex].plannedCourses;
       const fromCourseIndex = e.dataTransfer.getData("from-course-index");
